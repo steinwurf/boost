@@ -172,26 +172,26 @@ def build(bld):
                     'BOOST_CHRONO_STATIC_LINK=1',
                     'BOOST_TIMER_STATIC_LINK=1'],
         use      = 'BOOST_SHARED')
-##
-##    # Build boost program options
-##    bld.stlib(
-##        features = 'cxx',
-##        source   = bld.path.ant_glob('boost-lib/libs/program_options/src/*.cpp'),
-##        target   = 'boost_program_options',
-##        includes = include_dirs,
-##        export_includes = include_dirs,
-##        use      = 'BOOST_SHARED')
-##
-##    # Build boost program options
-##    bld.stlib(
-##        features = 'cxx',
-##        source   = bld.path.ant_glob('boost-lib/libs/filesystem/src/*.cpp'),
-##        target   = 'boost_filesystem',
-##        includes = include_dirs,
-##        export_includes = include_dirs,
-##        defines  = ['BOOST_SYSTEM_STATIC_LINK=1',
-##                   'BOOST_FILESYSTEM_STATIC_LINK=1'],
-##        use      = 'BOOST_SHARED')
+
+    # Build boost program options
+    bld.stlib(
+        features = 'cxx',
+        source   = bld.path.ant_glob('libs/program_options/src/*.cpp'),
+        target   = 'boost_program_options',
+        includes = include_dirs,
+        export_includes = include_dirs,
+        use      = 'BOOST_SHARED')
+
+    # Build boost filesystem
+    bld.stlib(
+        features = 'cxx',
+        source   = bld.path.ant_glob('libs/filesystem/src/*.cpp'),
+        target   = 'boost_filesystem',
+        includes = include_dirs,
+        export_includes = include_dirs,
+        defines  = ['BOOST_SYSTEM_STATIC_LINK=1',
+                   'BOOST_FILESYSTEM_STATIC_LINK=1'],
+        use      = 'BOOST_SHARED')
 
 
     # Make use flag for apps/libs only using the boost headers

@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Steinwurf ApS
 // All rights reserved.
-
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
 //     * Neither the name of Steinwurf ApS nor the
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
-
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,72 +23,34 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <iostream>
+#include <iterator>
+#include <exception>
+
+#include <boost/filesystem.hpp>
+
 #include <gtest/gtest.h>
 
-#include <boost/signals2.hpp>
-#include <boost/bind.hpp>
+using namespace std;
+using namespace boost::filesystem;
 
-namespace bs2 = boost::signals2;
-
-struct signal_emitter
+TEST(TestBoostFilesystem, basic)
 {
-    typedef bs2::signal<void ()> void_signal;
+    path p("hello.txt");
 
-    bs2::connection on_event(const void_signal::slot_type& slot)
+    if (exists(p))    // does p actually exist?
     {
-        return m_signal.connect(slot);
+        if (is_regular_file(p))        // is p a regular file?
+            cout << p << " size is " << file_size(p) << '\n';
+
+        else if (is_directory(p))      // is p a directory?
+            cout << p << " is a directory\n";
+
+        else
+            cout << p << " exists, but is neither a regular file nor a directory\n";
     }
-
-    void raise_event()
-    {
-        m_signal();
-    }
-
-    // The signal
-    void_signal m_signal;
-};
-
-
-struct signal_receiver
-{
-    signal_receiver() :
-        m_one(0), m_two(0)
-    {
-    }
-
-    void call_one()
-    {
-        m_one++;
-    }
-
-    void call_two()
-    {
-        m_two++;
-    }
-
-    // To check if all callbacks were invoked
-    int m_one;
-    int m_two;
-};
-
-TEST(TestBoostSignals, connect)
-{
-    signal_emitter emitter;
-    signal_receiver recv;
-
-    emitter.on_event(
-        boost::bind(&signal_receiver::call_one, &recv));
-    emitter.on_event(
-        boost::bind(&signal_receiver::call_two, &recv));
-
-    emitter.raise_event();
-
-    EXPECT_EQ(1, recv.m_one);
-    EXPECT_EQ(1, recv.m_two);
+    else
+        cout << p << " does not exist\n";
 }
-
-
-
-
 
 

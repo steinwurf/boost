@@ -1,6 +1,6 @@
 // Copyright (c) 2013, Steinwurf ApS
 // All rights reserved.
-
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //     * Redistributions of source code must retain the above copyright
@@ -11,7 +11,7 @@
 //     * Neither the name of Steinwurf ApS nor the
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
-
+//
 // THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 // ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 // WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -23,72 +23,53 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <iostream>
+#include <iterator>
+#include <exception>
+
+#include <boost/program_options.hpp>
 #include <gtest/gtest.h>
 
-#include <boost/signals2.hpp>
-#include <boost/bind.hpp>
+namespace po = boost::program_options;
 
-namespace bs2 = boost::signals2;
-
-struct signal_emitter
+TEST(TestBoostProgramOptions, basic)
 {
-    typedef bs2::signal<void ()> void_signal;
-
-    bs2::connection on_event(const void_signal::slot_type& slot)
+    int argc = 3;
+    char* argv[] = { "program", "--help", "--compression=5.0" };
+    try
     {
-        return m_signal.connect(slot);
-    }
+        po::options_description desc("Allowed options");
+        desc.add_options()
+            ("help", "produce help message")
+            ("compression", po::value<double>(), "set compression level");
 
-    void raise_event()
+        po::variables_map vm;
+        po::store(po::parse_command_line(argc, argv , desc), vm);
+        po::notify(vm);
+
+        bool help = false;
+        if (vm.count("help"))
+        {
+            help = true;
+        }
+        EXPECT_EQ(true, help);
+
+        bool compression = false;
+        double comp_value = 0.0;
+        if (vm.count("compression"))
+        {
+            compression = true;
+            comp_value = vm["compression"].as<double>();
+        }
+        EXPECT_EQ(true, compression);
+        EXPECT_EQ(5.0, comp_value);
+    }
+    catch(std::exception& e)
     {
-        m_signal();
+        std::cerr << "Error: " << e.what() << "\n";
     }
-
-    // The signal
-    void_signal m_signal;
-};
-
-
-struct signal_receiver
-{
-    signal_receiver() :
-        m_one(0), m_two(0)
+    catch(...)
     {
+        std::cerr << "Exception of unknown type!\n";
     }
-
-    void call_one()
-    {
-        m_one++;
-    }
-
-    void call_two()
-    {
-        m_two++;
-    }
-
-    // To check if all callbacks were invoked
-    int m_one;
-    int m_two;
-};
-
-TEST(TestBoostSignals, connect)
-{
-    signal_emitter emitter;
-    signal_receiver recv;
-
-    emitter.on_event(
-        boost::bind(&signal_receiver::call_one, &recv));
-    emitter.on_event(
-        boost::bind(&signal_receiver::call_two, &recv));
-
-    emitter.raise_event();
-
-    EXPECT_EQ(1, recv.m_one);
-    EXPECT_EQ(1, recv.m_two);
 }
-
-
-
-
-
-
