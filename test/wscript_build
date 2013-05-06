@@ -1,0 +1,17 @@
+#! /usr/bin/env python
+# encoding: utf-8
+
+bld.program \
+(
+    features = 'cxx test',
+    source   = ['boost_tests.cpp'] + bld.path.ant_glob('src/*.cpp'),
+    target   = 'boost_tests',
+    use      = ['gtest', 'boost_includes',
+                'boost_thread', 'boost_system',
+                'boost_chrono', 'boost_timer', ]
+                #'boost_program_options','boost_filesystem']
+)
+
+
+
+
