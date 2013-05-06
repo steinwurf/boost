@@ -3,7 +3,7 @@
 
 import os
 
-APPNAME = 'boost-modules'
+APPNAME = 'boost-light'
 VERSION = '1.0.0'
 
 def recurse_helper(ctx, name):
