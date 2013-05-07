@@ -17,7 +17,7 @@ accept improvements if somebody has time.
 Dependencies
 ------------
 
-1. Git: A usable git client installed (see the "Set Up Git" guide at 
+1. Git: A suitable git client installed (see the "Set Up Git" guide at 
    the `github help`_ pages)
 2. Python: To use Waf you need to install Python version 2.7 or newer. 
 3. C++ compiler: To build the Boost libraries you need a C++11 compiler. 
@@ -27,16 +27,11 @@ Dependencies
 Usage
 -----
 
-Download the source from github by cloning the repository. To do this run
+Download the source from github by cloning the repository. Run this command
 from your terminal (Linux) or your Git Bash terminal (Windows)::
   
-    git clone https://github.com/steinwurf/external-boost-modules.git
+    git clone https://github.com/steinwurf/external-boost-light.git
 
-We need to initialize the git submodules::
-
-    cd external-boost-modules
-    git submodule init
-    git submodule update
 
 To build the libraries for your host platform. The options to configure
 ```--bundle=ALL```, tells waf to fetch all additional dependencies to build boost.
