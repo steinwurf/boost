@@ -22,13 +22,13 @@ def options(opt):
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'waf-tools',
-            git_repository = 'git://github.com/steinwurf/external-waf-tools.git',
+            git_repository = 'github.com/steinwurf/external-waf-tools.git',
             major_version = 2))
 
     bundle.add_dependency(opt,
         resolve.ResolveGitMajorVersion(
             name = 'gtest',
-            git_repository = 'git://github.com/steinwurf/external-gtest.git',
+            git_repository = 'github.com/steinwurf/external-gtest.git',
             major_version = 2))
 
     opt.load("wurf_dependency_bundle")
