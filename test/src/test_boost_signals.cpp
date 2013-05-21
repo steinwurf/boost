@@ -23,69 +23,69 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <gtest/gtest.h>
-
-#include <boost/signals2.hpp>
-#include <boost/bind.hpp>
-
-namespace bs2 = boost::signals2;
-
-struct signal_emitter
-{
-    typedef bs2::signal<void ()> void_signal;
-
-    bs2::connection on_event(const void_signal::slot_type& slot)
-    {
-        return m_signal.connect(slot);
-    }
-
-    void raise_event()
-    {
-        m_signal();
-    }
-
-    // The signal
-    void_signal m_signal;
-};
-
-
-struct signal_receiver
-{
-    signal_receiver() :
-        m_one(0), m_two(0)
-    {
-    }
-
-    void call_one()
-    {
-        m_one++;
-    }
-
-    void call_two()
-    {
-        m_two++;
-    }
-
-    // To check if all callbacks were invoked
-    int m_one;
-    int m_two;
-};
-
-TEST(TestBoostSignals, connect)
-{
-    signal_emitter emitter;
-    signal_receiver recv;
-
-    emitter.on_event(
-        boost::bind(&signal_receiver::call_one, &recv));
-    emitter.on_event(
-        boost::bind(&signal_receiver::call_two, &recv));
-
-    emitter.raise_event();
-
-    EXPECT_EQ(1, recv.m_one);
-    EXPECT_EQ(1, recv.m_two);
-}
+// #include <gtest/gtest.h>
+// 
+// #include <boost/signals2.hpp>
+// #include <boost/bind.hpp>
+// 
+// namespace bs2 = boost::signals2;
+// 
+// struct signal_emitter
+// {
+//     typedef bs2::signal<void ()> void_signal;
+// 
+//     bs2::connection on_event(const void_signal::slot_type& slot)
+//     {
+//         return m_signal.connect(slot);
+//     }
+// 
+//     void raise_event()
+//     {
+//         m_signal();
+//     }
+// 
+//     // The signal
+//     void_signal m_signal;
+// };
+// 
+// 
+// struct signal_receiver
+// {
+//     signal_receiver() :
+//         m_one(0), m_two(0)
+//     {
+//     }
+// 
+//     void call_one()
+//     {
+//         m_one++;
+//     }
+// 
+//     void call_two()
+//     {
+//         m_two++;
+//     }
+// 
+//     // To check if all callbacks were invoked
+//     int m_one;
+//     int m_two;
+// };
+// 
+// TEST(TestBoostSignals, connect)
+// {
+//     signal_emitter emitter;
+//     signal_receiver recv;
+// 
+//     emitter.on_event(
+//         boost::bind(&signal_receiver::call_one, &recv));
+//     emitter.on_event(
+//         boost::bind(&signal_receiver::call_two, &recv));
+// 
+//     emitter.raise_event();
+// 
+//     EXPECT_EQ(1, recv.m_one);
+//     EXPECT_EQ(1, recv.m_two);
+// }
 
 
 
