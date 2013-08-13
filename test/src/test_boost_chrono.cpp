@@ -24,13 +24,10 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <iostream>
-#include <iomanip>
-#include <cmath>
 
 #include <gtest/gtest.h>
 
 #include <boost/chrono.hpp>
-#include <boost/thread.hpp>
 
 namespace bc = boost::chrono;
 
@@ -56,7 +53,6 @@ double get_nanosec(typename Clock::duration delta)
     return (double)bc::duration_cast<bc::nanoseconds>(delta).count();
 }
 
-
 TEST(TestBoostChrono, resolution)
 {
     using namespace boost::chrono;
@@ -64,28 +60,15 @@ TEST(TestBoostChrono, resolution)
     system_clock::time_point d4 = system_clock::now();
     system_clock::time_point d5 = system_clock::now();
 
-    std::cout << "system_clock delta (ns): " <<
-                 get_nanosec<system_clock>(d5 - d4) << std::endl;
+    EXPECT_GE(get_nanosec<system_clock>(d5 - d4), 0.0);
 
     steady_clock::time_point d6 = steady_clock::now();
     steady_clock::time_point d7 = steady_clock::now();
 
-    std::cout << "steady_clock delta (ns): " <<
-                 get_nanosec<steady_clock>(d7 - d6) << std::endl;
+    EXPECT_GE(get_nanosec<steady_clock>(d7 - d6), 0.0);
 
     high_resolution_clock::time_point d8 = high_resolution_clock::now();
     high_resolution_clock::time_point d9 = high_resolution_clock::now();
 
-    std::cout << "high_resolution_clock delta (ns): " <<
-                 get_nanosec<high_resolution_clock>(d9 - d8) << std::endl;
-
-
+    EXPECT_GE(get_nanosec<high_resolution_clock>(d9 - d8), 0.0);
 }
-
-
-
-
-
-
-
-
