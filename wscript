@@ -82,18 +82,7 @@ def build(bld):
     # other libraries
     if bld.is_mkspec_platform('linux'):
 
-        ext_paths = ['/usr/lib/i386-linux-gnu', '/usr/lib/x86_64-linux-gnu']
-
-        # Check which targets have already been defined
-        try:
-            bld.get_tgen_by_name('rt')
-        except:
-            bld.read_shlib('rt', paths = ext_paths)
-
-        try:
-            bld.get_tgen_by_name('pthread')
-        except:
-            bld.read_shlib('pthread', paths = ext_paths)
+        bld.env['LINKFLAGS_BOOST_SHARED'] = ['-lrt', '-lpthread']
 
     bld.env.DEFINES_BOOST_SHARED = ['BOOST_ALL_NO_LIB=1']
 
@@ -136,7 +125,7 @@ def build(bld):
             export_includes = include_dirs,
             defines  = ['BOOST_THREAD_BUILD_LIB=1',
                         'BOOST_THREAD_POSIX'],
-            use      = ['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'pthread'])
+            use      = ['BOOST_PAGESIZE_FIX', 'BOOST_SHARED'])
 
     # Build boost system
     bld.stlib(
@@ -157,7 +146,7 @@ def build(bld):
         export_includes = include_dirs,
         defines  = ['BOOST_SYSTEM_STATIC_LINK=1',
                     'BOOST_SYSTEM_NO_DEPRECATED'],
-        use      = ['BOOST_SHARED', 'rt'])
+        use      = ['BOOST_SHARED'])
 
     # Build boost timer
     bld.stlib(
