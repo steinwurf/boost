@@ -78,12 +78,6 @@ def build(bld):
     # Set the boost specific cxx flags
     bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
 
-    # This will allow these dependencies propagate to
-    # other libraries
-    if bld.is_mkspec_platform('linux'):
-
-        bld.env['LINKFLAGS_BOOST_SHARED'] = ['-lrt', '-lpthread']
-
     bld.env.DEFINES_BOOST_SHARED = ['BOOST_ALL_NO_LIB=1']
 
     if bld.is_mkspec_platform('android'):
@@ -125,7 +119,7 @@ def build(bld):
             export_includes = include_dirs,
             defines  = ['BOOST_THREAD_BUILD_LIB=1',
                         'BOOST_THREAD_POSIX'],
-            use      = ['BOOST_PAGESIZE_FIX', 'BOOST_SHARED'])
+            use      = ['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
 
     # Build boost system
     bld.stlib(
@@ -146,7 +140,7 @@ def build(bld):
         export_includes = include_dirs,
         defines  = ['BOOST_SYSTEM_STATIC_LINK=1',
                     'BOOST_SYSTEM_NO_DEPRECATED'],
-        use      = ['BOOST_SHARED'])
+        use      = ['BOOST_SHARED', 'RT'])
 
     # Build boost timer
     bld.stlib(
