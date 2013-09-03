@@ -36,21 +36,11 @@ using namespace boost::filesystem;
 
 TEST(TestBoostFilesystem, basic)
 {
-    path p("hello.txt");
+    path p("dummy.txt");
 
-    if (exists(p))    // does p actually exist?
-    {
-        if (is_regular_file(p))        // is p a regular file?
-            cout << p << " size is " << file_size(p) << '\n';
-
-        else if (is_directory(p))      // is p a directory?
-            cout << p << " is a directory\n";
-
-        else
-            cout << p << " exists, but is neither a regular file nor a directory\n";
-    }
-    else
-        cout << p << " does not exist\n";
+    EXPECT_FALSE(exists(p));
+    EXPECT_FALSE(is_regular_file(p));
+    EXPECT_FALSE(is_directory(p));
 }
 
 
