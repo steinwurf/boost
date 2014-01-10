@@ -37,6 +37,7 @@
 #include <boost/graph/parallel/algorithm.hpp>
 #include <boost/graph/distributed/selector.hpp>
 #include <boost/graph/parallel/process_group.hpp>
+#include <boost/pending/container_traits.hpp>
 
 // Callbacks
 #include <boost/function/function2.hpp>
@@ -2500,9 +2501,6 @@ namespace boost {
     std::pair<edge_descriptor, bool> result
       = this->add_local_edge(property, directedS());
 
-    typedef detail::parallel::stored_in_edge<local_edge_descriptor>
-      stored_edge;
-
     if (result.second) {
       if (target.owner == self.processor()) {
         // Edge is local, so add the new edge to the list
@@ -3045,8 +3043,6 @@ namespace boost {
               PBGL_DISTRIB_ADJLIST_TYPE& g)
   {
     typedef typename PBGL_DISTRIB_ADJLIST_TYPE
-                       ::vertex_descriptor vertex_descriptor;
-    typedef typename PBGL_DISTRIB_ADJLIST_TYPE
                        ::edge_descriptor edge_descriptor;
     std::pair<edge_descriptor, bool> the_edge = edge(u, v, g);
     if (the_edge.second) remove_edge(the_edge.first, g);
@@ -3427,7 +3423,7 @@ namespace boost {
     typedef typename graph_type::named_graph_mixin named_graph_mixin;
     BOOST_ASSERT(u.owner == g.processor());
     static_cast<named_graph_mixin&>(static_cast<graph_type&>(g))
-      .removing_vertex(u);
+      .removing_vertex(u, boost::graph_detail::iterator_stability(g.base().m_vertices));
     g.distribution().clear();
     remove_vertex(u.local, g.base());
   }
@@ -3776,7 +3772,6 @@ namespace boost {
   template<PBGL_DISTRIB_ADJLIST_TEMPLATE_PARMS>
   void synchronize(const PBGL_DISTRIB_ADJLIST_TYPE& g)
   {
-    typedef PBGL_DISTRIB_ADJLIST_TYPE graph_type;
     synchronize(g.process_group());
   }
 

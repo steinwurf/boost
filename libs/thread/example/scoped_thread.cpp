@@ -13,6 +13,9 @@ void do_something(int& i)
 {
   ++i;
 }
+void f(int, int)
+{
+}
 
 struct func
 {
@@ -64,6 +67,27 @@ int main()
 //    do_something_in_current_thread();
 //    do_something_with_current_thread(boost::thread(g));
 //  }
+  {
+    int some_local_state;
+    boost::scoped_thread<> t( (boost::thread(func(some_local_state))));
+
+    if (t.joinable())
+      t.join();
+    else
+      do_something_in_current_thread();
+  }
+  {
+    int some_local_state;
+    boost::thread t(( func(some_local_state) ));
+    boost::scoped_thread<> g( (boost::move(t)) );
+    t.detach();
+
+    do_something_in_current_thread();
+  }
+  {
+    boost::scoped_thread<> g( &f, 1, 2 );
+    do_something_in_current_thread();
+  }
   return 0;
 }
 

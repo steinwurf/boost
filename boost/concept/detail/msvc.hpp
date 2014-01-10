@@ -33,6 +33,7 @@ struct check<failed ************ Model::************>
 {
     virtual void failed(Model* x)
     {
+        (void) x; // no-op to hide msvc warning for unused parameter
         x->~Model();
     }
 };

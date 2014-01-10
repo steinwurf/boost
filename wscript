@@ -62,9 +62,10 @@ def boost_cxx_flags(bld):
     """
     CXX = bld.env.get_flat("CXX")
 
-    if 'g++' in CXX or 'clang' in CXX: # Matches both /usr/bin/g++ and /user/bin/clang++
-        return ['-Wno-inline', '-ftemplate-depth-128', '-finline-functions',
-                  '-pedantic', '-Wno-long-long']
+    # Matches both /usr/bin/g++ and /user/bin/clang++
+    if 'g++' in CXX or 'clang' in CXX:
+        return ['-pedantic','-finline-functions', '-Wno-inline',
+                 '-Wno-long-long']
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
@@ -78,7 +79,11 @@ def build(bld):
     # Set the boost specific cxx flags
     bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
 
-    bld.env.DEFINES_BOOST_SHARED = ['BOOST_ALL_NO_LIB=1']
+    bld.env.DEFINES_BOOST_SHARED = \
+    [
+        'BOOST_ALL_NO_LIB=1', #'BOOST_NO_CXX11_NOEXCEPT',
+        'BOOST_DETAIL_NO_CONTAINER_FWD'
+    ]
 
     if bld.is_mkspec_platform('android'):
         # Android does not seem to have an intrincsic wchar_t.
