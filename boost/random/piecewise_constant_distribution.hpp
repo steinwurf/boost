@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: piecewise_constant_distribution.hpp 81851 2012-12-11 14:42:26Z marshall $
+ * $Id: piecewise_constant_distribution.hpp 85813 2013-09-21 20:17:00Z jewillco $
  */
 
 #ifndef BOOST_RANDOM_PIECEWISE_CONSTANT_DISTRIBUTION_HPP_INCLUDED

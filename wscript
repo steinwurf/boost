@@ -62,9 +62,10 @@ def boost_cxx_flags(bld):
     """
     CXX = bld.env.get_flat("CXX")
 
-    if 'g++' in CXX or 'clang' in CXX: # Matches both /usr/bin/g++ and /user/bin/clang++
-        return ['-Wno-inline', '-ftemplate-depth-128', '-finline-functions',
-                  '-pedantic', '-Wno-long-long']
+    # Matches both /usr/bin/g++ and /user/bin/clang++
+    if 'g++' in CXX or 'clang' in CXX:
+        return ['-pedantic','-finline-functions', '-Wno-inline',
+                 '-Wno-long-long']
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
@@ -72,13 +73,20 @@ def boost_cxx_flags(bld):
     else:
         bld.fatal('unknown compiler no boost flags specified')
 
+def boost_shared_defines(bld):
+    """
+    returns shared defines for boost
+    """
 
-def build(bld):
+    defines = \
+    [
+        'BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD'
+    ]
 
-    # Set the boost specific cxx flags
-    bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
-
-    bld.env.DEFINES_BOOST_SHARED = ['BOOST_ALL_NO_LIB=1']
+    CXX = bld.env.get_flat("CXX")
+    # Matches both /usr/bin/g++ and /user/bin/clang++
+    if 'g++' in CXX or 'clang' in CXX:
+        defines += ['BOOST_NO_CXX11_NOEXCEPT']
 
     if bld.is_mkspec_platform('android'):
         # Android does not seem to have an intrincsic wchar_t.
@@ -87,17 +95,24 @@ def build(bld):
         # should avoid using it anyway.
         # See NDK docs docs/STANDALONE-TOOLCHAIN.html
         # section 5.2
-        bld.env.DEFINES_BOOST_SHARED += ['__GLIBC__', '_GLIBCXX_USE_WCHAR_T']
+        defines += ['__GLIBC__', '_GLIBCXX_USE_WCHAR_T']
 
         # Problem with boost::chrono and std::u16string and friends
         # https://groups.google.com/forum/?fromgroups=#!topic/android-ndk/9kRV98xX6SM
         # Work around seems to be to add:
-        bld.env.DEFINES_BOOST_SHARED += ['_GLIBCXX_USE_C99_STDINT_TR1']
+        defines += ['_GLIBCXX_USE_C99_STDINT_TR1']
 
-    include_dirs = \
-    [
-        '.'
-    ]
+    return defines
+
+def build(bld):
+
+    # Set the boost specific cxx flags
+    bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
+
+    # Set the shared defines
+    bld.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(bld)
+
+    include_dirs = ['.']
 
     # Build boost thread
     if bld.is_mkspec_platform('windows'):
