@@ -35,7 +35,7 @@ namespace po = boost::program_options;
 TEST(TestBoostProgramOptions, basic)
 {
     int argc = 3;
-    char* argv[] = { "program", "--help", "--compression=5.0" };
+    const char* argv[] = { "program", "--help", "--compression=5.0" };
     try
     {
         po::options_description desc("Allowed options");
