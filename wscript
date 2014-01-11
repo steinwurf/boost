@@ -4,7 +4,7 @@
 import os
 
 APPNAME = 'boost-light'
-VERSION = '1.1.0'
+VERSION = '1.2.0'
 
 def recurse_helper(ctx, name):
     if not ctx.has_dependency_path(name):

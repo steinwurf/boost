@@ -8,6 +8,12 @@ Latest
 ------
 * TBD
 
+1.2.0
+-----
+* Upgrade to Boost release 1.55.0
+* Bugfix: Fix boost-atomic linking issue in boost-thread with g++ 4.7+
+  cross-compilers that do not support atomic locks natively
+
 1.1.0
 -----
 * Bugfix: Simplify pthread and rt shared library usage on Linux
