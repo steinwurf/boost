@@ -155,7 +155,7 @@ def build(bld):
         export_includes = include_dirs,
         defines  = ['BOOST_SYSTEM_STATIC_LINK=1',
                     'BOOST_SYSTEM_NO_DEPRECATED'],
-        use      = ['BOOST_SHARED', 'RT'])
+        use      = ['BOOST_SHARED', 'RT', 'PTHREAD'])
 
     # Build boost timer
     bld.stlib(
