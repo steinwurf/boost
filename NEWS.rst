@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.2.1
+-----
 * Bugfix: One some platforms linking with librt requires libpthread
   this was not added for boost-chrono
 
