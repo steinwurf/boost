@@ -6,7 +6,8 @@ of every change, see the Git log.
 
 Latest
 ------
-* TBD
+* Bugfix: One some platforms linking with librt requires libpthread
+  this was not added for boost-chrono
 
 1.2.0
 -----
