@@ -188,8 +188,9 @@ def build(bld):
     if bld.env['BUILD_PYTHON']:
         # Build boost python, but only if we managed to find the appropiate
         # python headers.
+        bld.env['INCLUDES_BOOST_PYTHON'] = bld.env['INCLUDES_PYEXT']
         bld.stlib(
-            features='cxx pyext',
+            features='cxx',
             source=(bld.path.ant_glob('libs/python/src/*.cpp') +
                     bld.path.ant_glob('libs/python/src/object/*.cpp') +
                     bld.path.ant_glob('libs/python/src/converter/*.cpp')),
