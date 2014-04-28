@@ -44,9 +44,12 @@ def configure(conf):
         conf.load_external_tool('project_gen', 'wurf_project_generator')
 
         recurse_helper(conf, 'gtest')
-
-        conf.load('python')
-        conf.check_python_headers()
+        try:
+            conf.load('python')
+            conf.check_python_headers()
+            conf.env['BUILD_PYTHON'] = True
+        except:
+            conf.env['BUILD_PYTHON'] = False
 
     if conf.is_mkspec_platform('linux'):
 
@@ -182,18 +185,19 @@ def build(bld):
         includes=include_dirs,
         export_includes=include_dirs,
         use='BOOST_SHARED')
-
-    # Build boost python
-    bld.stlib(
-        features='cxx pyext',
-        source=(bld.path.ant_glob('libs/python/src/*.cpp') +
-                bld.path.ant_glob('libs/python/src/object/*.cpp') +
-                bld.path.ant_glob('libs/python/src/converter/*.cpp')),
-        target='boost_python',
-        includes=include_dirs,
-        export_includes=include_dirs,
-        defines=["BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB"],
-        use=['BOOST_SHARED'])
+    if bld.env['BUILD_PYTHON']:
+        # Build boost python, but only if we managed to find the appropiate
+        # python headers.
+        bld.stlib(
+            features='cxx pyext',
+            source=(bld.path.ant_glob('libs/python/src/*.cpp') +
+                    bld.path.ant_glob('libs/python/src/object/*.cpp') +
+                    bld.path.ant_glob('libs/python/src/converter/*.cpp')),
+            target='boost_python',
+            includes=include_dirs,
+            export_includes=include_dirs,
+            defines=["BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB"],
+            use=['BOOST_SHARED'])
 
     # Build boost filesystem
     bld.stlib(
