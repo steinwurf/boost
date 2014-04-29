@@ -6,7 +6,8 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Added boost python.
+* Bugfix: Fixed bug when building with llvm 5.1.
 
 1.2.2
 -----
