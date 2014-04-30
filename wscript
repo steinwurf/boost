@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 APPNAME = 'boost-light'
-VERSION = '1.3.0'
+VERSION = '1.3.1'
 
 
 def recurse_helper(ctx, name):

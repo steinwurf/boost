@@ -9,7 +9,11 @@ Latest
 * tbd
 
 1.3.0
-------
+-----
+* Bugfix: Fixed bug when using boost python as a dependency.
+
+1.3.0
+-----
 * Minor: Added boost python.
 * Bugfix: Fixed bug when building with llvm 5.1. The official patches are
   located here: goo.gl/3ie4Ty and goo.gl/IbkM4S.
