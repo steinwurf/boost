@@ -125,8 +125,8 @@ def build(bld):
     if bld.is_mkspec_platform('windows'):
         bld.stlib(
             features='cxx',
-            source=bld.path.ant_glob('libs/thread/src/win32/*.cpp') +
-            bld.path.ant_glob('libs/thread/src/*.cpp'),
+            source=(bld.path.ant_glob('libs/thread/src/win32/*.cpp') +
+                    bld.path.ant_glob('libs/thread/src/*.cpp')),
             target='boost_thread',
             includes=include_dirs,
             export_includes=include_dirs,
@@ -134,8 +134,8 @@ def build(bld):
             use='BOOST_SHARED')
     else:
         bld.stlib(features='cxx',
-                  source=bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
-                  bld.path.ant_glob('libs/thread/src/*.cpp'),
+                  source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
+                          bld.path.ant_glob('libs/thread/src/*.cpp')),
                   target='boost_thread',
                   includes=include_dirs,
                   export_includes=include_dirs,
@@ -186,14 +186,13 @@ def build(bld):
         includes=include_dirs,
         export_includes=include_dirs,
         use='BOOST_SHARED')
+
     if bld.env['BUILD_PYTHON']:
         # Build boost python, but only if we managed to find the appropiate
         # python headers.
         bld.stlib(
             features='cxx',
-            source=(bld.path.ant_glob('libs/python/src/*.cpp') +
-                    bld.path.ant_glob('libs/python/src/object/*.cpp') +
-                    bld.path.ant_glob('libs/python/src/converter/*.cpp')),
+            source=bld.path.ant_glob('libs/python/src/**/*.cpp'),
             target='boost_python',
             includes=include_dirs + bld.env['INCLUDES_PYEXT'],
             export_includes=include_dirs,
