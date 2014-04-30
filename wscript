@@ -44,12 +44,13 @@ def configure(conf):
         conf.load_external_tool('project_gen', 'wurf_project_generator')
 
         recurse_helper(conf, 'gtest')
-        try:
-            conf.load('python')
-            conf.check_python_headers()
-            conf.env['BUILD_PYTHON'] = True
-        except:
-            conf.env['BUILD_PYTHON'] = False
+
+    try:
+        conf.load('python')
+        conf.check_python_headers()
+        conf.env['BUILD_PYTHON'] = True
+    except:
+        conf.env['BUILD_PYTHON'] = False
 
     if conf.is_mkspec_platform('linux'):
 
