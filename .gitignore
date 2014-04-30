@@ -1,3 +1,7 @@
+# Boost specific files and folders
+doc
+index.html
+
 # Compiled Object files
 *.slo
 *.lo
