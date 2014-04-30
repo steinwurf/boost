@@ -8,7 +8,11 @@ Latest
 ------
 * tbd
 
-1.3.0
+1.3.2
+-----
+* Bugfix: Removed redundant binary and doc files.
+
+1.3.1
 -----
 * Bugfix: Fixed bug when using boost python as a dependency.
 
