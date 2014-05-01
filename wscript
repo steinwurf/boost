@@ -198,7 +198,8 @@ def build(bld):
             target='boost_python',
             includes=include_dirs + bld.env['INCLUDES_PYEXT'],
             export_includes=include_dirs,
-            defines=["BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB"],
+            defines=["BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB",
+                     "BOOST_PYTHON_STATIC_MODULE"],
             use=['BOOST_SHARED'])
 
     # Build boost filesystem
