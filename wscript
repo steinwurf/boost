@@ -30,6 +30,7 @@ def options(opt):
 
     opt.load("wurf_dependency_bundle")
     opt.load('wurf_tools')
+    opt.load('python')
 
 
 def configure(conf):
