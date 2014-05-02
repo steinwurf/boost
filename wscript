@@ -190,17 +190,23 @@ def build(bld):
         use='BOOST_SHARED')
 
     if bld.env['BUILD_PYTHON']:
-        # Build boost python, but only if we managed to find the appropiate
-        # python headers.
+        # Build boost-python, but only if we managed to find the appropiate
+        # Python headers.
+
+        # Set the shared defines that should be used in Python extensions
+        bld.env['DEFINES_BOOST_PYTHON_SHARED'] = \
+            [
+                "BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB",
+                "BOOST_PYTHON_STATIC_MODULE"
+            ]
+
         bld.stlib(
             features='cxx',
             source=bld.path.ant_glob('libs/python/src/**/*.cpp'),
             target='boost_python',
             includes=include_dirs + bld.env['INCLUDES_PYEXT'],
             export_includes=include_dirs,
-            defines=["BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB",
-                     "BOOST_PYTHON_STATIC_MODULE"],
-            use=['BOOST_SHARED'])
+            use=['BOOST_SHARED', 'BOOST_PYTHON_SHARED'])
 
     # Build boost filesystem
     bld.stlib(
