@@ -8,6 +8,11 @@ Latest
 ------
 * tbd
 
+1.4.0
+-----
+* Minor: Updated waf to version 1.8.0pre1.
+* Bugfix: Restore correct build directory.
+
 1.3.2
 -----
 * Bugfix: Removed redundant binary and doc files.
