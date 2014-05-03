@@ -8,6 +8,11 @@ Latest
 ------
 * tbd
 
+1.4.1
+-----
+* Bugfix: Introduce shared defines for Boost Python which should be used in
+  Python extensions that are statically linked with Boost Python.
+
 1.4.0
 -----
 * Minor: Updated waf to version 1.8.0pre1.
