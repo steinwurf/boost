@@ -14,6 +14,9 @@ needed to build the Boost libraries.
 This is in no way a complete build system for Boost, we would be happy to 
 accept improvements if somebody has time.
 
+.. image:: http://buildbot.steinwurf.dk/svgstatus?project=boost
+    :target: http://buildbot.steinwurf.dk/stats?projects=boost
+
 Dependencies
 ------------
 
