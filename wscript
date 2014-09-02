@@ -189,6 +189,15 @@ def build(bld):
         export_includes=include_dirs,
         use='BOOST_SHARED')
 
+    # Build boost iostreams (only the memory mapped files part)
+    bld.stlib(
+        features='cxx',
+        source=bld.path.ant_glob('libs/iostreams/src/mapped_file.cpp'),
+        target='boost_iostreams',
+        includes=include_dirs,
+        export_includes=include_dirs,
+        use='BOOST_SHARED')
+
     if bld.env['BUILD_PYTHON']:
         # Build boost-python, but only if we managed to find the appropiate
         # Python headers.
