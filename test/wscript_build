@@ -7,5 +7,5 @@ bld.program(
     target='boost_tests',
     use=['gtest', 'boost_includes', 'boost_thread', 'boost_system',
          'boost_chrono', 'boost_timer', 'boost_program_options',
-         'boost_filesystem']
+         'boost_filesystem', 'boost_iostreams']
 )
