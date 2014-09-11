@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.5.0
+-----
 * Minor: Added boost iostreams (only the subset covering memory mapped files)
 
 1.4.1
