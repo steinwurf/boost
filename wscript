@@ -1,51 +1,36 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-APPNAME = 'boost-light'
+APPNAME = 'boost'
 VERSION = '1.5.0'
-
-
-def recurse_helper(ctx, name):
-    if not ctx.has_dependency_path(name):
-        ctx.fatal('Load a tool to find %s as system dependency' % name)
-    else:
-        p = ctx.dependency_path(name)
-        ctx.recurse([p])
-
 
 def options(opt):
 
-    import waflib.extras.wurf_dependency_bundle as bundle
-    import waflib.extras.wurf_dependency_resolve as resolve
-
-    bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
-        name='waf-tools',
-        git_repository='github.com/steinwurf/external-waf-tools.git',
-        major_version=2))
-
-    bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
-        name='gtest',
-        git_repository='github.com/steinwurf/external-gtest.git',
-        major_version=2))
-
-    opt.load("wurf_configure_output")
-    opt.load("wurf_dependency_bundle")
-    opt.load('wurf_tools')
+    opt.load('wurf_common_tools')
     opt.load('python')
 
 
 def configure(conf):
 
+    import waflib.extras.wurf_dependency_bundle as bundle
+    import waflib.extras.wurf_dependency_resolve as resolve
+
+    # waf-tools must be the first dependency
+    bundle.add_dependency(conf, resolve.ResolveGitMajorVersion(
+        name='waf-tools',
+        git_repository='github.com/steinwurf/waf-tools.git',
+        major_version=2))
+
     if conf.is_toplevel():
 
-        conf.load("wurf_dependency_bundle")
-        conf.load("wurf_tools")
-        conf.load_external_tool('mkspec', 'wurf_cxx_mkspec_tool')
-        conf.load_external_tool('runners', 'wurf_runner')
-        conf.load_external_tool('install_path', 'wurf_install_path')
-        conf.load_external_tool('project_gen', 'wurf_project_generator')
+        # Internal dependencies
+        bundle.add_dependency(conf, resolve.ResolveGitMajorVersion(
+            name='gtest',
+            git_repository='github.com/steinwurf/gtest.git',
+            major_version=2))
 
-        recurse_helper(conf, 'gtest')
+        # Download and recurse all dependencies
+        conf.load("wurf_common_tools")
 
     try:
         conf.load('python')
@@ -114,6 +99,12 @@ def boost_shared_defines(bld):
 
 
 def build(bld):
+
+    if bld.is_toplevel():
+
+        bld.load("wurf_common_tools")
+
+        bld.recurse('test')
 
     # Set the boost specific cxx flags
     bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
@@ -233,11 +224,3 @@ def build(bld):
         export_includes=include_dirs,
         name='boost_includes',
         use='BOOST_SHARED')
-
-    if bld.is_toplevel():
-
-        bld.load('wurf_dependency_bundle')
-
-        recurse_helper(bld, 'gtest')
-
-        bld.recurse('test')
