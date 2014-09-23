@@ -69,10 +69,13 @@ def boost_cxx_flags(bld):
     """
     CXX = bld.env.get_flat("CXX")
 
-    # Matches both /usr/bin/g++ and /user/bin/clang++
-    if 'g++' in CXX or 'clang' in CXX:
+    # clang should be first, since g++ also matches clang++
+    if 'clang' in CXX:
+        return ['-pedantic', '-Wno-inline', '-Wno-long-long']
+
+    elif 'g++' in CXX:
         return ['-pedantic', '-finline-functions', '-Wno-inline',
-                '-Wno-long-long']
+                 '-Wno-long-long']
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
