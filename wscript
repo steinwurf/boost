@@ -71,11 +71,11 @@ def boost_cxx_flags(bld):
 
     # clang should be first, since g++ also matches clang++
     if 'clang' in CXX:
-        return ['-pedantic', '-Wno-inline', '-Wno-long-long']
+        # clang does not support '-finline-functions'
+        return ['-pedantic']
 
     elif 'g++' in CXX:
-        return ['-pedantic', '-finline-functions', '-Wno-inline',
-                 '-Wno-long-long']
+        return ['-pedantic', '-finline-functions']
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
