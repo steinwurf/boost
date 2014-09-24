@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-APPNAME = 'boost-light'
+APPNAME = 'boost'
 VERSION = '1.5.0'
 
 
@@ -20,12 +20,12 @@ def options(opt):
 
     bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
         name='waf-tools',
-        git_repository='github.com/steinwurf/external-waf-tools.git',
+        git_repository='github.com/steinwurf/waf-tools.git',
         major_version=2))
 
     bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
         name='gtest',
-        git_repository='github.com/steinwurf/external-gtest.git',
+        git_repository='github.com/steinwurf/gtest.git',
         major_version=2))
 
     opt.load("wurf_configure_output")
