@@ -33,7 +33,7 @@ Usage
 Download the source from github by cloning the repository. Run this command
 from your terminal (Linux) or your Git Bash terminal (Windows)::
 
-    git clone https://github.com/steinwurf/external-boost-light.git
+    git clone https://github.com/steinwurf/boost.git
 
 
 To build the libraries for your host platform. The options to configure
@@ -50,6 +50,7 @@ Manual upgrade
 1. Download the latest Boost release from http://www.boost.org/users/download/
    
    (Always choose the *.tar.bz2 archive that uses Unix line endings!)
+   
 2. Extract the contents of the downloaded archive (*not* into this repository!)
 3. Delete the "boost" folder from this repository
 4. Copy over the "boost" folder from the new release
