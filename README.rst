@@ -48,7 +48,8 @@ Manual upgrade
 --------------
 
 1. Download the latest Boost release from http://www.boost.org/users/download/
-   Note: always download the *.tar.bz2 archive that should have \n line endings
+   
+   (Always choose the *.tar.bz2 archive that uses Unix line endings!)
 2. Extract the contents of the downloaded archive (*not* into this repository!)
 3. Delete the "boost" folder from this repository
 4. Copy over the "boost" folder from the new release
