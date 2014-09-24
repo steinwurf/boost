@@ -46,7 +46,7 @@ namespace {
       object instance_dict = getattr(instance_obj, "__dict__", none);
       long len_instance_dict = 0;
       if (!instance_dict.is_none()) {
-          len_instance_dict = len(instance_dict);
+          len_instance_dict = (long) len(instance_dict);
       }
       if (!getstate.is_none()) {
           if (len_instance_dict > 0) {
