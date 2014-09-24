@@ -61,6 +61,7 @@ namespace boost { namespace spirit { namespace karma
           , Context& context, Delimiter const& delim
           , Attribute const& attr, mpl::true_)
         {
+            (void) attr;
             // If DeducedAuto is false (semantic actions is present), the
             // component's attribute is unused.
             return g.generate(sink, context, delim, unused);
