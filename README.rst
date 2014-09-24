@@ -54,6 +54,7 @@ Manual upgrade
 4. Copy over the "boost" folder from the new release
 5. Delete the subfolders in the "libs" folder
 6. Copy over the following folders to "libs" from the new release:
+
     - chrono
     - filesystem
     - iostreams
@@ -62,10 +63,15 @@ Manual upgrade
     - system
     - thread
     - timer
+
 7. Remove all documentation and build files from this repository:
+
     - Any subfolder called "doc"
     - Any subfolder called "build"
-    - Any subfolder called "test" (inside the libraries in the "libs")
+    - Any subfolder called "test" (inside the libraries in the "libs" folder)
     - Any *.html files
+
+8. Apply patches in the "patch" folder (if they are still needed for the
+   new Boost release)
 
 
