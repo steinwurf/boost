@@ -7,8 +7,8 @@ of every change, see the Git log.
 Latest
 ------
 * Patch: fixed a bug that made boost think that clang doesn't have
-  ``std::shared_ptr``. The bug was fixed by using the following `patch <
-  http://goo.gl/ooTmbd>`_.
+  ``std::shared_ptr``. The bug was fixed by using the following `patch
+  <http://goo.gl/ooTmbd>`_.
 
 1.5.0
 -----
