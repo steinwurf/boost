@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.5.1
+-----
 * Patch: Fixed a bug that made boost think that clang doesn't have
   ``std::shared_ptr``. The bug was fixed by using the following `patch
   <http://goo.gl/ooTmbd>`_.
