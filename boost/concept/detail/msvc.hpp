@@ -6,12 +6,17 @@
 
 # include <boost/preprocessor/cat.hpp>
 # include <boost/concept/detail/backward_compatibility.hpp>
+# include <boost/config.hpp>
 
 # ifdef BOOST_OLD_CONCEPT_SUPPORT
 #  include <boost/concept/detail/has_constraints.hpp>
 #  include <boost/mpl/if.hpp>
 # endif
 
+# ifdef BOOST_MSVC
+#  pragma warning(push)
+#  pragma warning(disable:4100)
+# endif
 
 namespace boost { namespace concepts {
 
@@ -21,7 +26,6 @@ struct check
 {
     virtual void failed(Model* x)
     {
-        (void) x; // no-op to hide msvc warning for unused parameter
         x->~Model();
     }
 };
@@ -33,14 +37,13 @@ struct check<failed ************ Model::************>
 {
     virtual void failed(Model* x)
     {
-        (void) x; // no-op to hide msvc warning for unused parameter
         x->~Model();
     }
 };
 # endif
 
 # ifdef BOOST_OLD_CONCEPT_SUPPORT
-
+  
 namespace detail
 {
   // No need for a virtual function here, since evaluating
@@ -58,23 +61,23 @@ struct require
       , check<Model>
 # else
       , check<failed ************ Model::************>
-# endif
+# endif 
         >::type
 {};
-
+      
 # else
-
+  
 template <class Model>
 struct require
 # ifndef BOOST_NO_PARTIAL_SPECIALIZATION
     : check<Model>
 # else
     : check<failed ************ Model::************>
-# endif
+# endif 
 {};
-
+  
 # endif
-
+    
 # if BOOST_WORKAROUND(BOOST_MSVC, == 1310)
 
 //
@@ -96,21 +99,25 @@ enum                                                \
     BOOST_PP_CAT(boost_concept_check,__LINE__) =    \
     sizeof(::boost::concepts::require<ModelFnPtr>)    \
 }
-
+  
 # else // Not vc-7.1
-
+  
 template <class Model>
 require<Model>
 require_(void(*)(Model));
-
+  
 # define BOOST_CONCEPT_ASSERT_FN( ModelFnPtr )          \
 enum                                                    \
 {                                                       \
     BOOST_PP_CAT(boost_concept_check,__LINE__) =        \
       sizeof(::boost::concepts::require_((ModelFnPtr)0)) \
 }
-
+  
 # endif
 }}
+
+# ifdef BOOST_MSVC
+#  pragma warning(pop)
+# endif
 
 #endif // BOOST_CONCEPT_CHECK_MSVC_DWA2006429_HPP

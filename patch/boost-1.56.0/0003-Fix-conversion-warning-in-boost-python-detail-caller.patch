@@ -1,0 +1,26 @@
+From 24d9c583684369314497f2f3120a68121cdf2225 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 03:05:45 +0200
+Subject: [PATCH 03/10] Fix conversion warning in
+ boost/python/detail/caller.hpp
+
+---
+ boost/python/detail/caller.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/boost/python/detail/caller.hpp b/boost/python/detail/caller.hpp
+index e479bf4..14e69af 100644
+--- a/boost/python/detail/caller.hpp
++++ b/boost/python/detail/caller.hpp
+@@ -52,7 +52,7 @@ inline PyObject* get(mpl::int_<N>, PyObject* const& args_)
+ 
+ inline unsigned arity(PyObject* const& args_)
+ {
+-    return PyTuple_GET_SIZE(args_);
++    return (unsigned int) PyTuple_GET_SIZE(args_);
+ }
+ 
+ // This "result converter" is really just used as
+-- 
+1.9.4.msysgit.1
+

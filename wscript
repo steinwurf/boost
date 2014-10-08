@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-APPNAME = 'boost-light'
+APPNAME = 'boost'
 VERSION = '1.5.1'
 
 
@@ -20,12 +20,12 @@ def options(opt):
 
     bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
         name='waf-tools',
-        git_repository='github.com/steinwurf/external-waf-tools.git',
+        git_repository='github.com/steinwurf/waf-tools.git',
         major_version=2))
 
     bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
         name='gtest',
-        git_repository='github.com/steinwurf/external-gtest.git',
+        git_repository='github.com/steinwurf/gtest.git',
         major_version=2))
 
     opt.load("wurf_configure_output")
@@ -69,10 +69,13 @@ def boost_cxx_flags(bld):
     """
     CXX = bld.env.get_flat("CXX")
 
-    # Matches both /usr/bin/g++ and /user/bin/clang++
-    if 'g++' in CXX or 'clang' in CXX:
-        return ['-pedantic', '-finline-functions', '-Wno-inline',
-                '-Wno-long-long']
+    # clang should be first, since g++ also matches clang++
+    if 'clang' in CXX:
+        # clang does not support '-finline-functions'
+        return ['-pedantic']
+
+    elif 'g++' in CXX:
+        return ['-pedantic', '-finline-functions']
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']

@@ -114,7 +114,7 @@ TEST(TestBoostSpirit, parse_ipv4)
     uint32_t addr = 0;
     parse_ipv4(str, str + strlen(str), addr);
 
-    EXPECT_EQ(0x7F000001, addr);
+    EXPECT_EQ(0x7F000001U, addr);
 }
 
 TEST(TestBoostSpirit, generate_ipv4)
@@ -122,7 +122,7 @@ TEST(TestBoostSpirit, generate_ipv4)
     std::string generated;
     std::back_insert_iterator<std::string> iter(generated);
 
-    uint32_t addr = 0x7F000001;
+    uint32_t addr = 0x7F000001U;
     generate_ipv4(iter, addr);
 
     EXPECT_EQ(std::string("127.0.0.1"), generated);

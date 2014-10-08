@@ -45,7 +45,7 @@ struct constraint
 {
     static void failed() { ((Model*)0)->constraints(); }
 };
-
+  
 template <class Model>
 struct requirement_<void(*)(Model)>
   : mpl::if_<
@@ -54,7 +54,7 @@ struct requirement_<void(*)(Model)>
       , requirement<failed ************ Model::************>
     >::type
 {};
-
+  
 # else
 
 // For GCC-2.x, these can't have exactly the same name
@@ -62,18 +62,18 @@ template <class Model>
 struct requirement_<void(*)(Model)>
     : requirement<failed ************ Model::************>
 {};
-
+  
 # endif
 
 // Version check from https://svn.boost.org/trac/boost/changeset/82886
 // (boost/static_assert.hpp)
-#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)))
+#if defined(__GNUC__) && ((__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7))) 
 #define BOOST_CONCEPT_UNUSED_TYPEDEF __attribute__((unused))
 #else
 #define BOOST_CONCEPT_UNUSED_TYPEDEF /**/
 #endif
 
-#  define BOOST_CONCEPT_ASSERT_FN( ModelFnPtr )              \
+#  define BOOST_CONCEPT_ASSERT_FN( ModelFnPtr )             \
     typedef ::boost::concepts::detail::instantiate<          \
     &::boost::concepts::requirement_<ModelFnPtr>::failed>    \
       BOOST_PP_CAT(boost_concept_check,__LINE__)             \
