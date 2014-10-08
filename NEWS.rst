@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.6.0
+-----
 * Minor: Upgrade to Boost release 1.56.0
 * Minor: Removed compiler flags that are not supported by clang 3.5
 
