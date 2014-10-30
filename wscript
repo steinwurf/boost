@@ -79,7 +79,8 @@ def boost_cxx_flags(bld):
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
-
+    elif 'em++' in CXX:
+        return ['-pedantic']
     else:
         bld.fatal('unknown compiler no boost flags specified')
 
