@@ -62,6 +62,12 @@ def configure(conf):
         if not conf.env['LIB_RT']:
             conf.check_cxx(lib='rt')
 
+    # Set the boost specific cxx flags
+    conf.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(conf)
+
+    # Set the shared defines
+    conf.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(conf)
+
 
 def boost_cxx_flags(bld):
     """
@@ -118,13 +124,6 @@ def boost_shared_defines(bld):
 
 
 def build(bld):
-
-    # Set the boost specific cxx flags
-    bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
-
-    # Set the shared defines
-    bld.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(bld)
-
     include_dirs = ['.']
 
     # Build boost thread
