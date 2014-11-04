@@ -95,14 +95,13 @@ def boost_shared_defines(bld):
     returns shared defines for boost
     """
 
-    defines = \
-        [
-            'BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD'
-        ]
+    defines = [
+        'BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD'
+    ]
 
     CXX = bld.env.get_flat("CXX")
     # Matches both /usr/bin/g++ and /user/bin/clang++
-    if 'g++' in CXX or 'clang' in CXX:
+    if any([c in CXX for c in ['g++', 'clang', 'em++']]):
         defines += ['BOOST_NO_CXX11_NOEXCEPT']
 
     if bld.is_mkspec_platform('android'):
