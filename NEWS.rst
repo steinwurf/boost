@@ -6,7 +6,9 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Added support for Emscripten compiler.
+* Patch: Moved ``boost_cxx_flags`` and ``boost_shared_defines`` from ``build``
+  to ``configure``.
 
 1.6.0
 -----

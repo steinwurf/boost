@@ -62,6 +62,12 @@ def configure(conf):
         if not conf.env['LIB_RT']:
             conf.check_cxx(lib='rt')
 
+    # Set the boost specific cxx flags
+    conf.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(conf)
+
+    # Set the shared defines
+    conf.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(conf)
+
 
 def boost_cxx_flags(bld):
     """
@@ -70,7 +76,7 @@ def boost_cxx_flags(bld):
     CXX = bld.env.get_flat("CXX")
 
     # clang should be first, since g++ also matches clang++
-    if 'clang' in CXX:
+    if 'clang' in CXX or 'em++' in CXX:
         # clang does not support '-finline-functions'
         return ['-pedantic']
 
@@ -117,13 +123,6 @@ def boost_shared_defines(bld):
 
 
 def build(bld):
-
-    # Set the boost specific cxx flags
-    bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
-
-    # Set the shared defines
-    bld.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(bld)
-
     include_dirs = ['.']
 
     # Build boost thread
@@ -138,15 +137,16 @@ def build(bld):
             defines=['BOOST_THREAD_BUILD_LIB=1'],
             use='BOOST_SHARED')
     else:
-        bld.stlib(features='cxx',
-                  source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
-                          bld.path.ant_glob('libs/thread/src/*.cpp')),
-                  target='boost_thread',
-                  includes=include_dirs,
-                  export_includes=include_dirs,
-                  defines=['BOOST_THREAD_BUILD_LIB=1',
-                           'BOOST_THREAD_POSIX'],
-                  use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
+        bld.stlib(
+            features='cxx',
+            source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
+                    bld.path.ant_glob('libs/thread/src/*.cpp')),
+            target='boost_thread',
+            includes=include_dirs,
+            export_includes=include_dirs,
+            defines=['BOOST_THREAD_BUILD_LIB=1',
+                     'BOOST_THREAD_POSIX'],
+            use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
 
     # Build boost system
     bld.stlib(
