@@ -76,7 +76,7 @@ def boost_cxx_flags(bld):
     CXX = bld.env.get_flat("CXX")
 
     # clang should be first, since g++ also matches clang++
-    if 'clang' in CXX:
+    if 'clang' in CXX or 'em++' in CXX:
         # clang does not support '-finline-functions'
         return ['-pedantic']
 
@@ -85,8 +85,7 @@ def boost_cxx_flags(bld):
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
-    elif 'em++' in CXX:
-        return ['-pedantic']
+
     else:
         bld.fatal('unknown compiler no boost flags specified')
 
@@ -138,15 +137,16 @@ def build(bld):
             defines=['BOOST_THREAD_BUILD_LIB=1'],
             use='BOOST_SHARED')
     else:
-        bld.stlib(features='cxx',
-                  source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
-                          bld.path.ant_glob('libs/thread/src/*.cpp')),
-                  target='boost_thread',
-                  includes=include_dirs,
-                  export_includes=include_dirs,
-                  defines=['BOOST_THREAD_BUILD_LIB=1',
-                           'BOOST_THREAD_POSIX'],
-                  use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
+        bld.stlib(
+            features='cxx',
+            source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
+                    bld.path.ant_glob('libs/thread/src/*.cpp')),
+            target='boost_thread',
+            includes=include_dirs,
+            export_includes=include_dirs,
+            defines=['BOOST_THREAD_BUILD_LIB=1',
+                     'BOOST_THREAD_POSIX'],
+            use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
 
     # Build boost system
     bld.stlib(
