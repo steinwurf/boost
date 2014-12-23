@@ -6,7 +6,7 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Added ``steinwurf_version.hpp``.
 
 1.7.0
 -----
