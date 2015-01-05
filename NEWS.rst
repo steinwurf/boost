@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.8.0
+-----
 * Minor: Added version define.
 
 1.7.0
