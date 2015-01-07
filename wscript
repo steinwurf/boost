@@ -122,8 +122,12 @@ def boost_shared_defines(bld):
 
 
 def build(bld):
+
+    bld.env.append_unique(
+        'DEFINES_STEINWURF_VERSION',
+        'STEINWURF_BOOST_VERSION="{}"'.format(VERSION))
+
     include_dirs = ['.', 'src']
-    export_defines = ['STEINWURF_BOOST_VERSION="{}"'.format(VERSION)]
 
     # Build boost thread
     if bld.is_mkspec_platform('windows'):
@@ -135,7 +139,6 @@ def build(bld):
             includes=include_dirs,
             export_includes=include_dirs,
             defines=['BOOST_THREAD_BUILD_LIB=1'],
-            export_defines=export_defines,
             use='BOOST_SHARED')
     else:
         bld.stlib(
@@ -147,7 +150,6 @@ def build(bld):
             export_includes=include_dirs,
             defines=['BOOST_THREAD_BUILD_LIB=1',
                      'BOOST_THREAD_POSIX'],
-            export_defines=export_defines,
             use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
 
     # Build boost system
@@ -158,7 +160,6 @@ def build(bld):
         includes=include_dirs,
         export_includes=include_dirs,
         defines=['BOOST_SYSTEM_STATIC_LINK=1'],
-        export_defines=export_defines,
         use='BOOST_SHARED')
 
     # Build boost chrono
@@ -170,7 +171,6 @@ def build(bld):
         export_includes=include_dirs,
         defines=['BOOST_SYSTEM_STATIC_LINK=1',
                  'BOOST_SYSTEM_NO_DEPRECATED'],
-        export_defines=export_defines,
         use=['BOOST_SHARED', 'RT', 'PTHREAD'])
 
     # Build boost timer
@@ -185,7 +185,6 @@ def build(bld):
                  'BOOST_SYSTEM_STATIC_LINK=1',
                  'BOOST_CHRONO_STATIC_LINK=1',
                  'BOOST_TIMER_STATIC_LINK=1'],
-        export_defines=export_defines,
         use='BOOST_SHARED')
 
     # Build boost program options
@@ -195,7 +194,6 @@ def build(bld):
         target='boost_program_options',
         includes=include_dirs,
         export_includes=include_dirs,
-        export_defines=export_defines,
         use='BOOST_SHARED')
 
     # Build boost iostreams (only the memory mapped files part)
@@ -205,7 +203,6 @@ def build(bld):
         target='boost_iostreams',
         includes=include_dirs,
         export_includes=include_dirs,
-        export_defines=export_defines,
         use='BOOST_SHARED')
 
     if bld.env['BUILD_PYTHON']:
@@ -225,7 +222,6 @@ def build(bld):
             target='boost_python',
             includes=include_dirs + bld.env['INCLUDES_PYEXT'],
             export_includes=include_dirs,
-            export_defines=export_defines,
             use=['BOOST_SHARED', 'BOOST_PYTHON_SHARED'])
 
     # Build boost filesystem
@@ -237,13 +233,11 @@ def build(bld):
         export_includes=include_dirs,
         defines=['BOOST_SYSTEM_STATIC_LINK=1',
                  'BOOST_FILESYSTEM_STATIC_LINK=1'],
-        export_defines=export_defines,
         use='BOOST_SHARED')
 
     # Make use flag for apps/libs only using the boost headers
     bld(includes=include_dirs,
         export_includes=include_dirs,
-        export_defines=export_defines,
         name='boost_includes',
         use='BOOST_SHARED')
 

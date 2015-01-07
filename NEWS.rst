@@ -6,7 +6,7 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Patch: Fix version define.
 
 1.8.0
 -----
