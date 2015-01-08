@@ -1,4 +1,4 @@
-News for external-boost-light
+News for boost
 =============================
 
 This file lists the major changes between versions. For a more detailed list
@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.8.1
+-----
 * Patch: Fix version define.
 
 1.8.0
