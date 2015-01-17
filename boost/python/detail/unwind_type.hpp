@@ -10,7 +10,6 @@
 # include <boost/type_traits/object_traits.hpp>
 
 namespace boost { namespace python { namespace detail {
-
 #ifndef _MSC_VER //if forward declared, msvc6.5 does not recognize them as inline
 // forward declaration, required (at least) by Tru64 cxx V6.5-042
 template <class Generator, class U>
@@ -151,7 +150,7 @@ inline typename Generator::result_type
 #ifndef _MSC_VER
 unwind_type(boost::type<U>*, Generator*)
 #else
-unwind_type(boost::type<U>*p =0, Generator* =0)
+unwind_type(boost::type<U>* =0, Generator* =0)
 #endif
 {
     BOOST_STATIC_CONSTANT(int, indirection
@@ -164,7 +163,6 @@ unwind_type(boost::type<U>*p =0, Generator* =0)
 
     return unwind_helper2<indirection>::execute((U(*)())0,(Generator*)0);
 }
-
 }}} // namespace boost::python::detail
 
 #endif // UNWIND_TYPE_DWA200222_HPP

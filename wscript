@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 APPNAME = 'boost'
-VERSION = '1.5.0'
+VERSION = '1.8.1'
 
 def options(opt):
 
@@ -26,7 +26,7 @@ def configure(conf):
         # Internal dependencies
         bundle.add_dependency(conf, resolve.ResolveGitMajorVersion(
             name='gtest',
-            git_repository='github.com/steinwurf/gtest.git',
+        git_repository='github.com/steinwurf/gtest.git',
             major_version=2))
 
         # Download and recurse all dependencies
@@ -47,6 +47,12 @@ def configure(conf):
         if not conf.env['LIB_RT']:
             conf.check_cxx(lib='rt')
 
+    # Set the boost specific cxx flags
+    conf.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(conf)
+
+    # Set the shared defines
+    conf.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(conf)
+
 
 def boost_cxx_flags(bld):
     """
@@ -54,10 +60,13 @@ def boost_cxx_flags(bld):
     """
     CXX = bld.env.get_flat("CXX")
 
-    # Matches both /usr/bin/g++ and /user/bin/clang++
-    if 'g++' in CXX or 'clang' in CXX:
-        return ['-pedantic', '-finline-functions', '-Wno-inline',
-                '-Wno-long-long']
+    # clang should be first, since g++ also matches clang++
+    if 'clang' in CXX or 'em++' in CXX:
+        # clang does not support '-finline-functions'
+        return ['-pedantic']
+
+    elif 'g++' in CXX:
+        return ['-pedantic', '-finline-functions']
 
     elif 'CL.exe' in CXX or 'cl.exe' in CXX:
         return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
@@ -71,14 +80,13 @@ def boost_shared_defines(bld):
     returns shared defines for boost
     """
 
-    defines = \
-        [
+    defines = [
             'BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD'
         ]
 
     CXX = bld.env.get_flat("CXX")
     # Matches both /usr/bin/g++ and /user/bin/clang++
-    if 'g++' in CXX or 'clang' in CXX:
+    if any([c in CXX for c in ['g++', 'clang', 'em++']]):
         defines += ['BOOST_NO_CXX11_NOEXCEPT']
 
     if bld.is_mkspec_platform('android'):
@@ -100,19 +108,11 @@ def boost_shared_defines(bld):
 
 def build(bld):
 
-    if bld.is_toplevel():
+    bld.env.append_unique(
+        'DEFINES_STEINWURF_VERSION',
+        'STEINWURF_BOOST_VERSION="{}"'.format(VERSION))
 
-        bld.load("wurf_common_tools")
-
-        bld.recurse('test')
-
-    # Set the boost specific cxx flags
-    bld.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(bld)
-
-    # Set the shared defines
-    bld.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(bld)
-
-    include_dirs = ['.']
+    include_dirs = ['.', 'src']
 
     # Build boost thread
     if bld.is_mkspec_platform('windows'):
@@ -126,7 +126,8 @@ def build(bld):
             defines=['BOOST_THREAD_BUILD_LIB=1'],
             use='BOOST_SHARED')
     else:
-        bld.stlib(features='cxx',
+        bld.stlib(
+            features='cxx',
                   source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
                           bld.path.ant_glob('libs/thread/src/*.cpp')),
                   target='boost_thread',

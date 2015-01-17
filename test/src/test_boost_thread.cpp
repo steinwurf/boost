@@ -31,9 +31,9 @@ TEST(TestBoostThread, sleep_for)
     boost::this_thread::sleep_for(boost::chrono::milliseconds(10));
 }
 
-int glob = 0;
+static int glob = 0;
 
-void run()
+static void run()
 {
     glob++;
 }

@@ -320,6 +320,7 @@ namespace
     return was_error;
   }
 
+#if defined(BOOST_WINDOWS_API)
   bool error(bool was_error, const error_code& result,
     const path& p1, const path& p2, error_code* ec, const string& message)
     //  Overwrites ec if there has already been an error
@@ -337,6 +338,7 @@ namespace
     }
     return was_error;
   }
+#endif
 
   bool is_empty_directory(const path& p)
   {
@@ -406,7 +408,7 @@ namespace
 
   const char dot = '.';
 
-  bool not_found_error(int errval)
+  bool not_found_error(int)
   {
     return errno == ENOENT || errno == ENOTDIR;
   }
@@ -775,6 +777,7 @@ namespace detail
   path canonical(const path& p, const path& base, system::error_code* ec)
   {
     path source (p.is_absolute() ? p : absolute(p, base));
+    path root(source.root_path());
     path result;
 
     system::error_code local_ec;
@@ -809,7 +812,8 @@ namespace detail
           continue;
         if (*itr == dot_dot_path)
         {
-          result.remove_filename();
+          if (result != root)
+            result.remove_filename();
           continue;
         }
 
@@ -929,6 +933,7 @@ namespace detail
     }
 
     path parent = p.parent_path();
+    BOOST_ASSERT_MSG(parent != p, "internal error: p == p.parent_path()");
     if (!parent.empty())
     {
       // determine if the parent exists
@@ -1409,7 +1414,7 @@ namespace detail
     //  - See the fchmodat() Linux man page:
     //   "http://man7.org/linux/man-pages/man2/fchmodat.2.html"
 #   if defined(AT_FDCWD) && defined(AT_SYMLINK_NOFOLLOW) \
-      && !(defined(__SUNPRO_CC) || defined(sun)) \
+      && !(defined(__SUNPRO_CC) || defined(__sun) || defined(sun)) \
       && !(defined(linux) || defined(__linux) || defined(__linux__))
       if (::fchmodat(AT_FDCWD, p.c_str(), mode_cast(prms),
            !(prms & symlink_perms) ? 0 : AT_SYMLINK_NOFOLLOW))
@@ -1800,6 +1805,8 @@ namespace detail
   path system_complete(const path& p, system::error_code* ec)
   {
 #   ifdef BOOST_POSIX_API
+    (void) ec;
+    (void) buf_size;
     return (p.empty() || p.is_absolute())
       ? p : current_path()/ p;
 

@@ -1,4 +1,4 @@
-News for external-boost-light
+News for boost
 =============================
 
 This file lists the major changes between versions. For a more detailed list
@@ -8,53 +8,78 @@ Latest
 ------
 * tbd
 
+1.8.1
+-----
+* Patch: Fix version define.
+
+1.8.0
+-----
+* Minor: Added version define.
+
+1.7.0
+-----
+* Minor: Added support for Emscripten compiler.
+* Patch: Moved ``boost_cxx_flags`` and ``boost_shared_defines`` from ``build``
+  to ``configure``.
+
+1.6.0
+-----
+* Minor: Upgrade to Boost release 1.56.0
+* Minor: Removed compiler flags that are not supported by clang 3.5
+
+1.5.1
+-----
+* Patch: Fixed a bug that made boost think that clang doesn't have
+  ``std::shared_ptr``. The bug was fixed by using the following `patch
+  <http://goo.gl/ooTmbd>`_.
+
 1.5.0
 -----
 * Minor: Added boost iostreams (only the subset covering memory mapped files)
 
 1.4.1
 -----
-* Bugfix: Introduce shared defines for Boost Python which should be used in
+* Patch: Introduce shared defines for Boost Python which should be used in
   Python extensions that are statically linked with Boost Python.
 
 1.4.0
 -----
 * Minor: Updated waf to version 1.8.0pre1.
-* Bugfix: Restore correct build directory.
+* Patch: Restore correct build directory.
 
 1.3.2
 -----
-* Bugfix: Removed redundant binary and doc files.
+* Patch: Removed redundant binary and doc files.
 
 1.3.1
 -----
-* Bugfix: Fixed bug when using boost python as a dependency.
+* Patch: Fixed bug when using boost python as a dependency.
 
 1.3.0
 -----
 * Minor: Added boost python.
-* Bugfix: Fixed bug when building with llvm 5.1. The official patches are
+* Patch: Fixed bug when building with llvm 5.1. The official patches are
   located here: goo.gl/3ie4Ty and goo.gl/IbkM4S.
 
 1.2.2
 -----
-* Bugfix: Fix spurious g++ warnings in Boost bind and concept with upstream
+* Patch: Fix spurious g++ warnings in Boost bind and concept with upstream
   patches.
 
 1.2.1
 -----
-* Bugfix: On some platforms, linking with librt requires libpthread.
+* Patch: On some platforms, linking with librt requires libpthread.
   This was not added for boost-chrono.
 
 1.2.0
 -----
 * Upgrade to Boost release 1.55.0
-* Bugfix: Fix boost-atomic linking issue in boost-thread with g++ 4.7+
+* Patch: Fix boost-atomic linking issue in boost-thread with g++ 4.7+
   cross-compilers that do not support atomic locks natively
 
 1.1.0
 -----
-* Bugfix: Simplify pthread and rt shared library usage on Linux
+* Patch: Simplify pthread and rt shared library usage on Linux
 * Minor: Additional unit tests for boost filesystem and chrono
 
 1.0.0
