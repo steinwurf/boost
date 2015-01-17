@@ -26,7 +26,7 @@ def configure(conf):
         # Internal dependencies
         bundle.add_dependency(conf, resolve.ResolveGitMajorVersion(
             name='gtest',
-        git_repository='github.com/steinwurf/gtest.git',
+            git_repository='github.com/steinwurf/gtest.git',
             major_version=2))
 
         # Download and recurse all dependencies
@@ -225,3 +225,9 @@ def build(bld):
         export_includes=include_dirs,
         name='boost_includes',
         use='BOOST_SHARED')
+
+    if bld.is_toplevel():
+
+        bld.load("wurf_common_tools")
+
+        bld.recurse('test')
