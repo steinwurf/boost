@@ -23,10 +23,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <boost/asio.hpp>
+
 #include <cstdlib>
 
 #include <gtest/gtest.h>
-#include <boost/asio.hpp>
 
 namespace ba = boost::asio;
 using namespace boost::asio::ip;

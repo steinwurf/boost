@@ -23,11 +23,12 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <boost/program_options.hpp>
+
 #include <iostream>
 #include <iterator>
 #include <exception>
 
-#include <boost/program_options.hpp>
 #include <gtest/gtest.h>
 
 namespace po = boost::program_options;

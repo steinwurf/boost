@@ -23,13 +23,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <string>
-#include <iterator>
-
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/karma.hpp>
 #include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/spirit/include/phoenix_operator.hpp>
+
+#include <string>
+#include <iterator>
 
 #include <gtest/gtest.h>
 
@@ -127,4 +127,3 @@ TEST(TestBoostSpirit, generate_ipv4)
 
     EXPECT_EQ(std::string("127.0.0.1"), generated);
 }
-

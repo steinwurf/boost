@@ -23,11 +23,11 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#include <boost/filesystem.hpp>
+
 #include <iostream>
 #include <iterator>
 #include <exception>
-
-#include <boost/filesystem.hpp>
 
 #include <gtest/gtest.h>
 
@@ -42,5 +42,3 @@ TEST(TestBoostFilesystem, basic)
     EXPECT_FALSE(is_regular_file(p));
     EXPECT_FALSE(is_directory(p));
 }
-
-
