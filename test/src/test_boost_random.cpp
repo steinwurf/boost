@@ -26,6 +26,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/bernoulli_distribution.hpp>
+#include <boost/random/binomial_distribution.hpp>
 
 #include <cstdlib>
 #include <limits>
@@ -87,4 +88,18 @@ TEST(TestBoostRandom, mt19937_bernoulli_distribution)
 
 TEST(TestBoostRandom, mt19937_binomial_distributions)
 {
+    mt19937 random_generator;
+
+    uint32_t tries = 10;
+    uint32_t count = 100;
+
+    binomial_distribution<uint16_t> binomial(tries, 0.5);
+
+    uint32_t heads = 0;
+    for (uint32_t i = 0; i < count; ++i)
+    {
+        heads = binomial(random_generator);
+        EXPECT_GE(heads, 0U);
+        EXPECT_LE(heads, tries);
+    }
 }
