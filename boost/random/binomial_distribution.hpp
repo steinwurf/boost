@@ -24,9 +24,7 @@
 
 namespace boost {
 namespace random {
-
 namespace detail {
-
 template<class RealType>
 struct binomial_table {
     static const RealType table[10];
@@ -45,7 +43,6 @@ const RealType binomial_table<RealType>::table[10] = {
     0.009255462182712733,
     0.008330563433362871
 };
-
 }
 
 /**
@@ -96,7 +93,7 @@ public:
             os << parm._p << " " << parm._t;
             return os;
         }
-    
+
         /** Reads the parameters of the distribution from a @c std::istream. */
         template<class CharT, class Traits>
         friend std::basic_istream<CharT,Traits>&
@@ -120,7 +117,7 @@ public:
         IntType _t;
         RealType _p;
     };
-    
+
     /**
      * Construct a @c binomial_distribution object. @c t and @c p
      * are the parameters of the distribution.
@@ -133,7 +130,7 @@ public:
     {
         init();
     }
-    
+
     /**
      * Construct an @c binomial_distribution object from the
      * parameters.
@@ -143,7 +140,7 @@ public:
     {
         init();
     }
-    
+
     /**
      * Returns a random variate distributed according to the
      * binomial distribution.
@@ -163,7 +160,7 @@ public:
             return generate(urng);
         }
     }
-    
+
     /**
      * Returns a random variate distributed according to the
      * binomial distribution with parameters specified by @c param.
@@ -210,7 +207,7 @@ public:
         os << bd.param();
         return os;
     }
-    
+
     /** Reads the parameters of the distribution from a @c std::istream. */
     template<class CharT, class Traits>
     friend std::basic_istream<CharT,Traits>&
@@ -274,7 +271,7 @@ private:
 
         RealType p = (0.5 < _p)? (1 - _p) : _p;
         IntType t = _t;
-        
+
         m = static_cast<IntType>((t+1)*p);
 
         if(use_inversion()) {
@@ -321,7 +318,7 @@ private:
             IntType k = static_cast<IntType>(floor((2*btrd.a/us + btrd.b)*u + btrd.c));
             if(k < 0 || k > _t) continue;
             v = v*btrd.alpha/(btrd.a/(us*us) + btrd.b);
-            RealType km = abs(k - m);
+            RealType km = abs(static_cast<RealType>(k - m));
             if(km <= 15) {
                 RealType f = 1;
                 if(m < k) {
@@ -421,12 +418,10 @@ private:
 
     /// @endcond
 };
-
 }
 
 // backwards compatibility
 using random::binomial_distribution;
-
 }
 
 #include <boost/random/detail/enable_warnings.hpp>
