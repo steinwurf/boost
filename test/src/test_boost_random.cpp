@@ -93,7 +93,7 @@ TEST(TestBoostRandom, mt19937_binomial_distributions)
     uint32_t tries = 10;
     uint32_t count = 100;
 
-    binomial_distribution<uint16_t> binomial(tries, 0.5);
+    binomial_distribution<uint32_t> binomial(tries, 0.5);
 
     uint32_t heads = 0;
     for (uint32_t i = 0; i < count; ++i)
