@@ -30,6 +30,7 @@
 
 #include <cstdlib>
 #include <limits>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -86,20 +87,42 @@ TEST(TestBoostRandom, mt19937_bernoulli_distribution)
     EXPECT_LE(heads, count);
 }
 
-TEST(TestBoostRandom, mt19937_binomial_distributions)
+namespace
 {
-    mt19937 random_generator;
-
-    uint32_t tries = 10;
-    uint32_t count = 100;
-
-    binomial_distribution<uint32_t> binomial(tries, 0.5);
-
-    uint32_t heads = 0;
-    for (uint32_t i = 0; i < count; ++i)
+    void test_binomial(uint32_t seed, uint32_t n, uint32_t count,
+                       std::vector<uint32_t> expected_results)
     {
-        heads = binomial(random_generator);
-        EXPECT_GE(heads, 0U);
-        EXPECT_LE(heads, tries);
+        mt19937 random_generator;
+        random_generator.seed(seed);
+
+        binomial_distribution<> binomial(n, 0.5);
+
+        uint32_t heads = 0;
+        std::vector<uint32_t> results;
+        for (uint32_t i = 0; i < count; ++i)
+        {
+            heads = binomial(random_generator);
+            results.push_back(heads);
+            EXPECT_GE(heads, 0U);
+            EXPECT_LE(heads, n);
+        }
+        EXPECT_EQ(expected_results, results);
     }
+}
+
+TEST(TestBoostRandom, mt19937_binomial_distribution_10)
+{
+    // binomial_distribution uses the "inversion" algorithm if (n+1) * p < 11
+    std::vector<uint32_t> expected_results =
+        { 4, 5, 3, 4, 4, 5, 5, 2, 4, 4, 5, 5, 4, 4, 8, 4, 6, 4, 3, 6 };
+    test_binomial(1337, 10, 20, expected_results);
+}
+
+TEST(TestBoostRandom, mt19937_binomial_distribution_100)
+{
+    // binomial_distribution uses the "BTRD" algorithm if (n+1) * p >= 11
+    std::vector<uint32_t> expected_results =
+        { 50, 49, 50, 39, 43, 51, 49, 58, 64, 52,
+          47, 46, 48, 46, 48, 46, 47, 55, 41, 52 };
+    test_binomial(1337, 100, 20, expected_results);
 }
