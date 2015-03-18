@@ -399,22 +399,21 @@ private:
     // common data
     IntType m;
 
-    union {
-        // for btrd
-        struct {
-            RealType r;
-            RealType nr;
-            RealType npq;
-            RealType b;
-            RealType a;
-            RealType c;
-            RealType alpha;
-            RealType v_r;
-            RealType u_rv_r;
-        } btrd;
-        // for inversion
-        RealType q_n;
-    };
+    // for btrd
+    struct {
+        RealType r;
+        RealType nr;
+        RealType npq;
+        RealType b;
+        RealType a;
+        RealType c;
+        RealType alpha;
+        RealType v_r;
+        RealType u_rv_r;
+    } btrd;
+
+    // for inversion
+    RealType q_n;
 
     /// @endcond
 };
