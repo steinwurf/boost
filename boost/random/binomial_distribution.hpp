@@ -126,7 +126,7 @@ public:
      */
     explicit binomial_distribution(IntType t_arg = 1,
                                    RealType p_arg = RealType(0.5))
-      : _t(t_arg), _p(p_arg)
+      : _t(t_arg), _p(p_arg), btrd()
     {
         init();
     }
@@ -136,7 +136,7 @@ public:
      * parameters.
      */
     explicit binomial_distribution(const param_type& parm)
-      : _t(parm.t()), _p(parm.p())
+      : _t(parm.t()), _p(parm.p()), btrd()
     {
         init();
     }
