@@ -400,7 +400,7 @@ private:
     IntType m;
 
     // for btrd
-    struct {
+    struct btrd_data {
         RealType r;
         RealType nr;
         RealType npq;
@@ -410,7 +410,9 @@ private:
         RealType alpha;
         RealType v_r;
         RealType u_rv_r;
-    } btrd;
+    };
+
+    btrd_data btrd;
 
     // for inversion
     RealType q_n;
