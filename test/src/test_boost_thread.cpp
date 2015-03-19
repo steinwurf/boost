@@ -23,8 +23,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <gtest/gtest.h>
 #include <boost/thread.hpp>
+
+#include <gtest/gtest.h>
 
 TEST(TestBoostThread, sleep_for)
 {
@@ -44,8 +45,3 @@ TEST(TestBoostThread, construct_join)
     thrd.join();
     EXPECT_EQ(1, glob);
 }
-
-
-
-
-
