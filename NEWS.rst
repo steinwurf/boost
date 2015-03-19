@@ -6,6 +6,10 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
+
+1.9.0
+-----
 * Minor: Added tests for boost::random to verify that the same random values
   are generated on all platforms.
 * Patch: Fixed warnings in ``boost/random/binomial_distribution.hpp``.
