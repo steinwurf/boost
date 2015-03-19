@@ -6,7 +6,9 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Added tests for boost::random to verify that the same random values
+  are generated on all platforms.
+* Patch: Fixed warnings in ``boost/random/binomial_distribution.hpp``.
 
 1.8.1
 -----
