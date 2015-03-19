@@ -36,59 +36,47 @@
 
 using namespace boost::random;
 
-TEST(TestBoostRandom, mt19937_uniform_distributions)
-{
-    mt19937 random_generator;
-
-    uint32_t count = 100;
-
-    uniform_int_distribution<uint8_t> uint8_distribution;
-
-    for (uint32_t i = 0; i < count; ++i)
-    {
-        auto value = uint8_distribution(random_generator);
-        EXPECT_GE(value, (uint8_t)0);
-        EXPECT_LE(value, std::numeric_limits<uint8_t>::max());
-    }
-
-    uniform_int_distribution<uint16_t> uint16_distribution;
-
-    for (uint32_t i = 0; i < count; ++i)
-    {
-        auto value = uint16_distribution(random_generator);
-        EXPECT_GE(value, (uint16_t)0);
-        EXPECT_LE(value, std::numeric_limits<uint16_t>::max());
-    }
-
-    uniform_int_distribution<uint32_t> uint32_distribution;
-
-    for (uint32_t i = 0; i < count; ++i)
-    {
-        auto value = uint32_distribution(random_generator);
-        EXPECT_GE(value, 0U);
-        EXPECT_LE(value, std::numeric_limits<uint32_t>::max());
-    }
-}
-
-TEST(TestBoostRandom, mt19937_bernoulli_distribution)
-{
-    mt19937 random_generator;
-
-    uint32_t count = 100;
-
-    bernoulli_distribution<> bernoulli(0.5);
-
-    uint32_t heads = 0;
-    for (uint32_t i = 0; i < count; ++i)
-    {
-        if (bernoulli(random_generator)) heads++;
-    }
-    EXPECT_GE(heads, 0U);
-    EXPECT_LE(heads, count);
-}
-
 namespace
 {
+    template<class T>
+    void test_uniform(mt19937& random_generator, uint32_t count,
+                      std::vector<T> expected_results)
+    {
+        uniform_int_distribution<T> distribution;
+
+        std::vector<T> results;
+        for (uint32_t i = 0; i < count; ++i)
+        {
+            T value = distribution(random_generator);
+            results.push_back(value);
+            EXPECT_GE(value, (T)0);
+            EXPECT_LE(value, std::numeric_limits<T>::max());
+        }
+
+        EXPECT_EQ(expected_results, results);
+    }
+
+
+    void test_bernoulli(mt19937& random_generator, uint32_t count,
+                        uint32_t expected_heads,
+                        std::vector<uint32_t> expected_results)
+    {
+        bernoulli_distribution<> bernoulli(0.5);
+
+        uint32_t heads = 0;
+        std::vector<uint32_t> results;
+        for (uint32_t i = 0; i < count; ++i)
+        {
+            if (bernoulli(random_generator))
+            {
+                heads++;
+                results.push_back(i);
+            }
+        }
+        EXPECT_EQ(heads, expected_heads);
+        EXPECT_EQ(expected_results, results);
+    }
+
     void test_binomial(uint32_t seed, uint32_t n, uint32_t count,
                        std::vector<uint32_t> expected_results)
     {
@@ -108,6 +96,81 @@ namespace
         }
         EXPECT_EQ(expected_results, results);
     }
+}
+
+TEST(TestBoostRandom, mt19937_uniform_distribution_uint8)
+{
+    mt19937 random_generator;
+
+    uint32_t count = 10;
+
+    random_generator.seed(42);
+
+    std::vector<uint8_t> expected_results =
+        { 95, 203, 243, 46, 187, 199, 153, 152, 39, 114 };
+    test_uniform<uint8_t>(random_generator, count, expected_results);
+
+    random_generator.seed(123456);
+
+    expected_results =
+        { 32, 131, 247, 229, 66, 180, 229, 199, 96, 238 };
+    test_uniform<uint8_t>(random_generator, count, expected_results);
+}
+
+TEST(TestBoostRandom, mt19937_uniform_distribution_uint16)
+{
+    mt19937 random_generator;
+
+    uint32_t count = 10;
+
+    random_generator.seed(1337);
+
+    std::vector<uint16_t> expected_results =
+        { 17172, 36734, 10399, 13932, 18227, 35591, 30101, 2226, 21037, 15426 };
+    test_uniform<uint16_t>(random_generator, count, expected_results);
+
+    random_generator.seed(123456);
+
+    expected_results =
+        { 8321, 33745, 63354, 58859, 17070, 46256, 58801, 51041, 24690, 61054 };
+    test_uniform<uint16_t>(random_generator, count, expected_results);
+}
+
+TEST(TestBoostRandom, mt19937_uniform_distribution_uint32)
+{
+    mt19937 random_generator;
+
+    uint32_t count = 10;
+
+    random_generator.seed(42);
+
+    std::vector<uint32_t> expected_results =
+        { 1608637542, 3421126067, 4083286876, 787846414, 3143890026,
+          3348747335, 2571218620, 2563451924, 670094950, 1914837113 };
+    test_uniform<uint32_t>(random_generator, count, expected_results);
+
+    random_generator.seed(123456);
+
+    expected_results =
+        { 545331265, 2211535594, 4152021490, 3857419313, 1118735928,
+          3031474347, 3853601519, 3345048107, 1618127707, 4001288224 };
+    test_uniform<uint32_t>(random_generator, count, expected_results);
+}
+
+TEST(TestBoostRandom, mt19937_bernoulli_distribution)
+{
+    mt19937 random_generator;
+    random_generator.seed(42);
+
+    std::vector<uint32_t> expected_results =
+        { 0, 3, 8, 9, 10, 11, 12, 13, 15, 17 };
+    test_bernoulli(random_generator, 20, 10, expected_results);
+
+    random_generator.seed(123456);
+
+    expected_results =
+        { 0, 4, 8, 10, 12, 13, 15, 16, 17, 19 };
+    test_bernoulli(random_generator, 20, 10, expected_results);
 }
 
 TEST(TestBoostRandom, mt19937_binomial_distribution_10)
