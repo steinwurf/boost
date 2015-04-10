@@ -4,6 +4,9 @@
 APPNAME = 'boost'
 VERSION = '1.8.1'
 
+import waflib.extras.wurf_options
+
+
 def options(opt):
 
     opt.load('wurf_common_tools')
@@ -12,25 +15,22 @@ def options(opt):
 
 def configure(conf):
 
-    import waflib.extras.wurf_dependency_bundle as bundle
     import waflib.extras.wurf_dependency_resolve as resolve
 
-    # waf-tools must be the first dependency
-    bundle.add_dependency(conf, resolve.ResolveGitMajorVersion(
+    conf.load("wurf_common_tools")
+
+    conf.add_dependency(resolve.ResolveVersion(
         name='waf-tools',
         git_repository='github.com/steinwurf/waf-tools.git',
-        major_version=2))
+        major=2))
 
     if conf.is_toplevel():
 
         # Internal dependencies
-        bundle.add_dependency(conf, resolve.ResolveGitMajorVersion(
+        conf.add_dependency(resolve.ResolveVersion(
             name='gtest',
             git_repository='github.com/steinwurf/gtest.git',
-            major_version=2))
-
-        # Download and recurse all dependencies
-        conf.load("wurf_common_tools")
+            major=2))
 
     try:
         conf.load('python')
@@ -80,9 +80,7 @@ def boost_shared_defines(bld):
     returns shared defines for boost
     """
 
-    defines = [
-            'BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD'
-        ]
+    defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD']
 
     CXX = bld.env.get_flat("CXX")
     # Matches both /usr/bin/g++ and /user/bin/clang++
@@ -107,6 +105,8 @@ def boost_shared_defines(bld):
 
 
 def build(bld):
+
+    bld.load("wurf_common_tools")
 
     bld.env.append_unique(
         'DEFINES_STEINWURF_VERSION',
@@ -220,14 +220,12 @@ def build(bld):
                  'BOOST_FILESYSTEM_STATIC_LINK=1'],
         use='BOOST_SHARED')
 
-    # Make use flag for apps/libs only using the boost headers
+    # Define boost_includes for apps/libs only using the boost headers
     bld(includes=include_dirs,
         export_includes=include_dirs,
         name='boost_includes',
         use='BOOST_SHARED')
 
     if bld.is_toplevel():
-
-        bld.load("wurf_common_tools")
 
         bld.recurse('test')
