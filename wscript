@@ -13,24 +13,29 @@ def options(opt):
     opt.load('python')
 
 
-def configure(conf):
+def resolve(ctx):
 
     import waflib.extras.wurf_dependency_resolve as resolve
 
-    conf.load("wurf_common_tools")
+    ctx.load('wurf_common_tools')
 
-    conf.add_dependency(resolve.ResolveVersion(
+    ctx.add_dependency(resolve.ResolveVersion(
         name='waf-tools',
         git_repository='github.com/steinwurf/waf-tools.git',
         major=2))
 
-    if conf.is_toplevel():
+    # Internal dependencies
+    if ctx.is_toplevel():
 
-        # Internal dependencies
-        conf.add_dependency(resolve.ResolveVersion(
+        ctx.add_dependency(resolve.ResolveVersion(
             name='gtest',
             git_repository='github.com/steinwurf/gtest.git',
             major=2))
+
+
+def configure(conf):
+
+    conf.load("wurf_common_tools")
 
     try:
         conf.load('python')
