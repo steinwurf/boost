@@ -8,6 +8,13 @@ Latest
 ------
 * tbd
 
+1.9.1
+-----
+* Patch: Removed shared CXXFLAGS to avoid conflicts with the flags defined in
+  various mkspecs. The ``-pedantic`` and ``-finline-functions`` flags are
+  moved to ``gxx_common.py`` in waf-tools, so these will be applied for all
+  projects.
+
 1.9.0
 -----
 * Minor: Added tests for boost::random to verify that the same random values
