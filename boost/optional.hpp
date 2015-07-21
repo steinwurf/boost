@@ -14,8 +14,5 @@
 
 #include "boost/optional/optional.hpp"
 
-// optional_io.hpp is required for operator<<(ostream&, optional const&)
-#include "boost/optional/optional_io.hpp"
-
 #endif
 

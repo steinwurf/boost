@@ -1,0 +1,25 @@
+From 41e9f5bc9c8072677de7851fccba506f03104fae Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 21:06:06 +0200
+Subject: [PATCH 4/5] Fix unused warnings in boost/optional/optional.hpp
+
+---
+ boost/optional/optional.hpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/boost/optional/optional.hpp b/boost/optional/optional.hpp
+index afcb807..3993f01 100644
+--- a/boost/optional/optional.hpp
++++ b/boost/optional/optional.hpp
+@@ -1253,6 +1253,8 @@ template<class CharType, class CharTrait>
+ std::basic_ostream<CharType, CharTrait>&
+ operator<<(std::basic_ostream<CharType, CharTrait>& out, optional_detail::optional_tag const& v)
+ {
++  (void) out;
++  (void) v;
+   BOOST_STATIC_ASSERT_MSG(sizeof(CharType) == 0, "If you want to output boost::optional, include header <boost/optional/optional_io.hpp>"); 
+ }
+ 
+-- 
+1.9.5.msysgit.0
+
