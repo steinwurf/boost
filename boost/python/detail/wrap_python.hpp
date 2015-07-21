@@ -22,7 +22,7 @@
 
 #ifdef _DEBUG
 # ifndef BOOST_DEBUG_PYTHON
-#  ifdef _MSC_VER
+#  ifdef _MSC_VER  
     // VC8.0 will complain if system headers are #included both with
     // and without _DEBUG defined, so we have to #include all the
     // system headers used by pyconfig.h right here.
@@ -128,14 +128,6 @@ typedef int pid_t;
 #  endif
 
 #  undef hypot // undo the evil #define left by Python.
-
-# elif defined(_MSC_VER)
-
-// VS 2010 and above already defines hypot as _hypot
-// and the double definition would cause an infinite recursion
-#if _MSC_VER >= 1600
-    #undef hypot
-#endif
 
 # elif defined(__BORLANDC__)
 #  undef HAVE_HYPOT
