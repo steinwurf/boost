@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+1.10.0
+------
+* Minor: Upgrade to Boost release 1.58.0
+
 1.9.1
 -----
 * Patch: Removed shared CXXFLAGS to avoid conflicts with the flags defined in
