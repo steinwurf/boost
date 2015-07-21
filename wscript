@@ -74,9 +74,8 @@ def _boost_shared_defines(conf):
     defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD']
 
     CXX = conf.env.get_flat("CXX")
-    # Matches both /usr/bin/g++ and /user/bin/clang++
-    if any([c in CXX for c in ['g++', 'clang', 'em++']]):
-        defines += ['BOOST_NO_CXX11_NOEXCEPT']
+    # Disable the noexcept keyword for all compilers
+    defines += ['BOOST_NO_CXX11_NOEXCEPT']
 
     if conf.is_mkspec_platform('android'):
         # Android does not seem to have an intrincsic wchar_t.
