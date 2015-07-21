@@ -1,0 +1,26 @@
+From 3e4c3a8389864047e3f443ceeee9f5d800d3e9b0 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 23:09:37 +0200
+Subject: [PATCH 1/2] Fix redefinition of BOOST_ASIO_ERROR_CATEGORY_NOEXCEPT
+
+---
+ boost/asio/detail/config.hpp | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/boost/asio/detail/config.hpp b/boost/asio/detail/config.hpp
+index 0f9e52d..cc01e8e 100644
+--- a/boost/asio/detail/config.hpp
++++ b/boost/asio/detail/config.hpp
+@@ -221,8 +221,7 @@
+ #     define BOOST_ASIO_ERROR_CATEGORY_NOEXCEPT noexcept(true)
+ #   endif // defined(__GXX_EXPERIMENTAL_CXX0X__)
+ #  endif // ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 7)) || (__GNUC__ > 4)
+-# endif // defined(__GNUC__)
+-# if defined(BOOST_ASIO_MSVC)
++# elif defined(BOOST_ASIO_MSVC)
+ #  if (_MSC_VER >= 1900)
+ #   define BOOST_ASIO_ERROR_CATEGORY_NOEXCEPT noexcept(true)
+ #  endif // (_MSC_VER >= 1900)
+-- 
+1.9.5.msysgit.0
+
