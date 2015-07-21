@@ -1,0 +1,55 @@
+From a8089031d81cc1bf33846dec3bccda15401e8c07 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 02:39:06 +0200
+Subject: [PATCH] Remove unknown _MSC_FULL_VER warning in boost/config
+
+---
+ boost/config/compiler/visualc.hpp | 20 +++++---------------
+ 1 file changed, 5 insertions(+), 15 deletions(-)
+
+diff --git a/boost/config/compiler/visualc.hpp b/boost/config/compiler/visualc.hpp
+index ce6bbee..7466138 100644
+--- a/boost/config/compiler/visualc.hpp
++++ b/boost/config/compiler/visualc.hpp
+@@ -240,11 +240,11 @@
+ #     define BOOST_COMPILER_VERSION evc9
+ #   elif _MSC_VER < 1700
+ #     define BOOST_COMPILER_VERSION evc10
+-#   elif _MSC_VER < 1800 
+-#     define BOOST_COMPILER_VERSION evc11 
+-#   elif _MSC_VER < 1900 
++#   elif _MSC_VER < 1800
++#     define BOOST_COMPILER_VERSION evc11
++#   elif _MSC_VER < 1900
+ #     define BOOST_COMPILER_VERSION evc12
+-#   elif _MSC_VER < 2000  
++#   elif _MSC_VER < 2000
+ #     define BOOST_COMPILER_VERSION evc14
+ #   else
+ #      if defined(BOOST_ASSERT_CONFIG)
+@@ -269,7 +269,7 @@
+ #     define BOOST_COMPILER_VERSION 9.0
+ #   elif _MSC_VER < 1700
+ #     define BOOST_COMPILER_VERSION 10.0
+-#   elif _MSC_VER < 1800 
++#   elif _MSC_VER < 1800
+ #     define BOOST_COMPILER_VERSION 11.0
+ #   elif _MSC_VER < 1900
+ #     define BOOST_COMPILER_VERSION 12.0
+@@ -282,13 +282,3 @@
+ 
+ #  define BOOST_COMPILER "Microsoft Visual C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)
+ #endif
+-
+-//
+-// last known and checked version is 19.00.22129 (VC14 Preview):
+-#if (_MSC_VER > 1800 && _MSC_FULL_VER > 190022310)
+-#  if defined(BOOST_ASSERT_CONFIG)
+-#     error "Unknown compiler version - please run the configure tests and report the results"
+-#  else
+-#     pragma message("Unknown compiler version - please run the configure tests and report the results")
+-#  endif
+-#endif
+-- 
+1.9.5.msysgit.0
+

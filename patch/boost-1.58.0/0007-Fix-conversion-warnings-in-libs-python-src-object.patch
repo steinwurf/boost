@@ -1,0 +1,68 @@
+From 8797f62790f811b742f094519eba9086c7e5992b Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 03:24:09 +0200
+Subject: [PATCH 07/10] Fix conversion warnings in libs/python/src/object
+
+---
+ libs/python/src/object/class.cpp          | 2 +-
+ libs/python/src/object/enum.cpp           | 2 +-
+ libs/python/src/object/function.cpp       | 3 ++-
+ libs/python/src/object/pickle_support.cpp | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/libs/python/src/object/class.cpp b/libs/python/src/object/class.cpp
+index aeef688..1112ad5 100644
+--- a/libs/python/src/object/class.cpp
++++ b/libs/python/src/object/class.cpp
+@@ -731,7 +731,7 @@ void* instance_holder::allocate(PyObject* self_, std::size_t holder_offset, std:
+     assert(PyType_IsSubtype(Py_TYPE(Py_TYPE(self_)), &class_metatype_object));
+     objects::instance<>* self = (objects::instance<>*)self_;
+     
+-    int total_size_needed = holder_offset + holder_size;
++    int total_size_needed = (int) (holder_offset + holder_size);
+     
+     if (-Py_SIZE(self) >= total_size_needed)
+     {
+diff --git a/libs/python/src/object/enum.cpp b/libs/python/src/object/enum.cpp
+index 3063320..3c5490b 100644
+--- a/libs/python/src/object/enum.cpp
++++ b/libs/python/src/object/enum.cpp
+@@ -229,7 +229,7 @@ void enum_base::export_values()
+     list items = d.items();
+     scope current;
+ 
+-    for (unsigned i = 0, max = len(items); i < max; ++i)
++    for (unsigned i = 0, max = (unsigned) len(items); i < max; ++i)
+         api::setattr(current, items[i][0], items[i][1]);
+  }
+ 
+diff --git a/libs/python/src/object/function.cpp b/libs/python/src/object/function.cpp
+index 5c59cc7..95ef1cc 100644
+--- a/libs/python/src/object/function.cpp
++++ b/libs/python/src/object/function.cpp
+@@ -754,7 +754,8 @@ object function_object(
+     return python::object(
+         python::detail::new_non_null_reference(
+             new function(
+-                f, keywords.first, keywords.second - keywords.first)));
++                f, keywords.first, 
++                (unsigned) (keywords.second - keywords.first))));
+ }
+ 
+ object function_object(py_function const& f)
+diff --git a/libs/python/src/object/pickle_support.cpp b/libs/python/src/object/pickle_support.cpp
+index 428c07b..f1c24fa 100644
+--- a/libs/python/src/object/pickle_support.cpp
++++ b/libs/python/src/object/pickle_support.cpp
+@@ -46,7 +46,7 @@ namespace {
+       object instance_dict = getattr(instance_obj, "__dict__", none);
+       long len_instance_dict = 0;
+       if (!instance_dict.is_none()) {
+-          len_instance_dict = len(instance_dict);
++          len_instance_dict = (long) len(instance_dict);
+       }
+       if (!getstate.is_none()) {
+           if (len_instance_dict > 0) {
+-- 
+1.9.4.msysgit.1
+

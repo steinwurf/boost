@@ -1,0 +1,61 @@
+From b22d60d07d7c6905121f7456ddce4de3f7f75c14 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 03:32:52 +0200
+Subject: [PATCH 08/10] Fix unused parameters and typedefs in boost/python and
+ boost/parameter
+
+---
+ boost/parameter/aux_/tagged_argument.hpp | 4 ++--
+ boost/python/str.hpp                     | 2 +-
+ boost/python/to_python_value.hpp         | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/boost/parameter/aux_/tagged_argument.hpp b/boost/parameter/aux_/tagged_argument.hpp
+index 6248be2..54b63ab 100644
+--- a/boost/parameter/aux_/tagged_argument.hpp
++++ b/boost/parameter/aux_/tagged_argument.hpp
+@@ -120,13 +120,13 @@ struct tagged_argument : tagged_argument_base
+     }
+ # else
+     template <class Default>
+-    reference operator[](default_<key_type,Default> const& x) const
++    reference operator[](default_<key_type,Default> const&) const
+     {
+         return value;
+     }
+ 
+     template <class F>
+-    reference operator[](lazy_default<key_type,F> const& x) const
++    reference operator[](lazy_default<key_type,F> const&) const
+     {
+         return value;
+     }
+diff --git a/boost/python/str.hpp b/boost/python/str.hpp
+index 426a3a2..327e267 100644
+--- a/boost/python/str.hpp
++++ b/boost/python/str.hpp
+@@ -182,7 +182,7 @@ class str : public detail::str_base
+     }
+ 
+     template<class T1, class T2, class T3>
+-    long count(T1 const& sub,T2 const& start, T3 const& end) const
++    long count(T1 const& sub,T2 const& start, T3 const&) const
+     {
+         return base::count(object(sub), object(start));
+     }
+diff --git a/boost/python/to_python_value.hpp b/boost/python/to_python_value.hpp
+index a48948d..b7839d5 100644
+--- a/boost/python/to_python_value.hpp
++++ b/boost/python/to_python_value.hpp
+@@ -147,7 +147,7 @@ namespace detail
+   template <class T>
+   inline PyObject* registry_to_python_value<T>::operator()(argument_type x) const
+   {
+-      typedef converter::registered<argument_type> r;
++      //typedef converter::registered<argument_type> r;
+ # if BOOST_WORKAROUND(__GNUC__, < 3)
+       // suppresses an ICE, somehow
+       (void)r::converters;
+-- 
+1.9.4.msysgit.1
+
