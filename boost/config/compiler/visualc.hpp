@@ -175,7 +175,9 @@
 // C++11 features supported by VC++ 14 (aka 2015) Preview
 //
 #if (_MSC_FULL_VER < 190022310)
+# if !defined(BOOST_NO_CXX11_NOEXCEPT)
 #  define BOOST_NO_CXX11_NOEXCEPT
+# endif // !defined(BOOST_NO_CXX11_NOEXCEPT)
 #  define BOOST_NO_CXX11_REF_QUALIFIERS
 #  define BOOST_NO_CXX11_USER_DEFINED_LITERALS
 #  define BOOST_NO_CXX11_ALIGNAS
