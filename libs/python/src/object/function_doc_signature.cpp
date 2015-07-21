@@ -105,7 +105,7 @@ namespace boost { namespace python { namespace objects {
         return res;
     }
 
-    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t n_overloads,  bool cpp_types )
+    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t, bool)
     {
         str res("object");
 
@@ -284,14 +284,14 @@ namespace boost { namespace python { namespace objects {
                 {
                     str func_doc = str((*fi)->doc());
                     
-                    int doc_len = len(func_doc);
+                    int doc_len = (int) len(func_doc);
 
                     bool show_py_signature = doc_len >= int(sizeof(detail::py_signature_tag)/sizeof(char)-1)
                                             && str(detail::py_signature_tag) == func_doc.slice(0, int(sizeof(detail::py_signature_tag)/sizeof(char))-1);
                     if(show_py_signature)
                     {
                         func_doc = str(func_doc.slice(int(sizeof(detail::py_signature_tag)/sizeof(char))-1, _));
-                        doc_len = len(func_doc);
+                        doc_len = (int) len(func_doc);
                     }
                     
                     bool show_cpp_signature = doc_len >= int(sizeof(detail::cpp_signature_tag)/sizeof(char)-1)
@@ -300,7 +300,7 @@ namespace boost { namespace python { namespace objects {
                     if(show_cpp_signature)
                     {
                         func_doc = str(func_doc.slice(_, 1-int(sizeof(detail::cpp_signature_tag)/sizeof(char))));
-                        doc_len = len(func_doc);
+                        doc_len = (int) len(func_doc);
                     }
                     
                     str res="\n";
