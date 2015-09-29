@@ -398,7 +398,7 @@ namespace
 
   const char dot = '.';
 
-  bool not_found_error(int)
+  bool not_found_error(int errval)
   {
     return errno == ENOENT || errno == ENOTDIR;
   }
@@ -1764,8 +1764,13 @@ namespace detail
       (val = std::getenv("TEMP"   )) ||
       (val = std::getenv("TEMPDIR"));
       
-      path p((val!=0) ? val : "/tmp");
-      
+#     ifdef __ANDROID__
+        const char* default_tmp = "/data/local/tmp";
+#     else
+        const char* default_tmp = "/tmp";
+#     endif
+      path p((val!=0) ? val : default_tmp);
+       
       if (p.empty() || (ec&&!is_directory(p, *ec))||(!ec&&!is_directory(p)))
       {
         error(ENOTDIR, p, ec, "boost::filesystem::temp_directory_path");
@@ -1822,7 +1827,6 @@ namespace detail
   path system_complete(const path& p, system::error_code* ec)
   {
 #   ifdef BOOST_POSIX_API
-    (void) ec;
     return (p.empty() || p.is_absolute())
       ? p : current_path()/ p;
 

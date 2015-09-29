@@ -42,6 +42,7 @@
 
 #if defined(BOOST_MSVC)
 # pragma warning(push)
+# pragma warning(disable: 4127) // conditional expression is constant
 # pragma warning(disable: 4355) // 'this' : used in base member initializer list warning
 #endif
 
@@ -118,15 +119,15 @@ namespace boost { namespace spirit { namespace karma
                 karma::domain, template_params>::type
         delimiter_type;
 
-        // The rule's signature
-        typedef typename
-            spirit::detail::extract_sig<template_params>::type
-        sig_type;
-
         // The rule's encoding type
         typedef typename
             spirit::detail::extract_encoding<template_params>::type
         encoding_type;
+
+        // The rule's signature
+        typedef typename
+            spirit::detail::extract_sig<template_params, encoding_type, karma::domain>::type
+        sig_type;
 
         // This is the rule's attribute type
         typedef typename
@@ -179,8 +180,6 @@ namespace boost { namespace spirit { namespace karma
         template <typename Auto, typename Expr>
         static void define(rule& lhs, Expr const& expr, mpl::false_)
         {
-            (void) lhs;
-            (void) expr;
             // Report invalid expression error as early as possible.
             // If you got an error_invalid_expression error message here,
             // then the expression (expr) is not a valid spirit karma expression.
