@@ -1,0 +1,33 @@
+From 9dcced280e7939cb79b3e047b69874063bab893c Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 20:53:19 +0200
+Subject: [PATCH 1/5] Fix unused parameters in filesystem/src/operations.cpp
+
+---
+ libs/filesystem/src/operations.cpp | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/libs/filesystem/src/operations.cpp b/libs/filesystem/src/operations.cpp
+index d8e8840..62da602 100644
+--- a/libs/filesystem/src/operations.cpp
++++ b/libs/filesystem/src/operations.cpp
+@@ -398,7 +398,7 @@ namespace
+ 
+   const char dot = '.';
+ 
+-  bool not_found_error(int errval)
++  bool not_found_error(int)
+   {
+     return errno == ENOENT || errno == ENOTDIR;
+   }
+@@ -1822,6 +1822,7 @@ namespace detail
+   path system_complete(const path& p, system::error_code* ec)
+   {
+ #   ifdef BOOST_POSIX_API
++    (void) ec;
+     return (p.empty() || p.is_absolute())
+       ? p : current_path()/ p;
+ 
+-- 
+1.9.5.msysgit.0
+

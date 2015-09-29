@@ -1,0 +1,24 @@
+From c075ec3bd3390c4f0190c10c7aae36c927cb9f21 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 21:04:36 +0200
+Subject: [PATCH 3/5] Fix unused warning in boost/thread/future.hpp
+
+---
+ boost/thread/future.hpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/boost/thread/future.hpp b/boost/thread/future.hpp
+index e6e2236..3ffc84e 100644
+--- a/boost/thread/future.hpp
++++ b/boost/thread/future.hpp
+@@ -409,6 +409,7 @@ namespace boost
+ 
+             future_state::state get_state(boost::unique_lock<boost::mutex>& lk) const
+             {
++                (void) lk;
+                 if(!done)
+                 {
+                     return future_state::waiting;
+-- 
+1.9.5.msysgit.0
+

@@ -1,0 +1,34 @@
+From 72f45597356f85ac817f835ea703daaf6b5aea33 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 03:13:24 +0200
+Subject: [PATCH 05/10] Fix conversion issues in iostreams/src/mapped_file.cpp
+
+---
+ libs/iostreams/src/mapped_file.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libs/iostreams/src/mapped_file.cpp b/libs/iostreams/src/mapped_file.cpp
+index 7ac8dcf..a421747 100644
+--- a/libs/iostreams/src/mapped_file.cpp
++++ b/libs/iostreams/src/mapped_file.cpp
+@@ -56,7 +56,7 @@ public:
+     void close();
+     bool error() const { return error_; }
+     mapmode flags() const { return params_.flags; }
+-    std::size_t size() const { return size_; }
++    std::size_t size() const { return (std::size_t) size_; }
+     char* data() const { return data_; }
+     void resize(stream_offset new_size);
+     static int alignment();
+@@ -321,7 +321,7 @@ void mapped_file_impl::try_map_file(param_type p)
+             access,
+             (DWORD) (p.offset >> 32),
+             (DWORD) (p.offset & 0xffffffff),
+-            size_ != max_length ? size_ : 0, 
++            size_ != max_length ? (std::size_t) size_ : 0, 
+             (LPVOID) p.hint );
+     if (!data)
+         cleanup_and_throw("failed mapping view");
+-- 
+1.9.4.msysgit.1
+

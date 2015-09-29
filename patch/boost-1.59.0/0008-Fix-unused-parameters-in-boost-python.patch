@@ -1,0 +1,16 @@
+ boost/python/str.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/boost/python/str.hpp b/boost/python/str.hpp
+index 426a3a2..327e267 100644
+--- a/boost/python/str.hpp
++++ b/boost/python/str.hpp
+@@ -182,7 +182,7 @@ class str : public detail::str_base
+     }
+ 
+     template<class T1, class T2, class T3>
+-    long count(T1 const& sub,T2 const& start, T3 const& end) const
++    long count(T1 const& sub,T2 const& start, T3 const&) const
+     {
+         return base::count(object(sub), object(start));
+     }
