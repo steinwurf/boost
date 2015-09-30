@@ -1364,6 +1364,28 @@ namespace boost
         template <class F, class Rp, class Fp>
         BOOST_THREAD_FUTURE<Rp>
         make_future_deferred_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template<typename F, typename Rp, typename Fp>
+        BOOST_THREAD_FUTURE<Rp>
+        make_shared_future_deferred_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template<typename F, typename Rp, typename Fp>
+        BOOST_THREAD_FUTURE<Rp>
+        make_shared_future_async_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+  #ifdef BOOST_THREAD_PROVIDES_EXECUTORS
+        template<typename Ex, typename F, typename Rp, typename Fp>
+        BOOST_THREAD_FUTURE<Rp>
+        make_future_executor_continuation_shared_state(Ex& ex, boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template<typename Ex, typename F, typename Rp, typename Fp>
+        BOOST_THREAD_FUTURE<Rp>
+        make_shared_future_executor_continuation_shared_state(Ex& ex, boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template <class Rp, class Fp, class Executor>
+        BOOST_THREAD_FUTURE<Rp>
+        make_future_executor_shared_state(Executor& ex, BOOST_THREAD_FWD_REF(Fp) f);
+  #endif
 #endif
 #if defined BOOST_THREAD_PROVIDES_FUTURE_UNWRAP
         template<typename F, typename Rp>
@@ -1373,6 +1395,36 @@ namespace boost
         make_future_unwrap_shared_state(boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f);
 #endif
     }
+#if defined(BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY)
+      template< typename InputIterator>
+      typename boost::disable_if<is_future_type<InputIterator>,
+        BOOST_THREAD_FUTURE<csbl::vector<typename InputIterator::value_type>  >
+      >::type
+      when_all(InputIterator first, InputIterator last);
+
+      inline BOOST_THREAD_FUTURE<csbl::tuple<> > when_all();
+
+    #if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+      template< typename T0, typename ...T>
+      BOOST_THREAD_FUTURE<csbl::tuple<typename decay<T0>::type, typename decay<T>::type...> >
+      when_all(BOOST_THREAD_FWD_REF(T0) f, BOOST_THREAD_FWD_REF(T) ... futures);
+    #endif
+
+      template< typename InputIterator>
+      typename boost::disable_if<is_future_type<InputIterator>,
+        BOOST_THREAD_FUTURE<csbl::vector<typename InputIterator::value_type>  >
+      >::type
+      when_any(InputIterator first, InputIterator last);
+
+      inline BOOST_THREAD_FUTURE<csbl::tuple<> > when_any();
+
+    #if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+      template< typename T0, typename ...T>
+      BOOST_THREAD_FUTURE<csbl::tuple<typename decay<T0>::type, typename decay<T>::type...> >
+      when_any(BOOST_THREAD_FWD_REF(T0) f, BOOST_THREAD_FWD_REF(T) ... futures);
+    #endif
+#endif // BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY
+
 
     template <typename R>
     class BOOST_THREAD_FUTURE : public detail::basic_future<R>
@@ -1396,6 +1448,28 @@ namespace boost
         template <class F, class Rp, class Fp>
         friend BOOST_THREAD_FUTURE<Rp>
         detail::make_future_deferred_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template<typename F, typename Rp, typename Fp>
+        friend BOOST_THREAD_FUTURE<Rp>
+        detail::make_shared_future_deferred_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template<typename F, typename Rp, typename Fp>
+        friend BOOST_THREAD_FUTURE<Rp>
+        detail::make_shared_future_async_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+  #ifdef BOOST_THREAD_PROVIDES_EXECUTORS
+        template<typename Ex, typename F, typename Rp, typename Fp>
+        friend BOOST_THREAD_FUTURE<Rp>
+        detail::make_future_executor_continuation_shared_state(Ex& ex, boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template<typename Ex, typename F, typename Rp, typename Fp>
+        friend BOOST_THREAD_FUTURE<Rp>
+        detail::make_shared_future_executor_continuation_shared_state(Ex& ex, boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+        template <class Rp, class Fp, class Executor>
+        friend BOOST_THREAD_FUTURE<Rp>
+        detail::make_future_executor_shared_state(Executor& ex, BOOST_THREAD_FWD_REF(Fp) f);
+  #endif
 #endif
 #if defined BOOST_THREAD_PROVIDES_FUTURE_UNWRAP
         template<typename F, typename Rp>
@@ -1404,6 +1478,35 @@ namespace boost
         friend BOOST_THREAD_FUTURE<Rp>
         detail::make_future_unwrap_shared_state(boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f);
 #endif
+#if defined(BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY)
+      template< typename InputIterator>
+      friend typename boost::disable_if<is_future_type<InputIterator>,
+        BOOST_THREAD_FUTURE<csbl::vector<typename InputIterator::value_type>  >
+      >::type
+      when_all(InputIterator first, InputIterator last);
+
+      //friend inline BOOST_THREAD_FUTURE<csbl::tuple<> > when_all();
+
+    #if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+      template< typename T0, typename ...T>
+      friend BOOST_THREAD_FUTURE<csbl::tuple<typename decay<T0>::type, typename decay<T>::type...> >
+      when_all(BOOST_THREAD_FWD_REF(T0) f, BOOST_THREAD_FWD_REF(T) ... futures);
+    #endif
+
+      template< typename InputIterator>
+      friend typename boost::disable_if<is_future_type<InputIterator>,
+        BOOST_THREAD_FUTURE<csbl::vector<typename InputIterator::value_type>  >
+      >::type
+      when_any(InputIterator first, InputIterator last);
+
+      //friend inline BOOST_THREAD_FUTURE<csbl::tuple<> > when_any();
+
+    #if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+      template< typename T0, typename ...T>
+      friend BOOST_THREAD_FUTURE<csbl::tuple<typename decay<T0>::type, typename decay<T>::type...> >
+      when_any(BOOST_THREAD_FWD_REF(T0) f, BOOST_THREAD_FWD_REF(T) ... futures);
+    #endif
+#endif // BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY
 #if defined BOOST_THREAD_PROVIDES_SIGNATURE_PACKAGED_TASK
         template <class> friend class packaged_task; // todo check if this works in windows
 #else
@@ -1419,9 +1522,7 @@ namespace boost
         friend BOOST_THREAD_FUTURE<Rp>
         detail::make_future_deferred_shared_state(BOOST_THREAD_FWD_REF(Fp) f);
 
-
         typedef typename base_type::move_dest_type move_dest_type;
-    public: // when_all
 
         BOOST_THREAD_FUTURE(future_ptr a_future):
           base_type(a_future)
@@ -1589,7 +1690,7 @@ namespace boost
 
             friend class shared_future<R>;
             friend class promise<R>;
-    #if defined BOOST_THREAD_PROVIDES_FUTURE_CONTINUATION
+#if defined BOOST_THREAD_PROVIDES_FUTURE_CONTINUATION
             template <typename, typename, typename>
             friend struct detail::future_async_continuation_shared_state;
             template <typename, typename, typename>
@@ -1602,7 +1703,30 @@ namespace boost
             template <class F, class Rp, class Fp>
             friend BOOST_THREAD_FUTURE<Rp>
             detail::make_future_deferred_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f, BOOST_THREAD_FWD_REF(Fp) c);
-    #endif
+
+            template<typename F, typename Rp, typename Fp>
+            friend BOOST_THREAD_FUTURE<Rp>
+            detail::make_shared_future_deferred_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+            template<typename F, typename Rp, typename Fp>
+            friend BOOST_THREAD_FUTURE<Rp>
+            detail::make_shared_future_async_continuation_shared_state(boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+      #ifdef BOOST_THREAD_PROVIDES_EXECUTORS
+            template<typename Ex, typename F, typename Rp, typename Fp>
+            friend BOOST_THREAD_FUTURE<Rp>
+            detail::make_future_executor_continuation_shared_state(Ex& ex, boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f, BOOST_THREAD_FWD_REF(Fp) c);
+
+            template<typename Ex, typename F, typename Rp, typename Fp>
+            friend BOOST_THREAD_FUTURE<Rp>
+            detail::make_shared_future_executor_continuation_shared_state(Ex& ex, boost::unique_lock<boost::mutex> &lock, F f, BOOST_THREAD_FWD_REF(Fp) c);
+
+            template <class Rp, class Fp, class Executor>
+            friend BOOST_THREAD_FUTURE<Rp>
+            detail::make_future_executor_shared_state(Executor& ex, BOOST_THREAD_FWD_REF(Fp) f);
+      #endif
+
+#endif
 #if defined BOOST_THREAD_PROVIDES_FUTURE_UNWRAP
             template<typename F, typename Rp>
             friend struct detail::future_unwrap_shared_state;
@@ -1610,6 +1734,36 @@ namespace boost
         friend BOOST_THREAD_FUTURE<Rp>
         detail::make_future_unwrap_shared_state(boost::unique_lock<boost::mutex> &lock, BOOST_THREAD_RV_REF(F) f);
 #endif
+#if defined(BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY)
+      template< typename InputIterator>
+      friend typename boost::disable_if<is_future_type<InputIterator>,
+        BOOST_THREAD_FUTURE<csbl::vector<typename InputIterator::value_type>  >
+      >::type
+      when_all(InputIterator first, InputIterator last);
+
+      friend inline BOOST_THREAD_FUTURE<csbl::tuple<> > when_all();
+
+    #if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+      template< typename T0, typename ...T>
+      friend BOOST_THREAD_FUTURE<csbl::tuple<typename decay<T0>::type, typename decay<T>::type...> >
+      when_all(BOOST_THREAD_FWD_REF(T0) f, BOOST_THREAD_FWD_REF(T) ... futures);
+    #endif
+
+      template< typename InputIterator>
+      friend typename boost::disable_if<is_future_type<InputIterator>,
+        BOOST_THREAD_FUTURE<csbl::vector<typename InputIterator::value_type>  >
+      >::type
+      when_any(InputIterator first, InputIterator last);
+
+      friend inline BOOST_THREAD_FUTURE<csbl::tuple<> > when_any();
+
+    #if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
+      template< typename T0, typename ...T>
+      friend BOOST_THREAD_FUTURE<csbl::tuple<typename decay<T0>::type, typename decay<T>::type...> >
+      when_any(BOOST_THREAD_FWD_REF(T0) f, BOOST_THREAD_FWD_REF(T) ... futures);
+    #endif
+#endif // BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY
+
     #if defined BOOST_THREAD_PROVIDES_SIGNATURE_PACKAGED_TASK
             template <class> friend class packaged_task; // todo check if this works in windows
     #else
@@ -1631,8 +1785,8 @@ namespace boost
               base_type(a_future)
             {
             }
-
         public:
+
             BOOST_THREAD_MOVABLE_ONLY(BOOST_THREAD_FUTURE)
             typedef future_state::state state;
             typedef R value_type; // EXTENSION
