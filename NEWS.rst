@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+1.11.0
+------
+* Minor: Upgrade to Boost release 1.59.0
+
 1.10.0
 ------
 * Minor: Upgrade to Boost release 1.58.0
