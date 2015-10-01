@@ -1,0 +1,25 @@
+From 4080137c529ecf9154878b30b5750f13d7311091 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 03:08:45 +0200
+Subject: [PATCH 04/10] Remove unused parameters in function_doc_signature.cpp
+
+---
+ libs/python/src/object/function_doc_signature.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/libs/python/src/object/function_doc_signature.cpp b/libs/python/src/object/function_doc_signature.cpp
+index 4169528..76cbb0a 100644
+--- a/libs/python/src/object/function_doc_signature.cpp
++++ b/libs/python/src/object/function_doc_signature.cpp
+@@ -105,7 +105,7 @@ namespace boost { namespace python { namespace objects {
+         return res;
+     }
+ 
+-    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t n_overloads,  bool cpp_types )
++    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t, bool)
+     {
+         str res("object");
+ 
+-- 
+1.9.4.msysgit.1
+

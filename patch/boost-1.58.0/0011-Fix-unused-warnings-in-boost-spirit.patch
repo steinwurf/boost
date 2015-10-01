@@ -1,0 +1,54 @@
+From da1cf5904848ee2aaa6605b254d864b658edcd49 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 21:03:03 +0200
+Subject: [PATCH 2/5] Fix unused warnings in boost spirit
+
+---
+ boost/spirit/home/karma/auxiliary/lazy.hpp   | 1 +
+ boost/spirit/home/karma/nonterminal/rule.hpp | 2 ++
+ boost/spirit/home/karma/string/lit.hpp       | 4 ++--
+ 3 files changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/boost/spirit/home/karma/auxiliary/lazy.hpp b/boost/spirit/home/karma/auxiliary/lazy.hpp
+index 32d55fa..68a8fb0 100644
+--- a/boost/spirit/home/karma/auxiliary/lazy.hpp
++++ b/boost/spirit/home/karma/auxiliary/lazy.hpp
+@@ -61,6 +61,7 @@ namespace boost { namespace spirit { namespace karma
+           , Context& context, Delimiter const& delim
+           , Attribute const& attr, mpl::true_)
+         {
++            (void) attr;
+             // If DeducedAuto is false (semantic actions is present), the
+             // component's attribute is unused.
+             return g.generate(sink, context, delim, unused);
+diff --git a/boost/spirit/home/karma/nonterminal/rule.hpp b/boost/spirit/home/karma/nonterminal/rule.hpp
+index 8660f44..642bed3 100644
+--- a/boost/spirit/home/karma/nonterminal/rule.hpp
++++ b/boost/spirit/home/karma/nonterminal/rule.hpp
+@@ -179,6 +179,8 @@ namespace boost { namespace spirit { namespace karma
+         template <typename Auto, typename Expr>
+         static void define(rule& lhs, Expr const& expr, mpl::false_)
+         {
++            (void) lhs;
++            (void) expr;
+             // Report invalid expression error as early as possible.
+             // If you got an error_invalid_expression error message here,
+             // then the expression (expr) is not a valid spirit karma expression.
+diff --git a/boost/spirit/home/karma/string/lit.hpp b/boost/spirit/home/karma/string/lit.hpp
+index 0b9a641..8711731 100644
+--- a/boost/spirit/home/karma/string/lit.hpp
++++ b/boost/spirit/home/karma/string/lit.hpp
+@@ -175,8 +175,8 @@ namespace boost { namespace spirit { namespace karma
+             // fail if attribute isn't matched by immediate literal
+             typedef typename attribute<Context>::type attribute_type;
+ 
+-            typedef typename spirit::result_of::extract_from<attribute_type, Attribute>::type
+-                extracted_string_type;
++            //typedef typename spirit::result_of::extract_from<attribute_type, Attribute>::type
++            //    extracted_string_type;
+ 
+             using spirit::traits::get_c_string;
+             if (!detail::string_compare(
+-- 
+1.9.5.msysgit.0
+

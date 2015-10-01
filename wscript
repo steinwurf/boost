@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 APPNAME = 'boost'
-VERSION = '1.9.0'
+VERSION = '1.11.0'
 
 import waflib.extras.wurf_options
 
@@ -52,47 +52,22 @@ def configure(conf):
         if not conf.env['LIB_RT']:
             conf.check_cxx(lib='rt')
 
-    # Set the boost specific cxx flags
-    conf.env['CXXFLAGS_BOOST_SHARED'] = boost_cxx_flags(conf)
-
     # Set the shared defines
-    conf.env['DEFINES_BOOST_SHARED'] = boost_shared_defines(conf)
+    conf.env['DEFINES_BOOST_SHARED'] = _boost_shared_defines(conf)
 
 
-def boost_cxx_flags(bld):
-    """
-    returns cxx flags used to compile the boost libs
-    """
-    CXX = bld.env.get_flat("CXX")
-
-    # clang should be first, since g++ also matches clang++
-    if 'clang' in CXX or 'em++' in CXX:
-        # clang does not support '-finline-functions'
-        return ['-pedantic']
-
-    elif 'g++' in CXX:
-        return ['-pedantic', '-finline-functions']
-
-    elif 'CL.exe' in CXX or 'cl.exe' in CXX:
-        return ['/GR', '/Zc:forScope', '/Zc:wchar_t', '/wd4675']
-
-    else:
-        bld.fatal('unknown compiler no boost flags specified')
-
-
-def boost_shared_defines(bld):
+def _boost_shared_defines(conf):
     """
     returns shared defines for boost
     """
 
     defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD']
 
-    CXX = bld.env.get_flat("CXX")
-    # Matches both /usr/bin/g++ and /user/bin/clang++
-    if any([c in CXX for c in ['g++', 'clang', 'em++']]):
-        defines += ['BOOST_NO_CXX11_NOEXCEPT']
+    CXX = conf.env.get_flat("CXX")
+    # Disable the noexcept keyword for all compilers
+    defines += ['BOOST_NO_CXX11_NOEXCEPT']
 
-    if bld.is_mkspec_platform('android'):
+    if conf.is_mkspec_platform('android'):
         # Android does not seem to have an intrincsic wchar_t.
         # See the toolchain sysroot/usr/include/wchar.h it is simply a
         # define. Also wchar_t support is quite broken on Android so we

@@ -1,0 +1,42 @@
+From a9cbf1be119ac91eae39ccd8c4bc5132b20f758a Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 03:15:48 +0200
+Subject: [PATCH 06/10] Fix conversion warnings in function_doc_signature.cpp
+
+---
+ libs/python/src/object/function_doc_signature.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libs/python/src/object/function_doc_signature.cpp b/libs/python/src/object/function_doc_signature.cpp
+index 76cbb0a..81daa73 100644
+--- a/libs/python/src/object/function_doc_signature.cpp
++++ b/libs/python/src/object/function_doc_signature.cpp
+@@ -284,14 +284,14 @@ namespace boost { namespace python { namespace objects {
+                 {
+                     str func_doc = str((*fi)->doc());
+                     
+-                    int doc_len = len(func_doc);
++                    int doc_len = (int) len(func_doc);
+ 
+                     bool show_py_signature = doc_len >= int(sizeof(detail::py_signature_tag)/sizeof(char)-1)
+                                             && str(detail::py_signature_tag) == func_doc.slice(0, int(sizeof(detail::py_signature_tag)/sizeof(char))-1);
+                     if(show_py_signature)
+                     {
+                         func_doc = str(func_doc.slice(int(sizeof(detail::py_signature_tag)/sizeof(char))-1, _));
+-                        doc_len = len(func_doc);
++                        doc_len = (int) len(func_doc);
+                     }
+                     
+                     bool show_cpp_signature = doc_len >= int(sizeof(detail::cpp_signature_tag)/sizeof(char)-1)
+@@ -300,7 +300,7 @@ namespace boost { namespace python { namespace objects {
+                     if(show_cpp_signature)
+                     {
+                         func_doc = str(func_doc.slice(_, 1-int(sizeof(detail::cpp_signature_tag)/sizeof(char))));
+-                        doc_len = len(func_doc);
++                        doc_len = (int) len(func_doc);
+                     }
+                     
+                     str res="\n";
+-- 
+1.9.4.msysgit.1
+

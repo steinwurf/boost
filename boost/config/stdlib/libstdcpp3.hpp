@@ -36,7 +36,8 @@
         || defined(_GLIBCXX__PTHREADS) \
         || defined(_GLIBCXX_HAS_GTHREADS) \
         || defined(_WIN32) \
-        || defined(_AIX)
+        || defined(_AIX) \
+        || defined(__HAIKU__)
       //
       // If the std lib has thread support turned on, then turn it on in Boost
       // as well.  We do this because some gcc-3.4 std lib headers define _REENTANT
@@ -121,23 +122,36 @@
 //
 #ifdef __clang__
 
-#if __has_include(<chrono>)
+#if __has_include(<experimental/any>)
+#  define BOOST_LIBSTDCXX_VERSION 50100
+#elif __has_include(<shared_mutex>)
+#  define BOOST_LIBSTDCXX_VERSION 40900
+#elif __has_include(<ext/cmath>)
+#  define BOOST_LIBSTDCXX_VERSION 40800
+#elif __has_include(<scoped_allocator>)
 #  define BOOST_LIBSTDCXX_VERSION 40700
 #elif __has_include(<typeindex>)
 #  define BOOST_LIBSTDCXX_VERSION 40600
 #elif __has_include(<future>)
 #  define BOOST_LIBSTDCXX_VERSION 40500
-#elif __has_include(<ratio>)
+#elif  __has_include(<ratio>)
 #  define BOOST_LIBSTDCXX_VERSION 40400
 #elif __has_include(<array>)
 #  define BOOST_LIBSTDCXX_VERSION 40300
 #endif
-
 //
 //  GCC 4.8 and 9 add working versions of <atomic> and <regex> respectively.
 //  However, we have no test for these as the headers were present but broken
 //  in early GCC versions.
 //
+#endif
+
+#if defined(__SUNPRO_CC) && (__SUNPRO_CC >= 0x5130) && (__cplusplus >= 201103L)
+//
+// Oracle Solaris compiler uses it's own verison of libstdc++ but doesn't 
+// set __GNUC__
+//
+#define BOOST_LIBSTDCXX_VERSION 40800
 #endif
 
 #if !defined(BOOST_LIBSTDCXX_VERSION)
@@ -165,13 +179,8 @@
 #  define BOOST_NO_CXX11_HDR_SYSTEM_ERROR
 #  define BOOST_NO_CXX11_SMART_PTR
 #else
-#  define BOOST_HAS_TR1_COMPLEX_INVERSE_TRIG
-#  define BOOST_HAS_TR1_COMPLEX_OVERLOADS
-#endif
-
-#if (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1)) && (!defined(BOOST_NO_CXX11_HDR_CONDITION_VARIABLE) || !defined(BOOST_NO_CXX11_HDR_MUTEX))
-#  define BOOST_NO_CXX11_HDR_CONDITION_VARIABLE
-#  define BOOST_NO_CXX11_HDR_MUTEX
+#  define BOOST_HAS_TR1_COMPLEX_INVERSE_TRIG 
+#  define BOOST_HAS_TR1_COMPLEX_OVERLOADS 
 #endif
 
 //  C++0x features in GCC 4.5.0 and later
@@ -202,18 +211,67 @@
 #if (BOOST_LIBSTDCXX_VERSION < 40800) || !defined(BOOST_LIBSTDCXX11)
 // Note that although <atomic> existed prior to gcc 4.8 it was largely unimplemented for many types:
 #  define BOOST_NO_CXX11_HDR_ATOMIC
+#  define BOOST_NO_CXX11_HDR_THREAD
 #endif
+//  C++0x features in GCC 4.9.0 and later
+//
 #if (BOOST_LIBSTDCXX_VERSION < 40900) || !defined(BOOST_LIBSTDCXX11)
 // Although <regex> is present and compilable against, the actual implementation is not functional
 // even for the simplest patterns such as "\d" or "[0-9]". This is the case at least in gcc up to 4.8, inclusively.
 #  define BOOST_NO_CXX11_HDR_REGEX
 #endif
-//  C++0x headers not yet (fully!) implemented
+
+#if defined(__clang_major__) && ((__clang_major__ < 3) || ((__clang_major__ == 3) && (__clang_minor__ < 7)))
+// As of clang-3.6, libstdc++ header <atomic> throws up errors with clang:
+#  define BOOST_NO_CXX11_HDR_ATOMIC
+#endif
 //
-#  define BOOST_NO_CXX11_HDR_THREAD
+//  C++0x features in GCC 5.1 and later
+//
+#if (BOOST_LIBSTDCXX_VERSION < 50100) || !defined(BOOST_LIBSTDCXX11)
 #  define BOOST_NO_CXX11_HDR_TYPE_TRAITS
 #  define BOOST_NO_CXX11_HDR_CODECVT
 #  define BOOST_NO_CXX11_ATOMIC_SMART_PTR
 #  define BOOST_NO_CXX11_STD_ALIGN
+#endif
+
+#if defined(__has_include)
+#if !__has_include(<shared_mutex>)
+#  define BOOST_NO_CXX14_HDR_SHARED_MUTEX
+#elif __cplusplus <= 201103
+#  define BOOST_NO_CXX14_HDR_SHARED_MUTEX
+#endif
+#elif __cplusplus < 201402 || (BOOST_LIBSTDCXX_VERSION < 40900) || !defined(BOOST_LIBSTDCXX11)
+#  define BOOST_NO_CXX14_HDR_SHARED_MUTEX
+#endif
+
+//
+// Headers not present on Solaris with the Oracle compiler:
+#if defined(__SUNPRO_CC)
+#define BOOST_NO_CXX11_HDR_FUTURE
+#define BOOST_NO_CXX11_HDR_FORWARD_LIST 
+#define BOOST_NO_CXX11_HDR_ATOMIC
+#endif
+
+#if (!defined(_GLIBCXX_HAS_GTHREADS) || !defined(_GLIBCXX_USE_C99_STDINT_TR1))
+   // Headers not always available:
+#  ifndef BOOST_NO_CXX11_HDR_CONDITION_VARIABLE
+#     define BOOST_NO_CXX11_HDR_CONDITION_VARIABLE
+#  endif
+#  ifndef BOOST_NO_CXX11_HDR_MUTEX
+#     define BOOST_NO_CXX11_HDR_MUTEX
+#  endif
+#  ifndef BOOST_NO_CXX11_HDR_THREAD
+#     define BOOST_NO_CXX11_HDR_THREAD
+#  endif
+#  ifndef BOOST_NO_CXX14_HDR_SHARED_MUTEX
+#     define BOOST_NO_CXX14_HDR_SHARED_MUTEX
+#  endif
+#endif
+
+#if (!defined(_GTHREAD_USE_MUTEX_TIMEDLOCK) || (_GTHREAD_USE_MUTEX_TIMEDLOCK == 0)) && !defined(BOOST_NO_CXX11_HDR_MUTEX)
+// Timed mutexes are not always available:
+#  define BOOST_NO_CXX11_HDR_MUTEX
+#endif
 
 //  --- end ---

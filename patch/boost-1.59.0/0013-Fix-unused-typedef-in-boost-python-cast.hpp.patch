@@ -1,0 +1,34 @@
+From 91127791c383221a25f33ff2d06447b98b4f22b7 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 21:20:59 +0200
+Subject: [PATCH 5/5] Fix unused typedef in boost/python/cast.hpp
+
+---
+ boost/python/cast.hpp | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/boost/python/cast.hpp b/boost/python/cast.hpp
+index 31c61db..90be1e6 100644
+--- a/boost/python/cast.hpp
++++ b/boost/python/cast.hpp
+@@ -12,6 +12,7 @@
+ # include <boost/type.hpp>
+ # include <boost/python/base_type_traits.hpp>
+ # include <boost/python/detail/convertible.hpp>
++# include <boost/static_assert.hpp>
+ 
+ namespace boost { namespace python { 
+ 
+@@ -70,7 +71,8 @@ namespace detail
+   template <class T>
+   inline void assert_castable(boost::type<T>* = 0)
+   {
+-      typedef char must_be_a_complete_type[sizeof(T)];
++      // T must be a complete type.
++      BOOST_STATIC_ASSERT(sizeof(T) == sizeof(T));
+   }
+ 
+   template <class Source, class Target>
+-- 
+1.9.5.msysgit.0
+

@@ -1,0 +1,26 @@
+From 84e8246b2942445ab009c97c58bd8e2e3143e2da Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 21 Jul 2015 23:13:53 +0200
+Subject: [PATCH 2/2] Protect against redefinition of BOOST_NO_CXX11_NOEXCEPT
+
+---
+ boost/config/compiler/visualc.hpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/boost/config/compiler/visualc.hpp b/boost/config/compiler/visualc.hpp
+index 7466138..4f4e49d 100644
+--- a/boost/config/compiler/visualc.hpp
++++ b/boost/config/compiler/visualc.hpp
+@@ -175,7 +175,9 @@
+ // C++11 features supported by VC++ 14 (aka 2015) Preview
+ //
+ #if (_MSC_FULL_VER < 190022310)
++# if !defined(BOOST_NO_CXX11_NOEXCEPT)
+ #  define BOOST_NO_CXX11_NOEXCEPT
++# endif // !defined(BOOST_NO_CXX11_NOEXCEPT)
+ #  define BOOST_NO_CXX11_REF_QUALIFIERS
+ #  define BOOST_NO_CXX11_USER_DEFINED_LITERALS
+ #  define BOOST_NO_CXX11_ALIGNAS
+-- 
+1.9.5.msysgit.0
+

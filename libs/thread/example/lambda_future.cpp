@@ -8,9 +8,6 @@
 #if ! defined  BOOST_NO_CXX11_DECLTYPE
 #define BOOST_RESULT_OF_USE_DECLTYPE
 #endif
-#ifndef BOOST_NO_CXX11_DECLTYPE_N3276
-#define BOOST_THREAD_NO_CXX11_DECLTYPE_N3276
-#endif
 
 #define BOOST_THREAD_VERSION 4
 //#define BOOST_THREAD_USES_LOG
@@ -45,6 +42,14 @@ int main()
       int result = f2.get();
       BOOST_THREAD_LOG << "f2 " << result << BOOST_THREAD_END_LOG;
     }
+#if ! defined    BOOST_NO_CXX14_GENERIC_LAMBDAS
+    {
+      boost::future<int> f1 = boost::async(boost::launch::async, []() {return 123;});
+      boost::future<int> f2 = f1.then([](auto f)  {return 2*f.get(); });
+      int result = f2.get();
+      BOOST_THREAD_LOG << "f2 " << result << BOOST_THREAD_END_LOG;
+    }
+#endif
   }
   catch (std::exception& ex)
   {
