@@ -4,48 +4,38 @@
 APPNAME = 'boost'
 VERSION = '1.11.0'
 
-
-def recurse_helper(ctx, name):
-    if not ctx.has_dependency_path(name):
-        ctx.fatal('Load a tool to find %s as system dependency' % name)
-    else:
-        p = ctx.dependency_path(name)
-        ctx.recurse([p])
+import waflib.extras.wurf_options
 
 
 def options(opt):
 
-    import waflib.extras.wurf_dependency_bundle as bundle
+    opt.load('wurf_common_tools')
+    opt.load('python')
+
+
+def resolve(ctx):
+
     import waflib.extras.wurf_dependency_resolve as resolve
 
-    bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
+    ctx.load('wurf_common_tools')
+
+    ctx.add_dependency(resolve.ResolveVersion(
         name='waf-tools',
         git_repository='github.com/steinwurf/waf-tools.git',
-        major_version=2))
+        major=3))
 
-    bundle.add_dependency(opt, resolve.ResolveGitMajorVersion(
-        name='gtest',
-        git_repository='github.com/steinwurf/gtest.git',
-        major_version=2))
+    # Internal dependencies
+    if ctx.is_toplevel():
 
-    opt.load("wurf_configure_output")
-    opt.load("wurf_dependency_bundle")
-    opt.load('wurf_tools')
-    opt.load('python')
+        ctx.add_dependency(resolve.ResolveVersion(
+            name='gtest',
+            git_repository='github.com/steinwurf/gtest.git',
+            major=3))
 
 
 def configure(conf):
 
-    if conf.is_toplevel():
-
-        conf.load("wurf_dependency_bundle")
-        conf.load("wurf_tools")
-        conf.load_external_tool('mkspec', 'wurf_cxx_mkspec_tool')
-        conf.load_external_tool('runners', 'wurf_runner')
-        conf.load_external_tool('install_path', 'wurf_install_path')
-        conf.load_external_tool('project_gen', 'wurf_project_generator')
-
-        recurse_helper(conf, 'gtest')
+    conf.load("wurf_common_tools")
 
     try:
         conf.load('python')
@@ -96,6 +86,8 @@ def _boost_shared_defines(conf):
 
 def build(bld):
 
+    bld.load("wurf_common_tools")
+
     bld.env.append_unique(
         'DEFINES_STEINWURF_VERSION',
         'STEINWURF_BOOST_VERSION="{}"'.format(VERSION))
@@ -116,14 +108,14 @@ def build(bld):
     else:
         bld.stlib(
             features='cxx',
-            source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
-                    bld.path.ant_glob('libs/thread/src/*.cpp')),
-            target='boost_thread',
-            includes=include_dirs,
-            export_includes=include_dirs,
-            defines=['BOOST_THREAD_BUILD_LIB=1',
-                     'BOOST_THREAD_POSIX'],
-            use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
+                  source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
+                          bld.path.ant_glob('libs/thread/src/*.cpp')),
+                  target='boost_thread',
+                  includes=include_dirs,
+                  export_includes=include_dirs,
+                  defines=['BOOST_THREAD_BUILD_LIB=1',
+                           'BOOST_THREAD_POSIX'],
+                  use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
 
     # Build boost system
     bld.stlib(
@@ -208,16 +200,12 @@ def build(bld):
                  'BOOST_FILESYSTEM_STATIC_LINK=1'],
         use='BOOST_SHARED')
 
-    # Make use flag for apps/libs only using the boost headers
+    # Define boost_includes for apps/libs only using the boost headers
     bld(includes=include_dirs,
         export_includes=include_dirs,
         name='boost_includes',
         use='BOOST_SHARED')
 
     if bld.is_toplevel():
-
-        bld.load('wurf_dependency_bundle')
-
-        recurse_helper(bld, 'gtest')
 
         bld.recurse('test')
