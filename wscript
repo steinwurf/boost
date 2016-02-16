@@ -61,7 +61,14 @@ def _boost_shared_defines(conf):
     returns shared defines for boost
     """
 
-    defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD']
+    defines = ['BOOST_ALL_NO_LIB=1',
+               'BOOST_DETAIL_NO_CONTAINER_FWD',
+               # auto_ptr is in the process of being deprecated in C++ and newer
+               # compilers will emit warnings when compiling code using
+               # auto_ptr. Boost uses auto_ptr in various places by defining
+               # BOOST_NO_AUTO_PTR we basically say we want to compile without
+               # support for auto_ptr.
+               'BOOST_NO_AUTO_PTR']
 
     CXX = conf.env.get_flat("CXX")
     # Disable the noexcept keyword for all compilers
