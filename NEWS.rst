@@ -6,7 +6,7 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Major: Adding BOOST_NO_AUTO_PTR define remove any use of auto_ptr in Boost.
 
 2.0.0
 -----
