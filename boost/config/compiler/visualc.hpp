@@ -244,11 +244,11 @@
 #     define BOOST_COMPILER_VERSION evc9
 #   elif _MSC_VER < 1700
 #     define BOOST_COMPILER_VERSION evc10
-#   elif _MSC_VER < 1800 
-#     define BOOST_COMPILER_VERSION evc11 
-#   elif _MSC_VER < 1900 
+#   elif _MSC_VER < 1800
+#     define BOOST_COMPILER_VERSION evc11
+#   elif _MSC_VER < 1900
 #     define BOOST_COMPILER_VERSION evc12
-#   elif _MSC_VER < 2000  
+#   elif _MSC_VER < 2000
 #     define BOOST_COMPILER_VERSION evc14
 #   else
 #      if defined(BOOST_ASSERT_CONFIG)
@@ -273,7 +273,7 @@
 #     define BOOST_COMPILER_VERSION 9.0
 #   elif _MSC_VER < 1700
 #     define BOOST_COMPILER_VERSION 10.0
-#   elif _MSC_VER < 1800 
+#   elif _MSC_VER < 1800
 #     define BOOST_COMPILER_VERSION 11.0
 #   elif _MSC_VER < 1900
 #     define BOOST_COMPILER_VERSION 12.0
@@ -287,12 +287,3 @@
 #  define BOOST_COMPILER "Microsoft Visual C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)
 #endif
 
-//
-// last known and checked version is 19.00.23026 (VC++ 2015 RTM):
-#if (_MSC_VER > 1900)
-#  if defined(BOOST_ASSERT_CONFIG)
-#     error "Unknown compiler version - please run the configure tests and report the results"
-#  else
-#     pragma message("Unknown compiler version - please run the configure tests and report the results")
-#  endif
-#endif
