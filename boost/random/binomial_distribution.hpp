@@ -24,7 +24,9 @@
 
 namespace boost {
 namespace random {
+
 namespace detail {
+
 template<class RealType>
 struct binomial_table {
     static const RealType table[10];
@@ -43,6 +45,7 @@ const RealType binomial_table<RealType>::table[10] = {
     0.009255462182712733,
     0.008330563433362871
 };
+
 }
 
 /**
@@ -93,7 +96,7 @@ public:
             os << parm._p << " " << parm._t;
             return os;
         }
-
+    
         /** Reads the parameters of the distribution from a @c std::istream. */
         template<class CharT, class Traits>
         friend std::basic_istream<CharT,Traits>&
@@ -117,7 +120,7 @@ public:
         IntType _t;
         RealType _p;
     };
-
+    
     /**
      * Construct a @c binomial_distribution object. @c t and @c p
      * are the parameters of the distribution.
@@ -126,21 +129,21 @@ public:
      */
     explicit binomial_distribution(IntType t_arg = 1,
                                    RealType p_arg = RealType(0.5))
-      : _t(t_arg), _p(p_arg), btrd()
+      : _t(t_arg), _p(p_arg)
     {
         init();
     }
-
+    
     /**
      * Construct an @c binomial_distribution object from the
      * parameters.
      */
     explicit binomial_distribution(const param_type& parm)
-      : _t(parm.t()), _p(parm.p()), btrd()
+      : _t(parm.t()), _p(parm.p())
     {
         init();
     }
-
+    
     /**
      * Returns a random variate distributed according to the
      * binomial distribution.
@@ -160,7 +163,7 @@ public:
             return generate(urng);
         }
     }
-
+    
     /**
      * Returns a random variate distributed according to the
      * binomial distribution with parameters specified by @c param.
@@ -207,7 +210,7 @@ public:
         os << bd.param();
         return os;
     }
-
+    
     /** Reads the parameters of the distribution from a @c std::istream. */
     template<class CharT, class Traits>
     friend std::basic_istream<CharT,Traits>&
@@ -271,7 +274,7 @@ private:
 
         RealType p = (0.5 < _p)? (1 - _p) : _p;
         IntType t = _t;
-
+        
         m = static_cast<IntType>((t+1)*p);
 
         if(use_inversion()) {
@@ -301,7 +304,7 @@ private:
             RealType u;
             RealType v = uniform_01<RealType>()(urng);
             if(v <= btrd.u_rv_r) {
-                RealType u = v/btrd.v_r - 0.43;
+                u = v/btrd.v_r - 0.43;
                 return static_cast<IntType>(floor(
                     (2*btrd.a/(0.5 - abs(u)) + btrd.b)*u + btrd.c));
             }
@@ -318,7 +321,7 @@ private:
             IntType k = static_cast<IntType>(floor((2*btrd.a/us + btrd.b)*u + btrd.c));
             if(k < 0 || k > _t) continue;
             v = v*btrd.alpha/(btrd.a/(us*us) + btrd.b);
-            RealType km = abs(static_cast<RealType>(k - m));
+            RealType km = abs(k - m);
             if(km <= 15) {
                 RealType f = 1;
                 if(m < k) {
@@ -399,30 +402,31 @@ private:
     // common data
     IntType m;
 
-    // for btrd
-    struct btrd_data {
-        RealType r;
-        RealType nr;
-        RealType npq;
-        RealType b;
-        RealType a;
-        RealType c;
-        RealType alpha;
-        RealType v_r;
-        RealType u_rv_r;
+    union {
+        // for btrd
+        struct {
+            RealType r;
+            RealType nr;
+            RealType npq;
+            RealType b;
+            RealType a;
+            RealType c;
+            RealType alpha;
+            RealType v_r;
+            RealType u_rv_r;
+        } btrd;
+        // for inversion
+        RealType q_n;
     };
-
-    btrd_data btrd;
-
-    // for inversion
-    RealType q_n;
 
     /// @endcond
 };
+
 }
 
 // backwards compatibility
 using random::binomial_distribution;
+
 }
 
 #include <boost/random/detail/enable_warnings.hpp>

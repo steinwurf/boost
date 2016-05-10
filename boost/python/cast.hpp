@@ -12,7 +12,6 @@
 # include <boost/type.hpp>
 # include <boost/python/base_type_traits.hpp>
 # include <boost/python/detail/convertible.hpp>
-# include <boost/static_assert.hpp>
 
 namespace boost { namespace python { 
 
@@ -71,8 +70,7 @@ namespace detail
   template <class T>
   inline void assert_castable(boost::type<T>* = 0)
   {
-      // T must be a complete type.
-      BOOST_STATIC_ASSERT(sizeof(T) == sizeof(T));
+      typedef char must_be_a_complete_type[sizeof(T)];
   }
 
   template <class Source, class Target>

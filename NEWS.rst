@@ -1,12 +1,12 @@
 News for boost
-=============================
+==============
 
 This file lists the major changes between versions. For a more detailed list
 of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Minor: Upgrade to Boost release 1.60.0
 
 2.0.0
 -----
