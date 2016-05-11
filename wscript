@@ -105,18 +105,18 @@ def build(bld):
             includes=include_dirs,
             export_includes=include_dirs,
             defines=['BOOST_THREAD_BUILD_LIB=1'],
-            use='BOOST_SHARED')
+            use=['BOOST_SHARED', 'boost_system'])
     else:
         bld.stlib(
             features='cxx',
-                  source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
-                          bld.path.ant_glob('libs/thread/src/*.cpp')),
-                  target='boost_thread',
-                  includes=include_dirs,
-                  export_includes=include_dirs,
-                  defines=['BOOST_THREAD_BUILD_LIB=1',
-                           'BOOST_THREAD_POSIX'],
-                  use=['BOOST_PAGESIZE_FIX', 'BOOST_SHARED', 'PTHREAD'])
+            source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
+                    bld.path.ant_glob('libs/thread/src/*.cpp')),
+            target='boost_thread',
+            includes=include_dirs,
+            export_includes=include_dirs,
+            defines=['BOOST_THREAD_BUILD_LIB=1',
+                   'BOOST_THREAD_POSIX'],
+            use=['BOOST_SHARED', 'PTHREAD', 'boost_system'])
 
     # Build boost system
     bld.stlib(
