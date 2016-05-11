@@ -61,7 +61,8 @@ def _boost_shared_defines(conf):
     returns shared defines for boost
     """
 
-    defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD']
+    defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD',
+               'BOOST_SYSTEM_NO_DEPRECATED']
 
     CXX = conf.env.get_flat("CXX")
     # Disable the noexcept keyword for all compilers
@@ -134,8 +135,8 @@ def build(bld):
         target='boost_chrono',
         includes=include_dirs,
         export_includes=include_dirs,
-        defines=['BOOST_SYSTEM_STATIC_LINK=1',
-                 'BOOST_SYSTEM_NO_DEPRECATED'],
+        defines=['BOOST_CHRONO_STATIC_LINK=1',
+                 'BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING'],
         use=['BOOST_SHARED', 'RT', 'PTHREAD'])
 
     # Build boost timer
@@ -145,12 +146,8 @@ def build(bld):
         target='boost_timer',
         includes=include_dirs,
         export_includes=include_dirs,
-        defines=['BOOST_SYSTEM_STATIC_LINK=1',
-                 'BOOST_SYSTEM_NO_DEPRECATED',
-                 'BOOST_SYSTEM_STATIC_LINK=1',
-                 'BOOST_CHRONO_STATIC_LINK=1',
-                 'BOOST_TIMER_STATIC_LINK=1'],
-        use='BOOST_SHARED')
+        defines=['BOOST_TIMER_STATIC_LINK=1'],
+        use=['BOOST_SHARED', 'boost_chrono'])
 
     # Build boost program options
     bld.stlib(
@@ -196,9 +193,8 @@ def build(bld):
         target='boost_filesystem',
         includes=include_dirs,
         export_includes=include_dirs,
-        defines=['BOOST_SYSTEM_STATIC_LINK=1',
-                 'BOOST_FILESYSTEM_STATIC_LINK=1'],
-        use='BOOST_SHARED')
+        defines=['BOOST_FILESYSTEM_STATIC_LINK=1'],
+        use=['BOOST_SHARED', 'boost_system'])
 
     # Define boost_includes for apps/libs only using the boost headers
     bld(includes=include_dirs,
