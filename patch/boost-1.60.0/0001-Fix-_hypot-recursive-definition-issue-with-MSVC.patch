@@ -1,0 +1,41 @@
+From adca4d512c908b6996b12e23577bfa091ff49125 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 24 Sep 2014 02:54:03 +0200
+Subject: [PATCH 01/10] Fix _hypot recursive definition issue with MSVC
+
+This bug is already fixed in Python 3.x: http://bugs.python.org/issue20221
+---
+ boost/python/detail/wrap_python.hpp | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/boost/python/detail/wrap_python.hpp b/boost/python/detail/wrap_python.hpp
+index eaef784..cebd608 100644
+--- a/boost/python/detail/wrap_python.hpp
++++ b/boost/python/detail/wrap_python.hpp
+@@ -22,7 +22,7 @@
+ 
+ #ifdef _DEBUG
+ # ifndef BOOST_DEBUG_PYTHON
+-#  ifdef _MSC_VER  
++#  ifdef _MSC_VER
+     // VC8.0 will complain if system headers are #included both with
+     // and without _DEBUG defined, so we have to #include all the
+     // system headers used by pyconfig.h right here.
+@@ -129,6 +129,14 @@ typedef int pid_t;
+ 
+ #  undef hypot // undo the evil #define left by Python.
+ 
++# elif defined(_MSC_VER)
++
++// VS 2010 and above already defines hypot as _hypot
++// and the double definition would cause an infinite recursion
++#if _MSC_VER >= 1600
++    #undef hypot
++#endif
++
+ # elif defined(__BORLANDC__)
+ #  undef HAVE_HYPOT
+ #  define HAVE_HYPOT 1
+-- 
+1.9.4.msysgit.1
+

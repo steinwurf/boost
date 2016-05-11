@@ -1,0 +1,26 @@
+From aa57063467590ef6bf229939f1194624c44e27c7 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 03:01:01 +0200
+Subject: [PATCH 2/5] Fix unused warnings in boost/system/error_code.hpp
+
+---
+ boost/system/error_code.hpp | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/boost/system/error_code.hpp b/boost/system/error_code.hpp
+index d419f37..99f505e 100644
+--- a/boost/system/error_code.hpp
++++ b/boost/system/error_code.hpp
+@@ -218,9 +218,6 @@ namespace boost
+     inline const error_category &  get_system_category() { return system_category(); }
+     inline const error_category &  get_generic_category() { return generic_category(); }
+     inline const error_category &  get_posix_category() { return generic_category(); }
+-    static const error_category &  posix_category = generic_category();
+-    static const error_category &  errno_ecat     = generic_category();
+-    static const error_category &  native_ecat    = system_category();
+ # endif
+ 
+     //  class error_condition  -----------------------------------------------//
+-- 
+2.8.0.windows.1
+

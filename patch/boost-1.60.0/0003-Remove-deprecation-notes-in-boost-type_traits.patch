@@ -1,0 +1,87 @@
+From 06fcaad34e1fc65f0e9042c94f6b2856adae23fb Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 02:53:29 +0200
+Subject: [PATCH 1/5] Remove deprecation notes in boost/type_traits
+
+---
+ boost/type_traits/detail/ice_and.hpp | 7 -------
+ boost/type_traits/detail/ice_eq.hpp  | 7 -------
+ boost/type_traits/detail/ice_not.hpp | 7 -------
+ boost/type_traits/detail/ice_or.hpp  | 7 -------
+ 4 files changed, 28 deletions(-)
+
+diff --git a/boost/type_traits/detail/ice_and.hpp b/boost/type_traits/detail/ice_and.hpp
+index 3ccb03e..8b461b9 100644
+--- a/boost/type_traits/detail/ice_and.hpp
++++ b/boost/type_traits/detail/ice_and.hpp
+@@ -11,13 +11,6 @@
+ 
+ #include <boost/config.hpp>
+ 
+-//
+-// This header is deprecated and no longer used by type_traits:
+-//
+-#if defined(__GNUC__) || defined(_MSC_VER)
+-# pragma message("NOTE: Use of this header (ice_and.hpp) is deprecated")
+-#endif
+-
+ namespace boost {
+ namespace type_traits {
+ 
+diff --git a/boost/type_traits/detail/ice_eq.hpp b/boost/type_traits/detail/ice_eq.hpp
+index 5908f81..ea42a60 100644
+--- a/boost/type_traits/detail/ice_eq.hpp
++++ b/boost/type_traits/detail/ice_eq.hpp
+@@ -10,13 +10,6 @@
+ 
+ #include <boost/config.hpp>
+ 
+-//
+-// This header is deprecated and no longer used by type_traits:
+-//
+-#if defined(__GNUC__) || defined(_MSC_VER)
+-# pragma message("NOTE: Use of this header (ice_eq.hpp) is deprecated")
+-#endif
+-
+ namespace boost {
+ namespace type_traits {
+ 
+diff --git a/boost/type_traits/detail/ice_not.hpp b/boost/type_traits/detail/ice_not.hpp
+index e095be9..ee1dca0 100644
+--- a/boost/type_traits/detail/ice_not.hpp
++++ b/boost/type_traits/detail/ice_not.hpp
+@@ -10,13 +10,6 @@
+ 
+ #include <boost/config.hpp>
+ 
+-//
+-// This header is deprecated and no longer used by type_traits:
+-//
+-#if defined(__GNUC__) || defined(_MSC_VER)
+-# pragma message("NOTE: Use of this header (ice_not.hpp) is deprecated")
+-#endif
+-
+ namespace boost {
+ namespace type_traits {
+ 
+diff --git a/boost/type_traits/detail/ice_or.hpp b/boost/type_traits/detail/ice_or.hpp
+index ea523c8..f88d9f6 100644
+--- a/boost/type_traits/detail/ice_or.hpp
++++ b/boost/type_traits/detail/ice_or.hpp
+@@ -10,13 +10,6 @@
+ 
+ #include <boost/config.hpp>
+ 
+-//
+-// This header is deprecated and no longer used by type_traits:
+-//
+-#if defined(__GNUC__) || defined(_MSC_VER)
+-# pragma message("NOTE: Use of this header (ice_or.hpp) is deprecated")
+-#endif
+-
+ namespace boost {
+ namespace type_traits {
+ 
+-- 
+2.8.0.windows.1
+
