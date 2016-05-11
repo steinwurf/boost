@@ -1,18 +1,25 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # encoding: utf-8
 
-import os, sys, urllib2, traceback
+import traceback
+import sys
 
-project_name = 'boost-light'
+try:
+    input = raw_input
+except NameError:
+    pass
+
+project_name = 'bourne'
 project_dependencies = \
-[
-    'waf-tools',
-    'gtest',
-]
+    [
+        'waf-tools',
+        'gtest',
+    ]
 
 # Importing a dynamically generated module
 # Python recipe from http://code.activestate.com/recipes/82234
-def importCode(code,name,add_to_sys_modules=0):
+
+def importCode(code, name, add_to_sys_modules=0):
     """
     Import dynamically generated code as a module. code is the
     object containing the code (a string, a file handle or an
@@ -32,11 +39,11 @@ def importCode(code,name,add_to_sys_modules=0):
 
     Returns a newly generated module.
     """
-    import sys,imp
+    import imp
 
     module = imp.new_module(name)
 
-    exec code in module.__dict__
+    exec(code, module.__dict__)
     if add_to_sys_modules:
         sys.modules[name] = module
 
@@ -50,21 +57,26 @@ if __name__ == '__main__':
           "master/config_helper/config-impl.py"
 
     try:
+        from urllib.request import urlopen, Request
+    except ImportError:
+        from urllib2 import urlopen, Request
+
+    try:
         # Fetch the code file from the given url
-        req = urllib2.Request(url)
-        response = urllib2.urlopen(req)
+        req = Request(url)
+        response = urlopen(req)
         code = response.read()
         print("Update complete. Code size: {}\n".format(len(code)))
         try:
             # Import the code string as a module
-            mod = importCode(code,"config_helper")
+            mod = importCode(code, "config_helper")
             # Run the actual config tool from the dynamic module
             mod.config_tool(project_dependencies)
         except:
             print("Unexpected error:")
-            print traceback.format_exc()
+            print(traceback.format_exc())
     except Exception as e:
         print("Could not fetch code file from:\n\t{}".format(url))
         print(e)
 
-    raw_input('Press ENTER to exit...')
+    input('Press ENTER to exit...')

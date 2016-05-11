@@ -731,7 +731,7 @@ void* instance_holder::allocate(PyObject* self_, std::size_t holder_offset, std:
     assert(PyType_IsSubtype(Py_TYPE(Py_TYPE(self_)), &class_metatype_object));
     objects::instance<>* self = (objects::instance<>*)self_;
     
-    int total_size_needed = (int) (holder_offset + holder_size);
+    int total_size_needed = holder_offset + holder_size;
     
     if (-Py_SIZE(self) >= total_size_needed)
     {

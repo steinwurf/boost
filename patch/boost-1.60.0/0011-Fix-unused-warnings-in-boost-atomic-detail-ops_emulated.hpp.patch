@@ -1,0 +1,25 @@
+From 941409227f3a975355d55d624b3bc52c23b00d6d Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 03:08:45 +0200
+Subject: [PATCH 4/5] Fix unused warnings in boost/atomic/detail
+
+---
+ boost/atomic/detail/ops_emulated.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/boost/atomic/detail/ops_emulated.hpp b/boost/atomic/detail/ops_emulated.hpp
+index 0dc4e68..1703291 100644
+--- a/boost/atomic/detail/ops_emulated.hpp
++++ b/boost/atomic/detail/ops_emulated.hpp
+@@ -89,7 +89,7 @@ struct emulated_operations
+     }
+ 
+     static BOOST_FORCEINLINE bool compare_exchange_weak(
+-        storage_type volatile& storage, storage_type& expected, storage_type desired, memory_order success_order, memory_order failure_order) BOOST_NOEXCEPT
++        storage_type volatile& storage, storage_type& expected, storage_type desired, memory_order, memory_order) BOOST_NOEXCEPT
+     {
+         // Note: This function is the exact copy of compare_exchange_strong. The reason we're not just forwarding the call
+         // is that MSVC-12 ICEs in this case.
+-- 
+2.8.0.windows.1
+

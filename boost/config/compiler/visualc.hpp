@@ -55,6 +55,7 @@
 #  define BOOST_NO_CXX11_EXTERN_TEMPLATE
 // Variadic macros do not exist for VC7.1 and lower
 #  define BOOST_NO_CXX11_VARIADIC_MACROS
+#  define BOOST_NO_CXX11_LOCAL_CLASS_TEMPLATE_PARAMETERS
 #endif
 
 #if _MSC_VER < 1500  // 140X == VC++ 8.0
@@ -160,9 +161,7 @@
 // C++11 features supported by VC++ 14 (aka 2015)
 //
 #if (_MSC_FULL_VER < 190023026)
-# if !defined(BOOST_NO_CXX11_NOEXCEPT)
 #  define BOOST_NO_CXX11_NOEXCEPT
-# endif // !defined(BOOST_NO_CXX11_NOEXCEPT)
 #  define BOOST_NO_CXX11_REF_QUALIFIERS
 #  define BOOST_NO_CXX11_USER_DEFINED_LITERALS
 #  define BOOST_NO_CXX11_ALIGNAS
@@ -287,3 +286,4 @@
 
 #  define BOOST_COMPILER "Microsoft Visual C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)
 #endif
+

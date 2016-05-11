@@ -1,0 +1,38 @@
+From 8b997c6878fd28dc44aa4ff4fb03ac874f45e019 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 02:39:14 +0200
+Subject: [PATCH 2/3] Fix unused warnings in boost spirit
+
+---
+ boost/spirit/home/karma/auxiliary/lazy.hpp   | 1 +
+ boost/spirit/home/karma/nonterminal/rule.hpp | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/boost/spirit/home/karma/auxiliary/lazy.hpp b/boost/spirit/home/karma/auxiliary/lazy.hpp
+index 32d55fa..68a8fb0 100644
+--- a/boost/spirit/home/karma/auxiliary/lazy.hpp
++++ b/boost/spirit/home/karma/auxiliary/lazy.hpp
+@@ -61,6 +61,7 @@ namespace boost { namespace spirit { namespace karma
+           , Context& context, Delimiter const& delim
+           , Attribute const& attr, mpl::true_)
+         {
++            (void) attr;
+             // If DeducedAuto is false (semantic actions is present), the
+             // component's attribute is unused.
+             return g.generate(sink, context, delim, unused);
+diff --git a/boost/spirit/home/karma/nonterminal/rule.hpp b/boost/spirit/home/karma/nonterminal/rule.hpp
+index 99d195f..8c687e9 100644
+--- a/boost/spirit/home/karma/nonterminal/rule.hpp
++++ b/boost/spirit/home/karma/nonterminal/rule.hpp
+@@ -180,6 +180,8 @@ namespace boost { namespace spirit { namespace karma
+         template <typename Auto, typename Expr>
+         static void define(rule& lhs, Expr const& expr, mpl::false_)
+         {
++            (void) lhs;
++            (void) expr;
+             // Report invalid expression error as early as possible.
+             // If you got an error_invalid_expression error message here,
+             // then the expression (expr) is not a valid spirit karma expression.
+-- 
+2.8.0.windows.1
+
