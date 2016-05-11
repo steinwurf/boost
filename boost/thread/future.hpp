@@ -458,7 +458,6 @@ namespace boost
 
             future_state::state get_state(boost::unique_lock<boost::mutex>&) const
             {
-                (void) lk;
                 if(!done)
                 {
                     return future_state::waiting;
