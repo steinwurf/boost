@@ -9,7 +9,7 @@ try:
 except NameError:
     pass
 
-project_name = 'bourne'
+project_name = 'boost'
 project_dependencies = \
     [
         'waf-tools',
