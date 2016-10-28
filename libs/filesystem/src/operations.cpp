@@ -2061,15 +2061,19 @@ namespace
   {
     errno = 0;
 
+    // readdir_r is deprecated since glibc 2.24
+#   if defined(__GLIBC__) && ((__GLIBC__ > 2) || 
+       ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)))
+    #define BOOST_FILESYSTEM_READDIR_R_DEPRECATED
+#   endif
+
 #   if !defined(__CYGWIN__)\
     && defined(_POSIX_THREAD_SAFE_FUNCTIONS)\
     && defined(_SC_THREAD_SAFE_FUNCTIONS)\
     && (_POSIX_THREAD_SAFE_FUNCTIONS+0 >= 0)\
     && (!defined(__hpux) || defined(_REENTRANT)) \
     && (!defined(_AIX) || defined(__THREAD_SAFE)) \
-    // readdir_r is deprecated since glibc 2.24
-    && (!defined(__GLIBC__) || (__GLIBC__ < 2) || \
-        (__GLIBC__ == 2 && __GLIBC_MINOR__ < 24))
+    && (!defined(BOOST_FILESYSTEM_READDIR_R_DEPRECATED))
     if (::sysconf(_SC_THREAD_SAFE_FUNCTIONS)>= 0)
       { return ::readdir_r(dirp, entry, result); }
 #   endif
