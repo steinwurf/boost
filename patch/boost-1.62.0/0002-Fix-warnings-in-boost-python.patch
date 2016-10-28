@@ -1,0 +1,67 @@
+From 6326ef4941efbe1995b8a9b4ad63b3b88be77b11 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 02:35:21 +0200
+Subject: [PATCH 1/3] Fix warnings in boost-python
+
+---
+ boost/python/detail/caller.hpp                    | 2 +-
+ boost/python/detail/unwind_type.hpp               | 4 +---
+ boost/python/str.hpp                              | 2 +-
+ libs/python/src/object/function_doc_signature.cpp | 2 +-
+ 4 files changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/boost/python/detail/caller.hpp b/boost/python/detail/caller.hpp
+index e479bf4..14e69af 100644
+--- a/boost/python/detail/caller.hpp
++++ b/boost/python/detail/caller.hpp
+@@ -52,7 +52,7 @@ inline PyObject* get(mpl::int_<N>, PyObject* const& args_)
+ 
+ inline unsigned arity(PyObject* const& args_)
+ {
+-    return PyTuple_GET_SIZE(args_);
++    return (unsigned int) PyTuple_GET_SIZE(args_);
+ }
+ 
+ // This "result converter" is really just used as
+diff --git a/boost/python/detail/unwind_type.hpp b/boost/python/detail/unwind_type.hpp
+index 9a997c9..e914a91 100644
+--- a/boost/python/detail/unwind_type.hpp
++++ b/boost/python/detail/unwind_type.hpp
+@@ -151,7 +150,7 @@ inline typename Generator::result_type
+ #ifndef _MSC_VER
+ unwind_type(boost::type<U>*, Generator*)
+ #else
+-unwind_type(boost::type<U>*p =0, Generator* =0)
++unwind_type(boost::type<U>* =0, Generator* =0)
+ #endif
+ {
+     BOOST_STATIC_CONSTANT(int, indirection
+diff --git a/boost/python/str.hpp b/boost/python/str.hpp
+index 426a3a2..327e267 100644
+--- a/boost/python/str.hpp
++++ b/boost/python/str.hpp
+@@ -182,7 +182,7 @@ class str : public detail::str_base
+     }
+ 
+     template<class T1, class T2, class T3>
+-    long count(T1 const& sub,T2 const& start, T3 const& end) const
++    long count(T1 const& sub,T2 const& start, T3 const&) const
+     {
+         return base::count(object(sub), object(start));
+     }
+diff --git a/libs/python/src/object/function_doc_signature.cpp b/libs/python/src/object/function_doc_signature.cpp
+index 4169528..76cbb0a 100644
+--- a/libs/python/src/object/function_doc_signature.cpp
++++ b/libs/python/src/object/function_doc_signature.cpp
+@@ -105,7 +105,7 @@ namespace boost { namespace python { namespace objects {
+         return res;
+     }
+ 
+-    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t n_overloads,  bool cpp_types )
++    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t, bool)
+     {
+         str res("object");
+ 
+--
+2.8.0.windows.1
+

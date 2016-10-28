@@ -1,0 +1,26 @@
+From 1b38f8df0eac4e42e1017240a7035d1812fb5fed Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 03:36:22 +0200
+Subject: [PATCH] Fix unused warning in
+ boost/atomic/detail/ops_gcc_x86_dcas.hpp
+
+---
+ boost/atomic/detail/ops_gcc_x86_dcas.hpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/boost/atomic/detail/ops_gcc_x86_dcas.hpp b/boost/atomic/detail/ops_gcc_x86_dcas.hpp
+index f7a84f7..40a4ef9 100644
+--- a/boost/atomic/detail/ops_gcc_x86_dcas.hpp
++++ b/boost/atomic/detail/ops_gcc_x86_dcas.hpp
+@@ -260,7 +260,7 @@ struct gcc_dcas_x86
+         return compare_exchange_strong(storage, expected, desired, success_order, failure_order);
+     }
+
+-    static BOOST_FORCEINLINE storage_type exchange(storage_type volatile& storage, storage_type v, memory_order order) BOOST_NOEXCEPT
++    static BOOST_FORCEINLINE storage_type exchange(storage_type volatile& storage, storage_type v, memory_order) BOOST_NOEXCEPT
+     {
+ #if defined(__clang__)
+         // Clang cannot allocate eax:edx register pairs but it has sync intrinsics
+--
+2.8.0.windows.1
+
