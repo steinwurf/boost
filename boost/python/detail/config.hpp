@@ -47,6 +47,7 @@
 #   if BOOST_GCC >= 40600
 #      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 #      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#      pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #   endif
 
 #  elif defined(__clang__) && defined(__has_warning)
@@ -56,6 +57,9 @@
 #   endif
 #   if __has_warning("-Wmissing-field-initializers")
 #      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#   endif
+#   if __has_warning("-Wstrict-aliasing")
+#      pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #   endif
 
 #  endif
