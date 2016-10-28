@@ -52,7 +52,7 @@ inline PyObject* get(mpl::int_<N>, PyObject* const& args_)
 
 inline unsigned arity(PyObject* const& args_)
 {
-    return (unsigned int) PyTuple_GET_SIZE(args_);
+    return PyTuple_GET_SIZE(args_);
 }
 
 // This "result converter" is really just used as
