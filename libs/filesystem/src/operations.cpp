@@ -2066,7 +2066,10 @@ namespace
     && defined(_SC_THREAD_SAFE_FUNCTIONS)\
     && (_POSIX_THREAD_SAFE_FUNCTIONS+0 >= 0)\
     && (!defined(__hpux) || defined(_REENTRANT)) \
-    && (!defined(_AIX) || defined(__THREAD_SAFE))
+    && (!defined(_AIX) || defined(__THREAD_SAFE)) \
+    // readdir_r is deprecated since glibc 2.24
+    && (!defined(__GLIBC__) || (__GLIBC__ < 2) || \
+        (__GLIBC__ == 2 && __GLIBC_MINOR__ < 24))
     if (::sysconf(_SC_THREAD_SAFE_FUNCTIONS)>= 0)
       { return ::readdir_r(dirp, entry, result); }
 #   endif
