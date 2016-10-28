@@ -34,10 +34,35 @@
 #  pragma warning (disable : 4251) // disable exported dll function
 #  pragma warning (disable : 4800) //'int' : forcing value to bool 'true' or 'false'
 #  pragma warning (disable : 4275) // non dll-interface class
+#  pragma warning (disable : 4172) // returning address of local variable or temporary
 
 # elif defined(__ICL) && __ICL < 600 // Intel C++ 5
 
 #  pragma warning(disable: 985) // identifier was truncated in debug information
+
+# elif defined(__GNUC__)
+
+#  if defined(BOOST_GCC)
+
+#   if BOOST_GCC >= 40600
+#      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#      pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#   endif
+
+#  elif defined(__clang__) && defined(__has_warning)
+
+#   if __has_warning("-Wdeprecated-declarations")
+#      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#   endif
+#   if __has_warning("-Wmissing-field-initializers")
+#      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#   endif
+#   if __has_warning("-Wstrict-aliasing")
+#      pragma GCC diagnostic ignored "-Wstrict-aliasing"
+#   endif
+
+#  endif
 
 # endif
 
@@ -133,6 +158,10 @@
 
 #ifndef BOOST_PYTHON_NO_PY_SIGNATURES
 #define BOOST_PYTHON_SUPPORTS_PY_SIGNATURES // enables smooth transition
+#endif
+
+#if !defined(BOOST_ATTRIBUTE_UNUSED) && defined(__GNUC__) && (__GNUC__ >= 4)
+#  define BOOST_ATTRIBUTE_UNUSED __attribute__((unused))
 #endif
 
 #endif // CONFIG_DWA052200_H_

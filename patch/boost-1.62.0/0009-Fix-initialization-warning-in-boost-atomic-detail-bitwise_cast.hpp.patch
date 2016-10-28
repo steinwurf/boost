@@ -1,0 +1,26 @@
+From d083a07d47cd46a7bd6decfc83d7cc5780da9be6 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 11 May 2016 03:11:09 +0200
+Subject: [PATCH 5/5] Fix initialization warning in
+ boost/atomic/detail/bitwise_cast.hpp
+
+---
+ boost/atomic/detail/bitwise_cast.hpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/boost/atomic/detail/bitwise_cast.hpp b/boost/atomic/detail/bitwise_cast.hpp
+index 8654d10..e243df8 100644
+--- a/boost/atomic/detail/bitwise_cast.hpp
++++ b/boost/atomic/detail/bitwise_cast.hpp
+@@ -36,7 +36,7 @@ BOOST_FORCEINLINE To bitwise_cast(From const& from) BOOST_NOEXCEPT
+     {
+         To to;
+     }
+-    value = {};
++    value;
+     BOOST_ATOMIC_DETAIL_MEMCPY
+     (
+         &reinterpret_cast< char& >(value.to),
+-- 
+2.8.0.windows.1
+

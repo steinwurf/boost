@@ -1,0 +1,101 @@
+From da0d5ba445829afa5a4c4ba089a9f8df8831d07a Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Sat, 29 Oct 2016 00:19:10 +0200
+Subject: [PATCH] Fix warnings in boost-python
+
+---
+ boost/python/detail/caller.hpp                    | 2 +-
+ boost/python/detail/defaults_def.hpp              | 1 +
+ boost/python/detail/unwind_type.hpp               | 2 +-
+ boost/python/str.hpp                              | 2 +-
+ libs/python/src/object/function.cpp               | 2 +-
+ libs/python/src/object/function_doc_signature.cpp | 2 +-
+ 6 files changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/boost/python/detail/caller.hpp b/boost/python/detail/caller.hpp
+index e479bf4..14e69af 100644
+--- a/boost/python/detail/caller.hpp
++++ b/boost/python/detail/caller.hpp
+@@ -52,7 +52,7 @@ inline PyObject* get(mpl::int_<N>, PyObject* const& args_)
+ 
+ inline unsigned arity(PyObject* const& args_)
+ {
+-    return PyTuple_GET_SIZE(args_);
++    return (unsigned int) PyTuple_GET_SIZE(args_);
+ }
+ 
+ // This "result converter" is really just used as
+diff --git a/boost/python/detail/defaults_def.hpp b/boost/python/detail/defaults_def.hpp
+index 68799f8..0258bf9 100644
+--- a/boost/python/detail/defaults_def.hpp
++++ b/boost/python/detail/defaults_def.hpp
+@@ -95,6 +95,7 @@ namespace detail
+       , module*
+       )
+   {
++      (void) kw;
+       name_space.def(name, f, policies, doc);
+   }
+   // }
+diff --git a/boost/python/detail/unwind_type.hpp b/boost/python/detail/unwind_type.hpp
+index 9a997c9..2c527d3 100644
+--- a/boost/python/detail/unwind_type.hpp
++++ b/boost/python/detail/unwind_type.hpp
+@@ -151,7 +151,7 @@ inline typename Generator::result_type
+ #ifndef _MSC_VER
+ unwind_type(boost::type<U>*, Generator*)
+ #else
+-unwind_type(boost::type<U>*p =0, Generator* =0)
++unwind_type(boost::type<U>* =0, Generator* =0)
+ #endif
+ {
+     BOOST_STATIC_CONSTANT(int, indirection
+diff --git a/boost/python/str.hpp b/boost/python/str.hpp
+index 426a3a2..327e267 100644
+--- a/boost/python/str.hpp
++++ b/boost/python/str.hpp
+@@ -182,7 +182,7 @@ class str : public detail::str_base
+     }
+ 
+     template<class T1, class T2, class T3>
+-    long count(T1 const& sub,T2 const& start, T3 const& end) const
++    long count(T1 const& sub,T2 const& start, T3 const&) const
+     {
+         return base::count(object(sub), object(start));
+     }
+diff --git a/libs/python/src/object/function.cpp b/libs/python/src/object/function.cpp
+index 5c59cc7..8625af8 100644
+--- a/libs/python/src/object/function.cpp
++++ b/libs/python/src/object/function.cpp
+@@ -166,7 +166,6 @@ PyObject* function::call(PyObject* args, PyObject* keywords) const
+                     else
+                     {
+                         // build a new arg tuple, will adjust its size later
+-                        assert(max_arity <= static_cast<std::size_t>(ssize_t_max));
+                         inner_args = handle<>(
+                             PyTuple_New(static_cast<ssize_t>(max_arity)));
+ 
+@@ -599,6 +598,7 @@ extern "C"
+     static PyObject *
+     function_descr_get(PyObject *func, PyObject *obj, PyObject *type_)
+     {
++        (void) type_;
+ #if PY_VERSION_HEX >= 0x03000000
+         // The implement is different in Python 3 because of the removal of unbound method
+         if (obj == Py_None || obj == NULL) {
+diff --git a/libs/python/src/object/function_doc_signature.cpp b/libs/python/src/object/function_doc_signature.cpp
+index 4169528..76cbb0a 100644
+--- a/libs/python/src/object/function_doc_signature.cpp
++++ b/libs/python/src/object/function_doc_signature.cpp
+@@ -105,7 +105,7 @@ namespace boost { namespace python { namespace objects {
+         return res;
+     }
+ 
+-    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t n_overloads,  bool cpp_types )
++    str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t, bool)
+     {
+         str res("object");
+ 
+-- 
+2.8.0.windows.1
+

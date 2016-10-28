@@ -166,7 +166,6 @@ PyObject* function::call(PyObject* args, PyObject* keywords) const
                     else
                     {
                         // build a new arg tuple, will adjust its size later
-                        assert(max_arity <= static_cast<std::size_t>(ssize_t_max));
                         inner_args = handle<>(
                             PyTuple_New(static_cast<ssize_t>(max_arity)));
 
@@ -599,6 +598,7 @@ extern "C"
     static PyObject *
     function_descr_get(PyObject *func, PyObject *obj, PyObject *type_)
     {
+        (void) type_;
 #if PY_VERSION_HEX >= 0x03000000
         // The implement is different in Python 3 because of the removal of unbound method
         if (obj == Py_None || obj == NULL) {

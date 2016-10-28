@@ -1,0 +1,38 @@
+From fa9b0deb9ca4e5021381c88f983047b5ccac7d11 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Fri, 28 Oct 2016 22:06:54 +0200
+Subject: [PATCH] Fix readdir_r deprecation warning in
+ filesystem/src/operations.cpp
+
+---
+ libs/filesystem/src/operations.cpp | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/libs/filesystem/src/operations.cpp b/libs/filesystem/src/operations.cpp
+index 70e3292..3898f50 100644
+--- a/libs/filesystem/src/operations.cpp
++++ b/libs/filesystem/src/operations.cpp
+@@ -2061,12 +2061,19 @@ namespace
+   {
+     errno = 0;
+ 
++    // readdir_r is deprecated since glibc 2.24
++#   if defined(__GLIBC__) && ((__GLIBC__ > 2) || \
++       ((__GLIBC__ == 2) && (__GLIBC_MINOR__ >= 24)))
++    #define BOOST_FILESYSTEM_READDIR_R_DEPRECATED
++#   endif
++
+ #   if !defined(__CYGWIN__)\
+     && defined(_POSIX_THREAD_SAFE_FUNCTIONS)\
+     && defined(_SC_THREAD_SAFE_FUNCTIONS)\
+     && (_POSIX_THREAD_SAFE_FUNCTIONS+0 >= 0)\
+     && (!defined(__hpux) || defined(_REENTRANT)) \
+-    && (!defined(_AIX) || defined(__THREAD_SAFE))
++    && (!defined(_AIX) || defined(__THREAD_SAFE)) \
++    && (!defined(BOOST_FILESYSTEM_READDIR_R_DEPRECATED))
+     if (::sysconf(_SC_THREAD_SAFE_FUNCTIONS)>= 0)
+       { return ::readdir_r(dirp, entry, result); }
+ #   endif
+-- 
+2.8.0.windows.1
+

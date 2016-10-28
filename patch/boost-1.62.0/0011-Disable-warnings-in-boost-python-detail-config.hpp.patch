@@ -1,0 +1,53 @@
+From f7055351265e4d41ce5644e1800ae8eab02ed1f0 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Fri, 28 Oct 2016 22:55:34 +0200
+Subject: [PATCH 1/2] Disable warnings in boost/python/detail/config.hpp
+
+---
+ boost/python/detail/config.hpp | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/boost/python/detail/config.hpp b/boost/python/detail/config.hpp
+index 11c1630..6d79624 100644
+--- a/boost/python/detail/config.hpp
++++ b/boost/python/detail/config.hpp
+@@ -34,11 +34,32 @@
+ #  pragma warning (disable : 4251) // disable exported dll function
+ #  pragma warning (disable : 4800) //'int' : forcing value to bool 'true' or 'false'
+ #  pragma warning (disable : 4275) // non dll-interface class
++#  pragma warning (disable : 4172) // returning address of local variable or temporary
+
+ # elif defined(__ICL) && __ICL < 600 // Intel C++ 5
+
+ #  pragma warning(disable: 985) // identifier was truncated in debug information
+
++# elif defined(__GNUC__)
++
++#  if defined(BOOST_GCC)
++
++#   if BOOST_GCC >= 40600
++#      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
++#      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
++#      pragma GCC diagnostic ignored "-Wstrict-aliasing"
++#   endif
++
++#  elif defined(__clang__) && defined(__has_warning)
++
++#   if __has_warning("-Wdeprecated-declarations")
++#      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
++#   endif
++#   if __has_warning("-Wmissing-field-initializers")
++#      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
++#   endif
++#   if __has_warning("-Wstrict-aliasing")
++#      pragma GCC diagnostic ignored "-Wstrict-aliasing"
++#   endif
++
++#  endif
++
+ # endif
+
+ // The STLport puts all of the standard 'C' library names in std (as far as the
+--
+2.8.0.windows.1
+
