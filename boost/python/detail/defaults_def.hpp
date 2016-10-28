@@ -95,6 +95,7 @@ namespace detail
       , module*
       )
   {
+      (void) kw;
       name_space.def(name, f, policies, doc);
   }
   // }

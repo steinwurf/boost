@@ -151,7 +151,7 @@ inline typename Generator::result_type
 #ifndef _MSC_VER
 unwind_type(boost::type<U>*, Generator*)
 #else
-unwind_type(boost::type<U>*p =0, Generator* =0)
+unwind_type(boost::type<U>* =0, Generator* =0)
 #endif
 {
     BOOST_STATIC_CONSTANT(int, indirection
