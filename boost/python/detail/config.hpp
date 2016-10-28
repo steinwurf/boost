@@ -34,10 +34,31 @@
 #  pragma warning (disable : 4251) // disable exported dll function
 #  pragma warning (disable : 4800) //'int' : forcing value to bool 'true' or 'false'
 #  pragma warning (disable : 4275) // non dll-interface class
+#  pragma warning (disable : 4172) // returning address of local variable or temporary
 
 # elif defined(__ICL) && __ICL < 600 // Intel C++ 5
 
 #  pragma warning(disable: 985) // identifier was truncated in debug information
+
+# elif defined(__GNUC__)
+
+#  if defined(BOOST_GCC)
+
+#   if BOOST_GCC >= 40600
+#      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#   endif
+
+#  elif defined(__clang__) && defined(__has_warning)
+
+#   if __has_warning("-Wdeprecated-declarations")
+#      pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#   endif
+#   if __has_warning("-Wmissing-field-initializers")
+#      pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+#   endif
+
+#  endif
 
 # endif
 
