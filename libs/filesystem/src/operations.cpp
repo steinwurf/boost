@@ -408,7 +408,7 @@ namespace
 
   const char dot = '.';
 
-  bool not_found_error(int)
+  bool not_found_error(int errval)
   {
     return errno == ENOENT || errno == ENOTDIR;
   }
@@ -1860,7 +1860,6 @@ namespace detail
   path system_complete(const path& p, system::error_code* ec)
   {
 #   ifdef BOOST_POSIX_API
-    (void) ec;
     return (p.empty() || p.is_absolute())
       ? p : current_path()/ p;
 

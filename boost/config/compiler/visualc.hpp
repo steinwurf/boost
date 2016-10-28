@@ -158,6 +158,11 @@
 #  define BOOST_NO_CXX11_DECLTYPE_N3276
 #endif
 
+#if _MSC_FULL_VER >= 180020827
+#define BOOST_HAS_EXPM1
+#define BOOST_HAS_LOG1P
+#endif
+
 // C++11 features supported by VC++ 14 (aka 2015)
 //
 #if (_MSC_FULL_VER < 190023026)
@@ -175,6 +180,14 @@
 #  define BOOST_NO_CXX14_BINARY_LITERALS
 #  define BOOST_NO_CXX14_GENERIC_LAMBDAS
 #  define BOOST_NO_CXX14_DIGIT_SEPARATORS
+#  define BOOST_NO_CXX11_THREAD_LOCAL
+#endif
+// C++11 features supported by VC++ 14 update 3 (aka 2015)
+//
+#if (_MSC_FULL_VER < 190024210)
+#  define BOOST_NO_CXX14_VARIABLE_TEMPLATES
+#  define BOOST_NO_SFINAE_EXPR
+#  define BOOST_NO_CXX11_CONSTEXPR
 #endif
 
 // MSVC including version 14 has not yet completely
@@ -193,24 +206,17 @@
 // See also: http://www.boost.org/libs/utility/value_init.htm#compiler_issues
 // (Niels Dekker, LKEB, May 2010)
 #define BOOST_NO_COMPLETE_VALUE_INITIALIZATION
-// C++11 features not supported by any versions
-#define BOOST_NO_SFINAE_EXPR
+//
+// C++ 11:
+//
 #define BOOST_NO_TWO_PHASE_NAME_LOOKUP
 //
-// This is somewhat supported in VC14, but we may need to wait for
-// a service release before enabling:
-//
-#define BOOST_NO_CXX11_CONSTEXPR
-
 // C++ 14:
 #if !defined(__cpp_aggregate_nsdmi) || (__cpp_aggregate_nsdmi < 201304)
 #  define BOOST_NO_CXX14_AGGREGATE_NSDMI
 #endif
 #if !defined(__cpp_constexpr) || (__cpp_constexpr < 201304)
 #  define BOOST_NO_CXX14_CONSTEXPR
-#endif
-#if !defined(__cpp_variable_templates) || (__cpp_variable_templates < 201304)
-#  define BOOST_NO_CXX14_VARIABLE_TEMPLATES
 #endif
 
 //
@@ -244,11 +250,11 @@
 #     define BOOST_COMPILER_VERSION evc9
 #   elif _MSC_VER < 1700
 #     define BOOST_COMPILER_VERSION evc10
-#   elif _MSC_VER < 1800
-#     define BOOST_COMPILER_VERSION evc11
-#   elif _MSC_VER < 1900
+#   elif _MSC_VER < 1800 
+#     define BOOST_COMPILER_VERSION evc11 
+#   elif _MSC_VER < 1900 
 #     define BOOST_COMPILER_VERSION evc12
-#   elif _MSC_VER < 2000
+#   elif _MSC_VER < 2000  
 #     define BOOST_COMPILER_VERSION evc14
 #   else
 #      if defined(BOOST_ASSERT_CONFIG)
@@ -273,7 +279,7 @@
 #     define BOOST_COMPILER_VERSION 9.0
 #   elif _MSC_VER < 1700
 #     define BOOST_COMPILER_VERSION 10.0
-#   elif _MSC_VER < 1800
+#   elif _MSC_VER < 1800 
 #     define BOOST_COMPILER_VERSION 11.0
 #   elif _MSC_VER < 1900
 #     define BOOST_COMPILER_VERSION 12.0
@@ -287,3 +293,12 @@
 #  define BOOST_COMPILER "Microsoft Visual C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)
 #endif
 
+//
+// last known and checked version is 19.00.23026 (VC++ 2015 RTM):
+#if (_MSC_VER > 1900)
+#  if defined(BOOST_ASSERT_CONFIG)
+#     error "Unknown compiler version - please run the configure tests and report the results"
+#  else
+#     pragma message("Unknown compiler version - please run the configure tests and report the results")
+#  endif
+#endif
