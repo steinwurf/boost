@@ -255,15 +255,6 @@ inline const boost::system::error_category& get_addrinfo_category()
 extern BOOST_ASIO_DECL
 const boost::system::error_category& get_misc_category();
 
-static const boost::system::error_category& system_category
-  = boost::asio::error::get_system_category();
-static const boost::system::error_category& netdb_category
-  = boost::asio::error::get_netdb_category();
-static const boost::system::error_category& addrinfo_category
-  = boost::asio::error::get_addrinfo_category();
-static const boost::system::error_category& misc_category
-  = boost::asio::error::get_misc_category();
-
 } // namespace error
 } // namespace asio
 } // namespace boost
