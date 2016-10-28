@@ -178,13 +178,13 @@ def build(bld):
                 "BOOST_PYTHON_STATIC_MODULE"
             ]
 
-        bld.stlib(
-            features='cxx',
-            source=bld.path.ant_glob('libs/python/src/**/*.cpp'),
-            target='boost_python',
-            includes=include_dirs + bld.env['INCLUDES_PYEXT'],
-            export_includes=include_dirs,
-            use=['BOOST_SHARED', 'BOOST_PYTHON_SHARED'])
+#        bld.stlib(
+#            features='cxx',
+#            source=bld.path.ant_glob('libs/python/src/**/*.cpp'),
+#            target='boost_python',
+#            includes=include_dirs + bld.env['INCLUDES_PYEXT'],
+#            export_includes=include_dirs,
+#            use=['BOOST_SHARED', 'BOOST_PYTHON_SHARED'])
 
     # Build boost filesystem
     bld.stlib(
