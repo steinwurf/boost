@@ -7,6 +7,9 @@ of every change, see the Git log.
 Latest
 ------
 * tbd
+
+2.2.0
+-----
 * Minor: Upgrade to Boost release 1.62.0
 
 2.1.0
