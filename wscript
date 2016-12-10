@@ -68,20 +68,6 @@ def _boost_shared_defines(conf):
     # Disable the noexcept keyword for all compilers
     defines += ['BOOST_NO_CXX11_NOEXCEPT']
 
-    if conf.is_mkspec_platform('android'):
-        # Android does not seem to have an intrincsic wchar_t.
-        # See the toolchain sysroot/usr/include/wchar.h it is simply a
-        # define. Also wchar_t support is quite broken on Android so we
-        # should avoid using it anyway.
-        # See NDK docs docs/STANDALONE-TOOLCHAIN.html
-        # section 5.2
-        defines += ['__GLIBC__', '_GLIBCXX_USE_WCHAR_T']
-
-        # Problem with boost::chrono and std::u16string and friends
-        # http://goo.gl/3FJc5r
-        # Work around seems to be to add:
-        defines += ['_GLIBCXX_USE_C99_STDINT_TR1']
-
     return defines
 
 
@@ -115,7 +101,7 @@ def build(bld):
             includes=include_dirs,
             export_includes=include_dirs,
             defines=['BOOST_THREAD_BUILD_LIB=1',
-                   'BOOST_THREAD_POSIX'],
+                     'BOOST_THREAD_POSIX'],
             use=['BOOST_SHARED', 'PTHREAD', 'boost_system'])
 
     # Build boost system
