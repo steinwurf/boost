@@ -7,6 +7,9 @@ of every change, see the Git log.
 Latest
 ------
 * tbd
+
+2.2.1
+-----
 * Patch: Removed obsolete defines for Android, which can cause issues with
   the recent NDK toolchains (especially with threads and mutexes).
 

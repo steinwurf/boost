@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 APPNAME = 'boost'
-VERSION = '2.2.0'
+VERSION = '2.2.1'
 
 import waflib.extras.wurf_options
 
