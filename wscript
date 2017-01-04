@@ -37,12 +37,12 @@ def configure(conf):
 
     conf.load("wurf_common_tools")
 
-    try:
-        conf.load('python')
-        conf.check_python_headers()
-        conf.env['BUILD_PYTHON'] = True
-    except:
-        conf.env['BUILD_PYTHON'] = False
+#    try:
+#        conf.load('python')
+#        conf.check_python_headers()
+#        conf.env['BUILD_PYTHON'] = True
+#    except:
+#        conf.env['BUILD_PYTHON'] = False
 
     if conf.is_mkspec_platform('linux'):
 
