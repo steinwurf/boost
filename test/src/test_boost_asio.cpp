@@ -43,6 +43,8 @@ TEST(TestBoostAsio, udp_construct_bind)
     socket.set_option(ba::socket_base::reuse_address(true));
     // Bind to a random port on localhost
     socket.bind(udp::endpoint(address_v4::loopback(), 0));
+
+    io_service.run_one();
 }
 
 TEST(TestBoostAsio, tcp_construct_client)
@@ -50,6 +52,8 @@ TEST(TestBoostAsio, tcp_construct_client)
     ba::io_service io_service;
     // Create udp socket
     tcp::socket socket(io_service);
+
+    io_service.run_one();
 }
 
 TEST(TestBoostAsio, tcp_construct_acceptor)
@@ -65,4 +69,6 @@ TEST(TestBoostAsio, tcp_construct_acceptor)
     socket.bind(tcp::endpoint(address_v4::loopback(), 0));
     // Start listening for connections
     socket.listen(ba::socket_base::max_connections);
+
+    io_service.run_one();
 }
