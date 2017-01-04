@@ -19,6 +19,8 @@
 
 #if defined(__MACH__) && defined(__APPLE__)
 
+// Enable deprecated legacy interface for OSMemoryBarrier
+#define OSATOMIC_USE_INLINED 1
 #include <libkern/OSAtomic.h>
 
 #include <boost/asio/detail/push_options.hpp>
