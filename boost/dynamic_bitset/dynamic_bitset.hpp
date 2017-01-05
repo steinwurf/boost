@@ -1860,7 +1860,7 @@ inline void dynamic_bitset<Block, Allocator>::m_zero_unused_bits()
     const block_width_type extra_bits = count_extra_bits();
 
     if (extra_bits != 0)
-        m_highest_block() &= ~(~static_cast<Block>(0) << extra_bits);
+        m_highest_block() &= ~(std::numeric_limits<Block>::max() << extra_bits);
 
 }
 
@@ -1870,7 +1870,7 @@ bool dynamic_bitset<Block, Allocator>::m_check_invariants() const
 {
     const block_width_type extra_bits = count_extra_bits();
     if (extra_bits > 0) {
-        block_type const mask = (~static_cast<Block>(0) << extra_bits);
+        block_type const mask = (std::numeric_limits<Block>::max() << extra_bits);
         if ((m_highest_block() & mask) != 0)
             return false;
     }

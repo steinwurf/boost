@@ -1,4 +1,4 @@
-// Copyright (c) 2012-2013, Steinwurf ApS
+// Copyright (c) 2016, Steinwurf ApS
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -23,52 +23,40 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#include <boost/asio.hpp>
+#include <boost/dynamic_bitset.hpp>
 
-#include <cstdlib>
+#include <cstdint>
 
 #include <gtest/gtest.h>
 
-namespace ba = boost::asio;
-using namespace boost::asio::ip;
-
-TEST(TestBoostAsio, udp_construct_bind)
+TEST(TestBoostDynamicBitset, basic)
 {
-    ba::io_service io_service;
-    // Create udp socket
-    udp::socket socket(io_service);
-    // Open the socket
-    socket.open(udp::v4());
-    // Set the reuse address flag
-    socket.set_option(ba::socket_base::reuse_address(true));
-    // Bind to a random port on localhost
-    socket.bind(udp::endpoint(address_v4::loopback(), 0));
+    boost::dynamic_bitset<uint8_t> bitset;
 
-    io_service.run_one();
-}
+    uint32_t symbols = 42;
 
-TEST(TestBoostAsio, tcp_construct_client)
-{
-    ba::io_service io_service;
-    // Create udp socket
-    tcp::socket socket(io_service);
+    bitset.resize(symbols, false);
+    EXPECT_EQ(0U, bitset.count());
+    EXPECT_EQ(6U, bitset.num_blocks());
 
-    io_service.run_one();
-}
+    bitset.set(7);
+    bitset.set(22);
+    EXPECT_TRUE(bitset.test(7));
+    EXPECT_TRUE(bitset.test(22));
+    EXPECT_EQ(2U, bitset.count());
 
-TEST(TestBoostAsio, tcp_construct_acceptor)
-{
-    ba::io_service io_service;
-    // Create udp socket
-    tcp::acceptor socket(io_service);
-    // Open the socket
-    socket.open(tcp::v4());
-    // Set the reuse address flag
-    socket.set_option(ba::socket_base::reuse_address(true));
-    // Bind to a random port on localhost
-    socket.bind(tcp::endpoint(address_v4::loopback(), 0));
-    // Start listening for connections
-    socket.listen(ba::socket_base::max_connections);
+    uint8_t buffer[6];
+    boost::to_block_range(bitset, buffer);
+    EXPECT_EQ(128U, buffer[0]);
+    EXPECT_EQ(64U, buffer[2]);
 
-    io_service.run_one();
+    bitset.reset();
+    EXPECT_FALSE(bitset.test(7));
+    EXPECT_FALSE(bitset.test(22));
+    EXPECT_EQ(0U, bitset.count());
+
+    boost::from_block_range(buffer, buffer + 6, bitset);
+    EXPECT_TRUE(bitset.test(7));
+    EXPECT_TRUE(bitset.test(22));
+    EXPECT_EQ(2U, bitset.count());
 }

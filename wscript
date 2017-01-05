@@ -78,7 +78,7 @@ def build(bld):
         'DEFINES_STEINWURF_VERSION',
         'STEINWURF_BOOST_VERSION="{}"'.format(VERSION))
 
-    include_dirs = ['.', 'src']
+    include_dirs = ['.']
 
     # Build boost thread
     if bld.is_mkspec_platform('windows'):
