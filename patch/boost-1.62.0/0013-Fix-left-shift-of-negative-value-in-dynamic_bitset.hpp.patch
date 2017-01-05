@@ -1,0 +1,34 @@
+From 1ac89397e29b37efd933a6e8b02b6c00105ae3f8 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Thu, 5 Jan 2017 01:46:58 +0100
+Subject: [PATCH 3/3] Fix left shift of negative value in dynamic_bitset.hpp
+
+---
+ boost/dynamic_bitset/dynamic_bitset.hpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/boost/dynamic_bitset/dynamic_bitset.hpp b/boost/dynamic_bitset/dynamic_bitset.hpp
+index 86b5428..ce34fcd 100644
+--- a/boost/dynamic_bitset/dynamic_bitset.hpp
++++ b/boost/dynamic_bitset/dynamic_bitset.hpp
+@@ -1860,7 +1860,7 @@ inline void dynamic_bitset<Block, Allocator>::m_zero_unused_bits()
+     const block_width_type extra_bits = count_extra_bits();
+ 
+     if (extra_bits != 0)
+-        m_highest_block() &= ~(~static_cast<Block>(0) << extra_bits);
++        m_highest_block() &= ~(std::numeric_limits<Block>::max() << extra_bits);
+ 
+ }
+ 
+@@ -1870,7 +1870,7 @@ bool dynamic_bitset<Block, Allocator>::m_check_invariants() const
+ {
+     const block_width_type extra_bits = count_extra_bits();
+     if (extra_bits > 0) {
+-        block_type const mask = (~static_cast<Block>(0) << extra_bits);
++        block_type const mask = (std::numeric_limits<Block>::max() << extra_bits);
+         if ((m_highest_block() & mask) != 0)
+             return false;
+     }
+-- 
+2.8.0.windows.1
+

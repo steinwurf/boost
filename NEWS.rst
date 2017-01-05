@@ -7,6 +7,8 @@ of every change, see the Git log.
 Latest
 ------
 * tbd
+* Minor: Added unit test for boost::dynamic_bitset.
+* Patch: Fixed warnings in boost::asio and boost::dynamic_bitset.
 
 2.2.1
 -----
