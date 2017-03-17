@@ -16,28 +16,11 @@ project_dependencies = \
         'gtest',
     ]
 
-# Importing a dynamically generated module
-# Python recipe from http://code.activestate.com/recipes/82234
 
 def importCode(code, name, add_to_sys_modules=0):
     """
-    Import dynamically generated code as a module. code is the
-    object containing the code (a string, a file handle or an
-    actual compiled code object, same types as accepted by an
-    exec statement). The name is the name to give to the module,
-    and the final argument says wheter to add it to sys.modules
-    or not. If it is added, a subsequent import statement using
-    name will return this module. If it is not added to sys.modules
-    import will try to load it in the normal fashion.
-
-    import foo
-
-    is equivalent to
-
-    foofile = open("/path/to/foo.py")
-    foo = importCode(foofile,"foo",1)
-
-    Returns a newly generated module.
+    Import dynamically generated code as a module.
+    Python recipe from http://code.activestate.com/recipes/82234
     """
     import imp
 
@@ -71,7 +54,7 @@ if __name__ == '__main__':
             # Import the code string as a module
             mod = importCode(code, "config_helper")
             # Run the actual config tool from the dynamic module
-            mod.config_tool(project_dependencies)
+            mod.config_tool(project_dependencies, project_name)
         except:
             print("Unexpected error:")
             print(traceback.format_exc())
