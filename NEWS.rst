@@ -8,6 +8,11 @@ Latest
 ------
 * tbd
 
+3.0.0
+-----
+* Major: Upgrade to waf-tools 4
+* Minor: Upgrade to gtest 4
+
 2.3.0
 -----
 * Minor: Added unit test for boost::dynamic_bitset.
