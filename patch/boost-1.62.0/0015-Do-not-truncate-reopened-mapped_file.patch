@@ -1,0 +1,34 @@
+From 98443b9a9e33e8e80b522aee722492044177c9b7 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Thu, 22 Mar 2018 20:07:23 +0100
+Subject: [PATCH 4/4] Do not truncate reopened mapped_file
+
+---
+ libs/iostreams/src/mapped_file.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/libs/iostreams/src/mapped_file.cpp b/libs/iostreams/src/mapped_file.cpp
+index 8073848..c588c6b 100644
+--- a/libs/iostreams/src/mapped_file.cpp
++++ b/libs/iostreams/src/mapped_file.cpp
+@@ -173,7 +173,7 @@ void mapped_file_impl::open_file(param_type p)
+             GENERIC_READ :
+             (GENERIC_READ | GENERIC_WRITE);
+     DWORD dwCreationDisposition = (p.new_file_size != 0 && !readonly) ? 
+-        CREATE_ALWAYS : 
++        OPEN_ALWAYS : 
+         OPEN_EXISTING;
+     DWORD dwFlagsandAttributes =
+         readonly ?
+@@ -256,7 +256,7 @@ void mapped_file_impl::open_file(param_type p)
+     // Open file
+     int flags = (readonly ? O_RDONLY : O_RDWR);
+     if (p.new_file_size != 0 && !readonly)
+-        flags |= (O_CREAT | O_TRUNC);
++        flags |= O_CREAT;
+     #ifdef _LARGEFILE64_SOURCE
+         flags |= O_LARGEFILE;
+     #endif
+-- 
+2.8.0.windows.1
+
