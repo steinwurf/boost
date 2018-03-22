@@ -25,16 +25,52 @@
 
 #include <boost/iostreams/device/mapped_file.hpp>
 
+#include <cstdlib>
+
 #include <gtest/gtest.h>
+
+#include <boost/filesystem.hpp>
 
 TEST(TestBoostIostreams, mapped_file)
 {
+    std::string filename = "mapped_file.bin";
+    uint32_t size = 4567;
+
+    // Make sure that the test file does not exist before starting the test
+    boost::filesystem::remove(filename);
+
     boost::iostreams::mapped_file_params params;
     params.path = "mapped_file.bin";
-    params.new_file_size = 1000;
+    params.new_file_size = size;
 
     auto file = boost::iostreams::mapped_file_sink(params);
 
     EXPECT_TRUE(file.is_open());
+
+    // Create a vector of random bytes
+    std::vector<char> buffer(size);
+    for (uint32_t i = 0; i < buffer.size(); ++i)
+    {
+        buffer[i] = rand() % 256;
+    }
+
+    // Write this random data to the file
+    memcpy(file.data(), buffer.data(), size);
+
     file.close();
+
+    // Re-open the same file and verify that the random bytes are not zeroed!
+    // It is important to preserve the data when using a kodo_core::file_decoder
+    // which is stopped after completing some blocks, and restarted later.
+     
+    auto file2 = boost::iostreams::mapped_file_sink(params);
+
+    EXPECT_TRUE(file2.is_open());
+
+    // Copy the file data to a vector for comparison
+    std::vector<char> reopened(file2.data(), file2.data() + file2.size());
+    EXPECT_EQ(buffer, reopened);
+
+    file2.close();
 }
+
