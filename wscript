@@ -2,7 +2,7 @@
 # encoding: utf-8
 
 APPNAME = 'boost'
-VERSION = '3.0.0'
+VERSION = '3.1.0'
 
 
 def options(opt):

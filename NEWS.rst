@@ -8,6 +8,15 @@ Latest
 ------
 * tbd
 
+3.1.0
+-----
+* Minor: Fixed the overwriting behavior of the iostreams mapped_file: when
+  opening an existing file, the original content will be preserved instead
+  of overwriting the file with zeroes. Also added a corresponding unit test
+  to expose this issue.
+* Patch: Fixed the _FILE_OFFSET_BITS define in boost::filesystem which led to
+  some compilation issues with the Android NDK r15 and later.
+
 3.0.0
 -----
 * Major: Upgrade to waf-tools 4
