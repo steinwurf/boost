@@ -47,6 +47,8 @@ TEST(TestBoostIostreams, mapped_file)
 
     EXPECT_TRUE(file.is_open());
 
+    EXPECT_EQ(file.size(), size);
+
     // Create a vector of random bytes
     std::vector<char> buffer(size);
     for (uint32_t i = 0; i < buffer.size(); ++i)
@@ -62,8 +64,10 @@ TEST(TestBoostIostreams, mapped_file)
     // Re-open the same file and verify that the random bytes are not zeroed!
     // It is important to preserve the data when using a kodo_core::file_decoder
     // which is stopped after completing some blocks, and restarted later.
-     
-    auto file2 = boost::iostreams::mapped_file_sink(params);
+
+    boost::iostreams::mapped_file_params params2;
+    params2.path = "mapped_file.bin";
+    auto file2 = boost::iostreams::mapped_file_sink(params2);
 
     EXPECT_TRUE(file2.is_open());
 
@@ -73,4 +77,39 @@ TEST(TestBoostIostreams, mapped_file)
 
     file2.close();
 }
+
+bool is_zero(const char* data, uint32_t size)
+{
+    for (uint32_t i = 0; i < size; ++i)
+    {
+        if (data[i] != 0)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+TEST(TestBoostIostreams, mapped_file_newfile)
+{
+    std::string filename = "mapped_file.bin";
+    uint32_t size = 100;
+
+    boost::iostreams::mapped_file_params params;
+    params.path = "mapped_file.bin";
+    params.new_file_size = size;
+
+    auto file = boost::iostreams::mapped_file_sink(params);
+
+    EXPECT_TRUE(file.is_open());
+
+    EXPECT_EQ(file.size(), size);
+
+    EXPECT_TRUE((is_zero(file.data(), file.size())));
+
+    file.close();
+}
+
+
+
 
