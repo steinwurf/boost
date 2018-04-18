@@ -7,6 +7,7 @@ of every change, see the Git log.
 Latest
 ------
 * tbd
+* Patch: Suppressed g++ initialization warning in boost/python/extract.hpp.
 
 3.1.0
 -----

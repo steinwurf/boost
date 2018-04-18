@@ -1,0 +1,37 @@
+From 9e2f1b576aaaa31346684505cc3ed5081bd8311e Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 18 Apr 2018 19:38:17 +0200
+Subject: [PATCH] Suppress warning
+
+---
+ boost/python/extract.hpp | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/boost/python/extract.hpp b/boost/python/extract.hpp
+index bfdeb83..1e2b8e2 100644
+--- a/boost/python/extract.hpp
++++ b/boost/python/extract.hpp
+@@ -177,12 +177,20 @@ namespace converter
+   inline typename extract_rvalue<T>::result_type
+   extract_rvalue<T>::operator()() const
+   {
++#if defined(BOOST_GCC) && BOOST_GCC > 60300
++#pragma GCC diagnostic push
++// Recent versions of g++ produce a maybe-uninitialized warning here
++#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
++#endif
+       return *(T*)(
+           // Only do the stage2 conversion once
+           m_data.stage1.convertible ==  m_data.storage.bytes
+              ? m_data.storage.bytes
+              : (rvalue_from_python_stage2)(m_source, m_data.stage1, registered<T>::converters)
+           );
++#if defined(BOOST_GCC) && BOOST_GCC > 60300
++#pragma GCC diagnostic pop
++#endif
+   }
+ 
+   template <class Ref>
+-- 
+2.8.0.windows.1
+
