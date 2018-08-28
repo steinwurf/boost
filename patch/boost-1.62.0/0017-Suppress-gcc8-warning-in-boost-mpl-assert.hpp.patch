@@ -1,0 +1,46 @@
+From 27327bf21b48d0d201f5401bcf3eef3d901e8b29 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 28 Aug 2018 20:19:28 +0200
+Subject: [PATCH 1/2] Suppress gcc8 warning in boost/mpl/assert.hpp
+
+---
+ boost/mpl/assert.hpp | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/boost/mpl/assert.hpp b/boost/mpl/assert.hpp
+index 4d860a4c..9ad793f1 100644
+--- a/boost/mpl/assert.hpp
++++ b/boost/mpl/assert.hpp
+@@ -184,16 +184,27 @@ template< typename P > struct assert_arg_pred_not
+     typedef typename assert_arg_pred_impl<p>::type type;
+ };
+ 
++#if defined(BOOST_GCC) && BOOST_GCC >= 80000
++#define BOOST_MPL_IGNORE_PARENTHESES_WARNING
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wparentheses"
++#endif
++
+ template< typename Pred >
+-failed ************ (Pred::************ 
++failed ************ (Pred::************
+       assert_arg( void (*)(Pred), typename assert_arg_pred<Pred>::type )
+     );
+ 
+ template< typename Pred >
+-failed ************ (boost::mpl::not_<Pred>::************ 
++failed ************ (boost::mpl::not_<Pred>::************
+       assert_not_arg( void (*)(Pred), typename assert_arg_pred_not<Pred>::type )
+     );
+ 
++#ifdef BOOST_MPL_IGNORE_PARENTHESES_WARNING
++#undef BOOST_MPL_IGNORE_PARENTHESES_WARNING
++#pragma GCC diagnostic pop
++#endif
++
+ template< typename Pred >
+ AUX778076_ASSERT_ARG(assert<false>)
+ assert_arg( void (*)(Pred), typename assert_arg_pred_not<Pred>::type );
+-- 
+2.18.0.windows.1
+

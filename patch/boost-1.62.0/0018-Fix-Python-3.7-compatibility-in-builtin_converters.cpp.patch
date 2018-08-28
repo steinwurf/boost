@@ -1,0 +1,34 @@
+From 583eaf5a35d79bf0b56f0e67c722bf4791e9da40 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Tue, 28 Aug 2018 20:31:00 +0200
+Subject: [PATCH 2/2] Fix Python 3.7 compatibility in builtin_converters.cpp
+
+---
+ libs/python/src/converter/builtin_converters.cpp | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/libs/python/src/converter/builtin_converters.cpp b/libs/python/src/converter/builtin_converters.cpp
+index 9900602b..4a45790c 100644
+--- a/libs/python/src/converter/builtin_converters.cpp
++++ b/libs/python/src/converter/builtin_converters.cpp
+@@ -45,11 +45,16 @@ namespace
+   {
+       return PyString_Check(obj) ? PyString_AsString(obj) : 0;
+   }
+-#else
++#elif PY_VERSION_HEX < 0x03070000
+   void* convert_to_cstring(PyObject* obj)
+   {
+       return PyUnicode_Check(obj) ? _PyUnicode_AsString(obj) : 0;
+   }
++#else
++  void* convert_to_cstring(PyObject* obj)
++  {
++      return PyUnicode_Check(obj) ? const_cast<void*>(reinterpret_cast<const void*>(_PyUnicode_AsString(obj))) : 0;
++  }
+ #endif
+ 
+   // Given a target type and a SlotPolicy describing how to perform a
+-- 
+2.18.0.windows.1
+
