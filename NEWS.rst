@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+3.1.2
+-----
+* Patch: Improved compatibility with g++ 8 and Python 3.7.
+
 3.1.1
 -----
 * Patch: Suppressed g++ initialization warning in boost/python/extract.hpp.
