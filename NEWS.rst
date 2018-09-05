@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+3.1.3
+-----
+* Patch: Fixed boost::thread compatibility with Visual Studio 2017.
+
 3.1.2
 -----
 * Patch: Improved compatibility with g++ 8 and Python 3.7.
