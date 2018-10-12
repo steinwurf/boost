@@ -156,6 +156,19 @@ typedef int pid_t;
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2 && PY_MICRO_VERSION < 2
 # include <boost/python/detail/python22_fixed.h>
 #else
+// Some header files for Python 2.7 use the "register" specifier which is
+// deprecated in C++14 and removed in C++17. Ignore these warnings in newer
+// compilers to maintain compatibility with Python 2.7.
+# if defined(BOOST_GCC)
+#  if BOOST_GCC >= 70000
+#     pragma GCC diagnostic ignored "-Wregister"
+#  endif
+# elif defined(__clang__) && defined(__has_warning)
+#  if __has_warning("-Wdeprecated-register")
+#     pragma GCC diagnostic ignored "-Wdeprecated-register"
+#  endif
+# endif
+
 # include <Python.h>
 #endif
 
