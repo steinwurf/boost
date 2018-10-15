@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+3.1.5
+-----
+* Patch: Suppressed some warnings in boost::filesystem.
+
 3.1.4
 -----
 * Patch: Suppressed some warnings for newer compilers to maintain compatibility
