@@ -1,0 +1,26 @@
+From 9cf93cdbbfc965e70f1ec6c6c5aa784db5a1b31e Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Mon, 15 Oct 2018 21:27:16 +0200
+Subject: [PATCH] Conditionally disable readdir_r in
+ filesystem/src/operations.cpp
+
+---
+ libs/filesystem/src/operations.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/libs/filesystem/src/operations.cpp b/libs/filesystem/src/operations.cpp
+index 30fd2ea8..de1f95d6 100644
+--- a/libs/filesystem/src/operations.cpp
++++ b/libs/filesystem/src/operations.cpp
+@@ -2096,6 +2096,8 @@ namespace
+     && defined(_POSIX_THREAD_SAFE_FUNCTIONS)\
+     && defined(_SC_THREAD_SAFE_FUNCTIONS)\
+     && (_POSIX_THREAD_SAFE_FUNCTIONS+0 >= 0)\
++    && !(defined(linux) || defined(__linux) || defined(__linux__))\
++    && !defined(__ANDROID__)\
+     && (!defined(__hpux) || defined(_REENTRANT)) \
+     && (!defined(_AIX) || defined(__THREAD_SAFE)) \
+     && (!defined(BOOST_FILESYSTEM_READDIR_R_DEPRECATED))
+-- 
+2.18.0.windows.1
+
