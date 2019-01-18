@@ -167,6 +167,14 @@ typedef int pid_t;
 #  if __has_warning("-Wdeprecated-register")
 #     pragma GCC diagnostic ignored "-Wdeprecated-register"
 #  endif
+// Also disable the clang nullability warnings that are present when
+// including C-style headers from Python.h
+#  if __has_warning("-Wnullability-extension")
+#     pragma GCC diagnostic ignored "-Wnullability-extension"
+#  endif
+#  if __has_warning("-Wnullability-completeness")
+#     pragma GCC diagnostic ignored "-Wnullability-completeness"
+#  endif
 # endif
 
 # include <Python.h>

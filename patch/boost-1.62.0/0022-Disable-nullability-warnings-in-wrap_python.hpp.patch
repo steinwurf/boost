@@ -1,0 +1,31 @@
+From 3eb110d09fe15285da39d2dbc5d7aa52d3b51240 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Fri, 18 Jan 2019 19:31:32 +0100
+Subject: [PATCH] Disable nullability warnings in wrap_python.hpp
+
+---
+ boost/python/detail/wrap_python.hpp | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/boost/python/detail/wrap_python.hpp b/boost/python/detail/wrap_python.hpp
+index d4068a8f..b823a7d6 100644
+--- a/boost/python/detail/wrap_python.hpp
++++ b/boost/python/detail/wrap_python.hpp
+@@ -167,6 +167,14 @@ typedef int pid_t;
+ #  if __has_warning("-Wdeprecated-register")
+ #     pragma GCC diagnostic ignored "-Wdeprecated-register"
+ #  endif
++// Also disable the clang nullability warnings that are present when
++// including C-style headers from Python.h
++#  if __has_warning("-Wnullability-extension")
++#     pragma GCC diagnostic ignored "-Wnullability-extension"
++#  endif
++#  if __has_warning("-Wnullability-completeness")
++#     pragma GCC diagnostic ignored "-Wnullability-completeness"
++#  endif
+ # endif
+ 
+ # include <Python.h>
+-- 
+2.18.0.windows.1
+
