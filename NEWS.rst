@@ -8,6 +8,10 @@ Latest
 ------
 * tbd
 
+3.1.7
+-----
+* Patch: Suppressed some clang 7.0 warnings when compiling boost-python.
+
 3.1.6
 -----
 * Patch: Suppressed some new clang warnings when compiling boost-python.
