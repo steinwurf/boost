@@ -61,6 +61,9 @@
 #   if __has_warning("-Wstrict-aliasing")
 #      pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #   endif
+#   if __has_warning("-Wreturn-std-move")
+#      pragma GCC diagnostic ignored "-Wreturn-std-move"
+#   endif
 
 #  endif
 
