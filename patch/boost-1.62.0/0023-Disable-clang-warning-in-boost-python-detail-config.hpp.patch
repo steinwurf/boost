@@ -1,0 +1,26 @@
+From eae7ced22acf9e89ac92e2a72d50fb9893974546 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Fri, 22 Mar 2019 20:35:22 +0100
+Subject: [PATCH] Disable clang warning in boost/python/detail/config.hpp
+
+---
+ boost/python/detail/config.hpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/boost/python/detail/config.hpp b/boost/python/detail/config.hpp
+index 4d38af85..2f3df62c 100644
+--- a/boost/python/detail/config.hpp
++++ b/boost/python/detail/config.hpp
+@@ -61,6 +61,9 @@
+ #   if __has_warning("-Wstrict-aliasing")
+ #      pragma GCC diagnostic ignored "-Wstrict-aliasing"
+ #   endif
++#   if __has_warning("-Wreturn-std-move")
++#      pragma GCC diagnostic ignored "-Wreturn-std-move"
++#   endif
+ 
+ #  endif
+ 
+-- 
+2.18.0.windows.1
+
