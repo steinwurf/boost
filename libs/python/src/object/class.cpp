@@ -34,7 +34,7 @@ namespace self_ns
 {
   self_t self;
 }
-# endif 
+# endif
 
 instance_holder::instance_holder()
     : m_next(0)
@@ -104,7 +104,7 @@ extern "C"
       return 0;
   }
 
- 
+
   static PyObject *
   static_data_descr_get(PyObject *self, PyObject * /*obj*/, PyObject * /*type*/)
   {
@@ -189,8 +189,9 @@ static PyTypeObject static_data_object = {
     0,                                      /* tp_subclasses */
     0,                                      /* tp_weaklist */
 #if PYTHON_API_VERSION >= 1012
-    0                                       /* tp_del */
+    0,                                      /* tp_del */
 #endif
+    0                                       /* tp_version_tag */
 };
 
 namespace objects
@@ -215,7 +216,7 @@ namespace objects
       }
       return upcast<PyObject>(&static_data_object);
   }
-}  
+}
 
 extern "C"
 {
@@ -237,7 +238,7 @@ extern "C"
         PyObject* a = _PyType_Lookup(downcast<PyTypeObject>(obj), name);
 
         // a is a borrowed reference or 0
-        
+
         // If we found a static data descriptor, call it directly to
         // force it to set the static data member
         if (a != 0 && PyObject_IsInstance(a, objects::static_data()))
@@ -295,8 +296,9 @@ static PyTypeObject class_metatype_object = {
     0,                                      /* tp_subclasses */
     0,                                      /* tp_weaklist */
 #if PYTHON_API_VERSION >= 1012
-    0                                       /* tp_del */
+    0,                                      /* tp_del */
 #endif
+    0                                       /* tp_version_tag */
 };
 
 // Install the instance data for a C++ object into a Python instance
@@ -335,7 +337,7 @@ namespace objects
               p->~instance_holder();
               instance_holder::deallocate(inst, dynamic_cast<void*>(p));
           }
-        
+
           // Python 2.2.1 won't add weak references automatically when
           // tp_itemsize > 0, so we need to manage that
           // ourselves. Accordingly, we also have to clean up the
@@ -344,7 +346,7 @@ namespace objects
             PyObject_ClearWeakRefs(inst);
 
           Py_XDECREF(kill_me->dict);
-          
+
           Py_TYPE(inst)->tp_free(inst);
       }
 
@@ -355,16 +357,16 @@ namespace objects
           PyObject* d = type_->tp_dict;
           PyObject* instance_size_obj = PyObject_GetAttrString(d, const_cast<char*>("__instance_size__"));
 
-          ssize_t instance_size = instance_size_obj ? 
+          ssize_t instance_size = instance_size_obj ?
 #if PY_VERSION_HEX >= 0x03000000
               PyLong_AsSsize_t(instance_size_obj) : 0;
 #else
               PyInt_AsLong(instance_size_obj) : 0;
 #endif
-          
+
           if (instance_size < 0)
               instance_size = 0;
-          
+
           PyErr_Clear(); // Clear any errors that may have occurred.
 
           instance<>* result = (instance<>*)type_->tp_alloc(type_, instance_size);
@@ -391,7 +393,7 @@ namespace objects
               inst->dict = PyDict_New();
           return python::xincref(inst->dict);
       }
-    
+
       static int instance_set_dict(PyObject* op, PyObject* dict, void*)
       {
           instance<>* inst = downcast<instance<> >(op);
@@ -408,7 +410,7 @@ namespace objects
       {0, 0, 0, 0, 0}
   };
 
-  
+
   static PyMemberDef instance_members[] = {
       {const_cast<char*>("__weakref__"), T_OBJECT, offsetof(instance<>, weakrefs), 0, 0},
       {0, 0, 0, 0, 0}
@@ -462,8 +464,9 @@ namespace objects
       0,                                      /* tp_subclasses */
       0,                                      /* tp_weaklist */
 #if PYTHON_API_VERSION >= 1012
-      0                                       /* tp_del */
+      0,                                      /* tp_del */
 #endif
+      0                                       /* tp_version_tag */
   };
 
   BOOST_PYTHON_DECL type_handle class_type()
@@ -485,7 +488,7 @@ namespace objects
       if (!Py_TYPE(Py_TYPE(inst)) ||
               !PyType_IsSubtype(Py_TYPE(Py_TYPE(inst)), &class_metatype_object))
           return 0;
-    
+
       instance<>* self = reinterpret_cast<instance<>*>(inst);
 
       for (instance_holder* match = self->objects; match != 0; match = match->next())
@@ -549,7 +552,7 @@ namespace objects
     new_class(char const* name, std::size_t num_types, type_info const* const types, char const* doc)
     {
       assert(num_types >= 1);
-      
+
       // Build a tuple of the base Python type objects. If no bases
       // were declared, we'll use our class_type() as the single base
       // class.
@@ -565,16 +568,16 @@ namespace objects
 
       // Call the class metatype to create a new class
       dict d;
-   
+
       object m = module_prefix();
       if (m) d["__module__"] = m;
 
       if (doc != 0)
           d["__doc__"] = doc;
-      
+
       object result = object(class_metatype())(name, bases, d);
       assert(PyType_IsSubtype(Py_TYPE(result.ptr()), &PyType_Type));
-      
+
       if (scope().ptr() != Py_None)
           scope().attr(name) = result;
 
@@ -585,7 +588,7 @@ namespace objects
       return result;
     }
   }
-  
+
   class_base::class_base(
       char const* name, std::size_t num_types, type_info const* const types, char const* doc)
       : object(new_class(name, num_types, types, doc))
@@ -602,24 +605,24 @@ namespace objects
   {
       converter::registration& dst_converters
           = const_cast<converter::registration&>(converter::registry::lookup(dst));
-      
+
       converter::registration const& src_converters = converter::registry::lookup(src);
 
       dst_converters.m_class_object = src_converters.m_class_object;
   }
-  
+
   void class_base::set_instance_size(std::size_t instance_size)
   {
       this->attr("__instance_size__") = instance_size;
   }
-  
+
   void class_base::add_property(
     char const* name, object const& fget, char const* docstr)
   {
       object property(
           (python::detail::new_reference)
           PyObject_CallFunction((PyObject*)&PyProperty_Type, const_cast<char*>("Osss"), fget.ptr(), (char*)NULL, (char*)NULL, docstr));
-      
+
       this->setattr(name, property);
   }
 
@@ -629,17 +632,17 @@ namespace objects
       object property(
           (python::detail::new_reference)
           PyObject_CallFunction((PyObject*)&PyProperty_Type, const_cast<char*>("OOss"), fget.ptr(), fset.ptr(), (char*)NULL, docstr));
-      
+
       this->setattr(name, property);
   }
 
   void class_base::add_static_property(char const* name, object const& fget)
   {
       object property(
-          (python::detail::new_reference) 
+          (python::detail::new_reference)
           PyObject_CallFunction(static_data(), const_cast<char*>("O"), fget.ptr())
           );
-      
+
       this->setattr(name, property);
   }
 
@@ -648,7 +651,7 @@ namespace objects
       object property(
           (python::detail::new_reference)
           PyObject_CallFunction(static_data(), const_cast<char*>("OO"), fget.ptr(), fset.ptr()));
-      
+
       this->setattr(name, property);
   }
 
@@ -671,7 +674,7 @@ namespace objects
                           "This class cannot be instantiated from Python\n")
     };
   }
-  
+
   void class_base::def_no_init()
   {
       handle<> f(::PyCFunction_New(&no_init_def, 0));
@@ -681,7 +684,7 @@ namespace objects
   void class_base::enable_pickling_(bool getstate_manages_dict)
   {
       setattr("__safe_for_unpickling__", object(true));
-      
+
       if (getstate_manages_dict)
       {
           setattr("__getstate_manages_dict__", object(true));
@@ -700,12 +703,12 @@ namespace objects
           , const_cast<char*>("staticmethod expects callable object; got an object of type %s, which is not callable")
             , Py_TYPE(callable)->tp_name
             );
-        
+
         throw_error_already_set();
         return 0;
     }
   }
-  
+
   void class_base::make_method_static(const char * method_name)
   {
       PyTypeObject* self = downcast<PyTypeObject>(this->ptr());
@@ -730,9 +733,9 @@ void* instance_holder::allocate(PyObject* self_, std::size_t holder_offset, std:
 {
     assert(PyType_IsSubtype(Py_TYPE(Py_TYPE(self_)), &class_metatype_object));
     objects::instance<>* self = (objects::instance<>*)self_;
-    
+
     int total_size_needed = holder_offset + holder_size;
-    
+
     if (-Py_SIZE(self) >= total_size_needed)
     {
         // holder_offset should at least point into the variable-sized part

@@ -65,7 +65,7 @@ extern "C"
 #if PY_VERSION_HEX >= 0x03000000
                 PyUnicode_FromFormat("%S.%s.%S", mod, self_->ob_type->tp_name, name);
 #else
-                PyString_FromFormat("%s.%s.%s", 
+                PyString_FromFormat("%s.%s.%s",
                         PyString_AsString(mod), self_->ob_type->tp_name, PyString_AsString(name));
 #endif
         }
@@ -141,8 +141,9 @@ static PyTypeObject enum_type_object = {
     0,                                      /* tp_subclasses */
     0,                                      /* tp_weaklist */
 #if PYTHON_API_VERSION >= 1012
-    0                                       /* tp_del */
+    0,                                      /* tp_del */
 #endif
+    0                                       /* tp_version_tag */
 };
 
 object module_prefix();

@@ -107,6 +107,8 @@ namespace boost { namespace python { namespace objects {
 
     str function_doc_signature_generator::raw_function_pretty_signature(function const *f, size_t n_overloads,  bool cpp_types )
     {
+        (void) n_overloads;
+        (void) cpp_types;
         str res("object");
 
         res = str("%s %s(%s)" % make_tuple( res, f->m_name, str("tuple args, dict kwds")) );
@@ -265,7 +267,7 @@ namespace boost { namespace python { namespace objects {
 
     }
 
-    namespace detail {    
+    namespace detail {
         char py_signature_tag[] = "PY signature :";
         char cpp_signature_tag[] = "C++ signature :";
     }
@@ -283,7 +285,7 @@ namespace boost { namespace python { namespace objects {
                 if((*fi)->doc())
                 {
                     str func_doc = str((*fi)->doc());
-                    
+
                     int doc_len = len(func_doc);
 
                     bool show_py_signature = doc_len >= int(sizeof(detail::py_signature_tag)/sizeof(char)-1)
@@ -293,27 +295,27 @@ namespace boost { namespace python { namespace objects {
                         func_doc = str(func_doc.slice(int(sizeof(detail::py_signature_tag)/sizeof(char))-1, _));
                         doc_len = len(func_doc);
                     }
-                    
+
                     bool show_cpp_signature = doc_len >= int(sizeof(detail::cpp_signature_tag)/sizeof(char)-1)
                                             && str(detail::cpp_signature_tag) == func_doc.slice( 1-int(sizeof(detail::cpp_signature_tag)/sizeof(char)), _);
-                    
+
                     if(show_cpp_signature)
                     {
                         func_doc = str(func_doc.slice(_, 1-int(sizeof(detail::cpp_signature_tag)/sizeof(char))));
                         doc_len = len(func_doc);
                     }
-                    
+
                     str res="\n";
                     str pad = "\n";
 
                     if(show_py_signature)
-                    { 
+                    {
                         str sig = pretty_signature(*fi, n_overloads,false);
                         res+=sig;
                         if(doc_len || show_cpp_signature )res+=" :";
                         pad+= str("    ");
                     }
-                    
+
                     if(doc_len)
                     {
                         if(show_py_signature)
@@ -327,7 +329,7 @@ namespace boost { namespace python { namespace objects {
                             res+="\n"+pad;
                         res+=detail::cpp_signature_tag+pad+"    "+pretty_signature(*fi, n_overloads,true);
                     }
-                    
+
                     signatures.append(res);
                 }
                 ++sfi;
