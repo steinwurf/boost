@@ -175,7 +175,7 @@ void mapped_file_impl::open_file(param_type p)
             GENERIC_READ :
             (GENERIC_READ | GENERIC_WRITE);
     DWORD dwCreationDisposition = (p.new_file_size != 0 && !readonly) ? 
-        CREATE_ALWAYS : 
+        OPEN_ALWAYS : 
         OPEN_EXISTING;
     DWORD dwFlagsandAttributes =
         readonly ?
@@ -258,7 +258,7 @@ void mapped_file_impl::open_file(param_type p)
     // Open file
     int flags = (readonly ? O_RDONLY : O_RDWR);
     if (p.new_file_size != 0 && !readonly)
-        flags |= (O_CREAT | O_TRUNC);
+        flags |= O_CREAT;
     #ifdef _LARGEFILE64_SOURCE
         flags |= O_LARGEFILE;
     #endif
