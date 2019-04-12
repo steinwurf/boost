@@ -158,14 +158,10 @@ PyObject* function::call(PyObject* args, PyObject* keywords) const
                     {
                         // no argument preprocessing
                     }
-                    else if (n_actual > max_arity)
-                    {
-                        // too many arguments
-                        inner_args = handle<>();
-                    }
                     else
                     {
                         // build a new arg tuple, will adjust its size later
+                        assert(max_arity <= static_cast<std::size_t>(ssize_t_max));
                         inner_args = handle<>(
                             PyTuple_New(static_cast<ssize_t>(max_arity)));
 
@@ -448,7 +444,9 @@ void function::add_to_namespace(
         if (dict == 0)
             throw_error_already_set();
 
+        assert(!PyErr_Occurred());
         handle<> existing(allow_null(::PyObject_GetItem(dict.get(), name.ptr())));
+        PyErr_Clear();
         
         if (existing)
         {
@@ -489,16 +487,15 @@ void function::add_to_namespace(
         if (new_func->name().is_none())
             new_func->m_name = name;
 
+        assert(!PyErr_Occurred());
         handle<> name_space_name(
             allow_null(::PyObject_GetAttrString(name_space.ptr(), const_cast<char*>("__name__"))));
+        PyErr_Clear();
         
         if (name_space_name)
             new_func->m_namespace = object(name_space_name);
     }
 
-    // The PyObject_GetAttrString() or PyObject_GetItem calls above may
-    // have left an active error
-    PyErr_Clear();
     if (PyObject_SetAttr(ns, name.ptr(), attribute.ptr()) < 0)
         throw_error_already_set();
 
@@ -598,7 +595,6 @@ extern "C"
     static PyObject *
     function_descr_get(PyObject *func, PyObject *obj, PyObject *type_)
     {
-        (void) type_;
 #if PY_VERSION_HEX >= 0x03000000
         // The implement is different in Python 3 because of the removal of unbound method
         if (obj == Py_None || obj == NULL) {

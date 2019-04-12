@@ -22,7 +22,7 @@
 
 #ifdef _DEBUG
 # ifndef BOOST_DEBUG_PYTHON
-#  ifdef _MSC_VER
+#  ifdef _MSC_VER  
     // VC8.0 will complain if system headers are #included both with
     // and without _DEBUG defined, so we have to #include all the
     // system headers used by pyconfig.h right here.
@@ -45,6 +45,13 @@
 #  undef _DEBUG // Don't let Python force the debug library just because we're debugging.
 #  define DEBUG_UNDEFINED_FROM_WRAP_PYTHON_H
 # endif
+#endif
+
+// pyconfig.h defines a macro with hypot name, what breaks libstdc++ math headers
+// that Python.h tries to include afterwards.
+#if defined(__MINGW32__)
+# include <cmath>
+# include <math.h>
 #endif
 
 # include <pyconfig.h>
@@ -83,6 +90,7 @@
 // than MSVC on Win32
 //
 #if defined(_WIN32) || defined(__CYGWIN__)
+
 # if defined(__GNUC__) && defined(__CYGWIN__)
 
 #  if defined(__LP64__)
@@ -138,14 +146,6 @@ typedef int pid_t;
 
 #  undef hypot // undo the evil #define left by Python.
 
-# elif defined(_MSC_VER)
-
-// VS 2010 and above already defines hypot as _hypot
-// and the double definition would cause an infinite recursion
-#if _MSC_VER >= 1600
-    #undef hypot
-#endif
-
 # elif defined(__BORLANDC__)
 #  undef HAVE_HYPOT
 #  define HAVE_HYPOT 1
@@ -153,32 +153,37 @@ typedef int pid_t;
 
 #endif // _WIN32
 
+#if defined(__GNUC__)
+# if defined(__has_warning)
+#  define BOOST_PYTHON_GCC_HAS_WREGISTER __has_warning("-Wregister")
+# else
+#  define BOOST_PYTHON_GCC_HAS_WREGISTER __GNUC__ >= 7
+# endif
+#else
+# define BOOST_PYTHON_GCC_HAS_WREGISTER 0
+#endif
+
+// Python.h header uses `register` keyword until Python 3.4
+#if BOOST_PYTHON_GCC_HAS_WREGISTER
+# pragma GCC diagnostic push
+# pragma GCC diagnostic ignored "-Wregister"
+#elif defined(_MSC_VER)
+# pragma warning(push)
+# pragma warning(disable : 5033)  // 'register' is no longer a supported storage class
+#endif
+
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2 && PY_MICRO_VERSION < 2
 # include <boost/python/detail/python22_fixed.h>
 #else
-// Some header files for Python 2.7 use the "register" specifier which is
-// deprecated in C++14 and removed in C++17. Ignore these warnings in newer
-// compilers to maintain compatibility with Python 2.7.
-# if defined(BOOST_GCC)
-#  if BOOST_GCC >= 70000
-#     pragma GCC diagnostic ignored "-Wregister"
-#  endif
-# elif defined(__clang__) && defined(__has_warning)
-#  if __has_warning("-Wdeprecated-register")
-#     pragma GCC diagnostic ignored "-Wdeprecated-register"
-#  endif
-// Also disable the clang nullability warnings that are present when
-// including C-style headers from Python.h
-#  if __has_warning("-Wnullability-extension")
-#     pragma GCC diagnostic ignored "-Wnullability-extension"
-#  endif
-#  if __has_warning("-Wnullability-completeness")
-#     pragma GCC diagnostic ignored "-Wnullability-completeness"
-#  endif
-# endif
-
 # include <Python.h>
 #endif
+
+#if BOOST_PYTHON_GCC_HAS_WREGISTER
+# pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+# pragma warning(pop)
+#endif
+#undef BOOST_PYTHON_GCC_HAS_WREGISTER
 
 #ifdef BOOST_PYTHON_ULONG_MAX_UNDEFINED
 # undef ULONG_MAX

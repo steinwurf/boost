@@ -1,5 +1,5 @@
 // Copyright 2014 Renato Tegon Forti, Antony Polukhin.
-// Copyright 2015 Antony Polukhin.
+// Copyright 2015-2019 Antony Polukhin.
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt
@@ -8,13 +8,17 @@
 #ifndef BOOST_DLL_DETAIL_WINDOWS_PE_INFO_HPP
 #define BOOST_DLL_DETAIL_WINDOWS_PE_INFO_HPP
 
-#include <boost/config.hpp>
+#include <boost/dll/config.hpp>
 
 #ifdef BOOST_HAS_PRAGMA_ONCE
 # pragma once
 #endif
 
-#include <boost/filesystem/fstream.hpp>
+#include <cstring>
+#include <fstream>
+
+#include <boost/assert.hpp>
+#include <boost/cstdint.hpp>
 #include <boost/dll/detail/x_info_interface.hpp>
 
 namespace boost { namespace dll { namespace detail {
@@ -25,13 +29,13 @@ namespace boost { namespace dll { namespace detail {
 // http://msdn.microsoft.com/en-us/magazine/cc301808.aspx
 //
 
-// Basic Windows typedefs. We can not use <boost/detail/winapi/basic_types.hpp> header
+// Basic Windows typedefs. We can not use <boost/winapi/basic_types.hpp> header
 // because that header must be included only on Windows platform
 typedef unsigned char BYTE_;
 typedef unsigned short WORD_;
-typedef unsigned long DWORD_;
-typedef long LONG_;
-typedef unsigned long ULONG_;
+typedef boost::uint32_t DWORD_;
+typedef boost::int32_t LONG_;
+typedef boost::uint32_t ULONG_;
 typedef boost::int64_t LONGLONG_;
 typedef boost::uint64_t ULONGLONG_;
 
@@ -161,7 +165,7 @@ typedef IMAGE_NT_HEADERS_template<boost::dll::detail::ULONGLONG_>  IMAGE_NT_HEAD
 
 template <class AddressOffsetT>
 class pe_info: public x_info_interface {
-    boost::filesystem::ifstream&    f_;
+    std::ifstream&    f_;
 
     typedef IMAGE_NT_HEADERS_template<AddressOffsetT>   header_t;
     typedef IMAGE_EXPORT_DIRECTORY_                     exports_t;
@@ -174,7 +178,7 @@ class pe_info: public x_info_interface {
     }
 
 public:
-    static bool parsing_supported(boost::filesystem::ifstream& f) {
+    static bool parsing_supported(std::ifstream& f) {
         dos_t dos;
         f.seekg(0);
         f.read(reinterpret_cast<char*>(&dos), sizeof(dos));
@@ -193,7 +197,7 @@ public:
     }
 
 
-    explicit pe_info(boost::filesystem::ifstream& f) BOOST_NOEXCEPT
+    explicit pe_info(std::ifstream& f) BOOST_NOEXCEPT
         : f_(f)
     {}
 
@@ -370,15 +374,14 @@ public:
       MSVCR110D.dll
     */
     /*
-    std::vector<std::string> depend_of(boost::system::error_code &ec) BOOST_NOEXCEPT {
+    std::vector<std::string> depend_of(boost::dll::fs::error_code &ec) BOOST_NOEXCEPT {
         std::vector<std::string> ret;
 
         IMAGE_DOS_HEADER* image_dos_header = (IMAGE_DOS_HEADER*)native();
         if(!image_dos_header) {
             // ERROR_BAD_EXE_FORMAT 
-            ec = boost::system::error_code(
-                 boost::system::errc::executable_format_error,
-                 boost::system::generic_category()
+            ec = boost::dll::fs::make_error_code(
+                 boost::dll::fs::errc::executable_format_error
                  );
 
             return ret;
@@ -387,9 +390,8 @@ public:
         IMAGE_OPTIONAL_HEADER* image_optional_header = (IMAGE_OPTIONAL_HEADER*)((boost::dll::detail::BYTE_*)native() + image_dos_header->e_lfanew + 24);
         if(!image_optional_header) {
             // ERROR_BAD_EXE_FORMAT 
-            ec = boost::system::error_code(
-                 boost::system::errc::executable_format_error,
-                 boost::system::generic_category()
+            ec = boost::dll::fs::make_error_code(
+                 boost::dll::fs::errc::executable_format_error
                  );
 
             return ret;
@@ -398,9 +400,8 @@ public:
         IMAGE_IMPORT_DESCRIPTOR* image_import_descriptor =  (IMAGE_IMPORT_DESCRIPTOR*)((boost::dll::detail::BYTE_*)native() + image_optional_header->DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress);
         if(!image_import_descriptor) {
             // ERROR_BAD_EXE_FORMAT 
-            ec = boost::system::error_code(
-                 boost::system::errc::executable_format_error,
-                 boost::system::generic_category()
+            ec = boost::dll::fs::make_error_code(
+                 boost::dll::fs::errc::executable_format_error
                  );
 
             return ret;

@@ -7,10 +7,10 @@
 // Boost Software License, Version 1.0. (See accompanying file
 // LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 
-#include <boost/detail/winapi/config.hpp>
+#include <boost/winapi/config.hpp>
 #include <boost/thread/detail/config.hpp>
 
-#if defined(BOOST_HAS_WINTHREADS) && defined(BOOST_THREAD_BUILD_LIB)
+#if defined(BOOST_THREAD_WIN32) && defined(BOOST_THREAD_BUILD_LIB)
 
 #if (defined(__MINGW32__) && !defined(_WIN64)) || defined(__MINGW64__) || (__MINGW64_VERSION_MAJOR)
 
@@ -94,8 +94,8 @@ extern "C" const IMAGE_TLS_DIRECTORY32 _tls_used __attribute__ ((section(".rdata
 #if (_MSC_VER >= 1500)
 
 extern "C" {
-extern BOOL (WINAPI * const _pRawDllMainOrig)(HANDLE, DWORD, LPVOID);
-extern BOOL (WINAPI * const _pDefaultRawDllMainOrig)(HANDLE, DWORD, LPVOID) = NULL;
+extern BOOL (WINAPI * const _pRawDllMainOrig)(HINSTANCE, DWORD, LPVOID);
+extern BOOL (WINAPI * const _pDefaultRawDllMainOrig)(HINSTANCE, DWORD, LPVOID) = NULL;
 #if defined (_M_IX86)
 #pragma comment(linker, "/alternatename:__pRawDllMainOrig=__pDefaultRawDllMainOrig")
 #elif defined (_M_X64) || defined (_M_ARM)
@@ -283,9 +283,9 @@ extern BOOL (WINAPI * const _pDefaultRawDllMainOrig)(HANDLE, DWORD, LPVOID) = NU
         }
 
 #if (_MSC_VER >= 1500)
-        BOOL WINAPI dll_callback(HANDLE hInstance, DWORD dwReason, LPVOID lpReserved)
+        BOOL WINAPI dll_callback(HINSTANCE hInstance, DWORD dwReason, LPVOID lpReserved)
 #else
-        BOOL WINAPI dll_callback(HANDLE, DWORD dwReason, LPVOID)
+        BOOL WINAPI dll_callback(HINSTANCE, DWORD dwReason, LPVOID)
 #endif
         {
             switch (dwReason)
@@ -310,7 +310,7 @@ extern BOOL (WINAPI * const _pDefaultRawDllMainOrig)(HANDLE, DWORD, LPVOID) = NU
 
 extern "C"
 {
-    extern BOOL (WINAPI * const _pRawDllMain)(HANDLE, DWORD, LPVOID)=&dll_callback;
+    extern BOOL (WINAPI * const _pRawDllMain)(HINSTANCE, DWORD, LPVOID)=&dll_callback;
 }
 namespace boost
 {
@@ -334,4 +334,4 @@ namespace boost
 
 #endif //defined(_MSC_VER) && !defined(UNDER_CE)
 
-#endif //defined(BOOST_HAS_WINTHREADS) && defined(BOOST_THREAD_BUILD_LIB)
+#endif //defined(BOOST_THREAD_WIN32) && defined(BOOST_THREAD_BUILD_LIB)

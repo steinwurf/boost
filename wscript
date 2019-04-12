@@ -40,9 +40,6 @@ def _boost_shared_defines(conf):
     defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD',
                'BOOST_SYSTEM_NO_DEPRECATED']
 
-    # Disable the noexcept keyword for all compilers
-    defines += ['BOOST_NO_CXX11_NOEXCEPT']
-
     return defines
 
 

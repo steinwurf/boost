@@ -30,11 +30,13 @@
 #include <boost/log/keywords/max_files.hpp>
 #include <boost/log/keywords/min_free_space.hpp>
 #include <boost/log/keywords/target.hpp>
+#include <boost/log/keywords/target_file_name.hpp>
 #include <boost/log/keywords/file_name.hpp>
 #include <boost/log/keywords/open_mode.hpp>
 #include <boost/log/keywords/auto_flush.hpp>
 #include <boost/log/keywords/rotation_size.hpp>
 #include <boost/log/keywords/time_based_rotation.hpp>
+#include <boost/log/keywords/enable_final_rotation.hpp>
 #include <boost/log/detail/config.hpp>
 #include <boost/log/detail/light_function.hpp>
 #include <boost/log/detail/parameter_tools.hpp>
@@ -370,7 +372,7 @@ public:
      * Constructor. Creates a sink backend with the specified named parameters.
      * The following named parameters are supported:
      *
-     * \li \c file_name - Specifies the file name pattern where logs are actually written to. The pattern may
+     * \li \c file_name - Specifies the active file name pattern where logs are actually written to. The pattern may
      *                    contain directory and file name portions, but only the file name may contain
      *                    placeholders. The backend supports Boost.DateTime placeholders for injecting
      *                    current time and date into the file name. Also, an additional %N placeholder is
@@ -378,6 +380,10 @@ public:
      *                    may also contain width specification in the printf-compatible form (e.g. %5N). The
      *                    printed file counter will always be zero-filled. If \c file_name is not specified,
      *                    pattern "%5N.log" will be used.
+     * \li \c target_file_name - Specifies the target file name pattern to use to rename the log file on rotation,
+     *                           before passing it to the file collector. The pattern may contain the same
+     *                           placeholders as the \c file_name parameter. By default, no renaming is done,
+     *                           i.e. the written log file keeps its name according to \c file_name.
      * \li \c open_mode - File open mode. The mode should be presented in form of mask compatible to
      *                    <tt>std::ios_base::openmode</tt>. If not specified, <tt>trunc | out</tt> will be used.
      * \li \c rotation_size - Specifies the approximate size, in characters written, of the temporary file
@@ -387,6 +393,8 @@ public:
      *                        any size.
      * \li \c time_based_rotation - Specifies the predicate for time-based file rotation.
      *                              No time-based file rotations will be performed, if not specified.
+     * \li \c enable_final_rotation - Specifies a flag, whether or not perform log file rotation on
+     *                                sink backend destruction. By default, is \c true.
      * \li \c auto_flush - Specifies a flag, whether or not to automatically flush the file after each
      *                     written log record. By default, is \c false.
      *
@@ -406,7 +414,7 @@ public:
     BOOST_LOG_API ~text_file_backend();
 
     /*!
-     * The method sets file name wildcard for the files being written. The wildcard supports
+     * The method sets the active file name wildcard for the files being written. The wildcard supports
      * date and time injection into the file name.
      *
      * \param pattern The name pattern for the file being written.
@@ -415,6 +423,22 @@ public:
     void set_file_name_pattern(PathT const& pattern)
     {
         set_file_name_pattern_internal(filesystem::path(pattern));
+    }
+
+    /*!
+     * The method sets the target file name wildcard for the files being rotated. The wildcard supports
+     * date and time injection into the file name.
+     *
+     * This pattern will be used when the log file is being rotated, to rename the just written
+     * log file (which has the name according to the pattern in the \c file_name constructor parameter or
+     * set by a call to \c set_file_name_pattern), just before passing the file to the file collector.
+     *
+     * \param pattern The name pattern for the file being rotated.
+     */
+    template< typename PathT >
+    void set_target_file_name_pattern(PathT const& pattern)
+    {
+        set_target_file_name_pattern_internal(filesystem::path(pattern));
     }
 
     /*!
@@ -472,9 +496,26 @@ public:
     BOOST_LOG_API void set_time_based_rotation(time_based_rotation_predicate const& predicate);
 
     /*!
-     * Sets the flag to automatically flush buffers of all attached streams after each log record
+     * The method allows to enable or disable log file rotation on sink destruction.
+     *
+     * By default the sink backend will rotate the log file, if it's been written to, on
+     * destruction.
+     *
+     * \param enable The flag indicates whether the final rotation should be performed.
      */
-    BOOST_LOG_API void auto_flush(bool f = true);
+    BOOST_LOG_API void enable_final_rotation(bool enable);
+
+    /*!
+     * Sets the flag to automatically flush write buffers of the file being written after each log record.
+     *
+     * \param enable The flag indicates whether the automatic buffer flush should be performed.
+     */
+    BOOST_LOG_API void auto_flush(bool enable = true);
+
+    /*!
+     * \return The name of the currently open log file. If no file is open, returns an empty path.
+     */
+    BOOST_LOG_API filesystem::path get_current_file_name() const;
 
     /*!
      * Performs scanning of the target directory for log files that may have been left from
@@ -482,7 +523,7 @@ public:
      * as if they were rotated.
      *
      * The file scan can be performed in two ways: either all files in the target directory will
-     * be considered as log files, or only those files that satisfy the file name pattern.
+     * be considered as log files, or only those files that satisfy the target file name pattern.
      * See documentation on <tt>sinks::file::collector::scan_for_files</tt> for more information.
      *
      * \pre File collector and the proper file name pattern have already been set.
@@ -521,21 +562,27 @@ private:
     {
         construct(
             filesystem::path(args[keywords::file_name | filesystem::path()]),
+            filesystem::path(args[keywords::target_file_name | filesystem::path()]),
             args[keywords::open_mode | (std::ios_base::trunc | std::ios_base::out)],
             args[keywords::rotation_size | (std::numeric_limits< uintmax_t >::max)()],
             args[keywords::time_based_rotation | time_based_rotation_predicate()],
-            args[keywords::auto_flush | false]);
+            args[keywords::auto_flush | false],
+            args[keywords::enable_final_rotation | true]);
     }
     //! Constructor implementation
     BOOST_LOG_API void construct(
         filesystem::path const& pattern,
+        filesystem::path const& target_file_name,
         std::ios_base::openmode mode,
         uintmax_t rotation_size,
         time_based_rotation_predicate const& time_based_rotation,
-        bool auto_flush);
+        bool auto_flush,
+        bool enable_final_rotation);
 
-    //! The method sets file name mask
+    //! The method sets file name pattern
     BOOST_LOG_API void set_file_name_pattern_internal(filesystem::path const& pattern);
+    //! The method sets target file name pattern
+    BOOST_LOG_API void set_target_file_name_pattern_internal(filesystem::path const& pattern);
 
     //! Closes the currently open file
     void close_file();

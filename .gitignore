@@ -62,3 +62,6 @@ local.properties
 *.log
 *.vcxproj*
 VSProjects
+
+# VS Code ignore
+.vscode
