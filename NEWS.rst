@@ -6,7 +6,7 @@ of every change, see the Git log.
 
 Latest
 ------
-* tbd
+* Patch: Use `poll.h` instead of `sys/poll.h`.
 
 3.1.7
 -----
