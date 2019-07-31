@@ -6,7 +6,15 @@ of every change, see the Git log.
 
 Latest
 ------
+* tbd
 * Minor: Upgrade to Boost release 1.70.0.
+
+3.1.8
+-----
+* Patch: Avoid the double configuration of Python extension build flags.
+  Another library (e.g. pybind11) might be the first to run this configuration
+  step, so it would be problematic to repeat that.
+* Patch: Use ``poll.h`` include instead of ``sys/poll.h`` in boost::asio.
 
 3.1.7
 -----
