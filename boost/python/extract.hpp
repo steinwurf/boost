@@ -177,20 +177,12 @@ namespace converter
   inline typename extract_rvalue<T>::result_type
   extract_rvalue<T>::operator()() const
   {
-#if defined(BOOST_GCC) && BOOST_GCC > 60300
-#pragma GCC diagnostic push
-// Recent versions of g++ produce a maybe-uninitialized warning here
-#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
-#endif
       return *(T*)(
           // Only do the stage2 conversion once
           m_data.stage1.convertible ==  m_data.storage.bytes
              ? m_data.storage.bytes
              : (rvalue_from_python_stage2)(m_source, m_data.stage1, registered<T>::converters)
           );
-#if defined(BOOST_GCC) && BOOST_GCC > 60300
-#pragma GCC diagnostic pop
-#endif
   }
 
   template <class Ref>

@@ -42,7 +42,7 @@ namespace detail
   //
   // Dispatch to properly add f to namespace ns.
   //
-  // @group define_stub_function helpers {
+  // @group define_stub_function helpers { 
   template <class Func, class CallPolicies, class NameSpaceT>
   static void name_space_def(
       NameSpaceT& name_space
@@ -55,7 +55,7 @@ namespace detail
       )
   {
       typedef typename NameSpaceT::wrapped_type wrapped_type;
-
+      
       objects::add_to_namespace(
           name_space, name,
           detail::make_keyword_range_function(
@@ -89,7 +89,7 @@ namespace detail
       NameSpaceT& name_space
       , char const* name
       , Func f
-      , keyword_range const& // ignored
+      , keyword_range const& kw // ignored
       , CallPolicies const& policies
       , char const* doc
       , module*
@@ -129,9 +129,9 @@ namespace detail
     (3, (0, BOOST_PYTHON_MAX_ARITY, <boost/python/detail/defaults_def.hpp>))
 
 #include BOOST_PP_ITERATE()
-
+  
   // }
-
+  
   //  This helper template struct does the actual recursive
   //  definition.  There's a generic version
   //  define_with_defaults_helper<N> and a terminal case

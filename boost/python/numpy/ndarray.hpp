@@ -28,7 +28,7 @@ namespace boost { namespace python { namespace numpy {
  *  @todo This could have a lot more functionality (like boost::python::numeric::array).
  *        Right now all that exists is what was needed to move raw data between C++ and Python.
  */
-
+ 
 class BOOST_NUMPY_DECL ndarray : public object
 {
 
@@ -38,7 +38,7 @@ class BOOST_NUMPY_DECL ndarray : public object
    *  This is just a hack to allow inline access to this stuff while hiding numpy/arrayobject.h
    *  from the user.
    */
-  struct array_struct
+  struct array_struct 
   {
     PyObject_HEAD
     char * data;
@@ -50,25 +50,25 @@ class BOOST_NUMPY_DECL ndarray : public object
     int flags;
     PyObject * weakreflist;
   };
-
+  
   /// @brief Return the held Python object as an array_struct.
   array_struct * get_struct() const { return reinterpret_cast<array_struct*>(this->ptr()); }
 
 public:
-
+  
   /**
    *  @brief Enum to represent (some) of Numpy's internal flags.
    *
-   *  These don't match the actual Numpy flag values; we can't get those without including
+   *  These don't match the actual Numpy flag values; we can't get those without including 
    *  numpy/arrayobject.h or copying them directly.  That's very unfortunate.
    *
    *  @todo I'm torn about whether this should be an enum.  It's very convenient to not
    *        make these simple integer values for overloading purposes, but the need to
    *        define every possible combination and custom bitwise operators is ugly.
    */
-  enum bitflag
+  enum bitflag 
   {
-    NONE=0x0, C_CONTIGUOUS=0x1, F_CONTIGUOUS=0x2, V_CONTIGUOUS=0x1|0x2,
+    NONE=0x0, C_CONTIGUOUS=0x1, F_CONTIGUOUS=0x2, V_CONTIGUOUS=0x1|0x2, 
     ALIGNED=0x4, WRITEABLE=0x8, BEHAVED=0x4|0x8,
     CARRAY_RO=0x1|0x4, CARRAY=0x1|0x4|0x8, CARRAY_MIS=0x1|0x8,
     FARRAY_RO=0x2|0x4, FARRAY=0x2|0x4|0x8, FARRAY_MIS=0x2|0x8,
@@ -79,7 +79,7 @@ public:
 
   /// @brief Return a view of the scalar with the given dtype.
   ndarray view(dtype const & dt) const;
-
+    
   /// @brief Copy the array, cast to a specified type.
   ndarray astype(dtype const & dt) const;
 
@@ -91,7 +91,7 @@ public:
 
   /// @brief Return the stride of the nth dimension. raises IndexError if k not in [-get_nd() : get_nd()-1]
   Py_intptr_t strides(int n) const;
-
+    
   /**
    *  @brief Return the array's raw data pointer.
    *
@@ -102,34 +102,34 @@ public:
 
   /// @brief Return the array's data-type descriptor object.
   dtype get_dtype() const;
-
+  
   /// @brief Return the object that owns the array's data, or None if the array owns its own data.
   object get_base() const;
-
+  
   /// @brief Set the object that owns the array's data.  Use with care.
   void set_base(object const & base);
-
+  
   /// @brief Return the shape of the array as an array of integers (length == get_nd()).
   Py_intptr_t const * get_shape() const { return get_struct()->shape; }
-
+  
   /// @brief Return the stride of the array as an array of integers (length == get_nd()).
   Py_intptr_t const * get_strides() const { return get_struct()->strides; }
-
+  
   /// @brief Return the number of array dimensions.
   int get_nd() const { return get_struct()->nd; }
-
+  
   /// @brief Return the array flags.
   bitflag get_flags() const;
-
+  
   /// @brief Reverse the dimensions of the array.
   ndarray transpose() const;
-
+  
   /// @brief Eliminate any unit-sized dimensions.
   ndarray squeeze() const;
-
+  
   /// @brief Equivalent to self.reshape(*shape) in Python.
   ndarray reshape(python::tuple const & shape) const;
-
+  
   /**
    *  @brief If the array contains only a single element, return it as an array scalar; otherwise return
    *         the array.
@@ -159,7 +159,7 @@ BOOST_NUMPY_DECL ndarray empty(int nd, Py_intptr_t const * shape, dtype const & 
 BOOST_NUMPY_DECL ndarray array(object const & obj);
 BOOST_NUMPY_DECL ndarray array(object const & obj, dtype const & dt);
 
-namespace detail
+namespace detail 
 {
 
 BOOST_NUMPY_DECL ndarray from_data_impl(void * data,
@@ -176,11 +176,11 @@ ndarray from_data_impl(void * data,
 		       Container strides,
 		       object const & owner,
 		       bool writeable,
-		       typename boost::enable_if< boost::python::detail::is_integral<typename Container::value_type> >::type * = NULL)
+		       typename boost::enable_if< boost::python::detail::is_integral<typename Container::value_type> >::type * enabled = NULL)
 {
   std::vector<Py_intptr_t> shape_(shape.begin(),shape.end());
   std::vector<Py_intptr_t> strides_(strides.begin(), strides.end());
-  return from_data_impl(data, dt, shape_, strides_, owner, writeable);
+  return from_data_impl(data, dt, shape_, strides_, owner, writeable);    
 }
 
 BOOST_NUMPY_DECL ndarray from_data_impl(void * data,
@@ -213,7 +213,7 @@ inline ndarray from_data(void * data,
 			 python::object const & owner)
 {
   return numpy::detail::from_data_impl(data, dt, shape, strides, owner, true);
-}
+}    
 
 /**
  *  @brief Construct a new ndarray object from a raw pointer.
@@ -238,7 +238,7 @@ inline ndarray from_data(void const * data,
 			 python::object const & owner)
 {
   return numpy::detail::from_data_impl(const_cast<void*>(data), dt, shape, strides, owner, false);
-}
+}    
 
 /**
  *  @brief Transform an arbitrary object into a numpy array with the given requirements.
@@ -303,7 +303,7 @@ BOOST_NUMPY_DECL inline ndarray::bitflag operator&(ndarray::bitflag a,
 
 } // namespace boost::python::numpy
 
-namespace converter
+namespace converter 
 {
 
 NUMPY_OBJECT_MANAGER_TRAITS(numpy::ndarray);
