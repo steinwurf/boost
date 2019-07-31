@@ -24,9 +24,7 @@
 
 namespace boost {
 namespace random {
-
 namespace detail {
-
 template<class RealType>
 struct binomial_table {
     static const RealType table[10];
@@ -45,7 +43,6 @@ const RealType binomial_table<RealType>::table[10] = {
     0.009255462182712733,
     0.008330563433362871
 };
-
 }
 
 /**
@@ -96,7 +93,7 @@ public:
             os << parm._p << " " << parm._t;
             return os;
         }
-    
+
         /** Reads the parameters of the distribution from a @c std::istream. */
         template<class CharT, class Traits>
         friend std::basic_istream<CharT,Traits>&
@@ -120,7 +117,7 @@ public:
         IntType _t;
         RealType _p;
     };
-    
+
     /**
      * Construct a @c binomial_distribution object. @c t and @c p
      * are the parameters of the distribution.
@@ -129,21 +126,21 @@ public:
      */
     explicit binomial_distribution(IntType t_arg = 1,
                                    RealType p_arg = RealType(0.5))
-      : _t(t_arg), _p(p_arg)
+      : _t(t_arg), _p(p_arg), btrd()
     {
         init();
     }
-    
+
     /**
      * Construct an @c binomial_distribution object from the
      * parameters.
      */
     explicit binomial_distribution(const param_type& parm)
-      : _t(parm.t()), _p(parm.p())
+      : _t(parm.t()), _p(parm.p()), btrd()
     {
         init();
     }
-    
+
     /**
      * Returns a random variate distributed according to the
      * binomial distribution.
@@ -163,7 +160,7 @@ public:
             return generate(urng);
         }
     }
-    
+
     /**
      * Returns a random variate distributed according to the
      * binomial distribution with parameters specified by @c param.
@@ -210,7 +207,7 @@ public:
         os << bd.param();
         return os;
     }
-    
+
     /** Reads the parameters of the distribution from a @c std::istream. */
     template<class CharT, class Traits>
     friend std::basic_istream<CharT,Traits>&
@@ -274,22 +271,22 @@ private:
 
         RealType p = (0.5 < _p)? (1 - _p) : _p;
         IntType t = _t;
-        
+
         m = static_cast<IntType>((t+1)*p);
 
         if(use_inversion()) {
-            _u.q_n = pow((1 - p), static_cast<RealType>(t));
+            q_n = pow((1 - p), static_cast<RealType>(t));
         } else {
-            _u.btrd.r = p/(1-p);
-            _u.btrd.nr = (t+1)*_u.btrd.r;
-            _u.btrd.npq = t*p*(1-p);
-            RealType sqrt_npq = sqrt(_u.btrd.npq);
-            _u.btrd.b = 1.15 + 2.53 * sqrt_npq;
-            _u.btrd.a = -0.0873 + 0.0248*_u.btrd.b + 0.01*p;
-            _u.btrd.c = t*p + 0.5;
-            _u.btrd.alpha = (2.83 + 5.1/_u.btrd.b) * sqrt_npq;
-            _u.btrd.v_r = 0.92 - 4.2/_u.btrd.b;
-            _u.btrd.u_rv_r = 0.86*_u.btrd.v_r;
+            btrd.r = p/(1-p);
+            btrd.nr = (t+1)*btrd.r;
+            btrd.npq = t*p*(1-p);
+            RealType sqrt_npq = sqrt(btrd.npq);
+            btrd.b = 1.15 + 2.53 * sqrt_npq;
+            btrd.a = -0.0873 + 0.0248*btrd.b + 0.01*p;
+            btrd.c = t*p + 0.5;
+            btrd.alpha = (2.83 + 5.1/btrd.b) * sqrt_npq;
+            btrd.v_r = 0.92 - 4.2/btrd.b;
+            btrd.u_rv_r = 0.86*btrd.v_r;
         }
     }
 
@@ -303,38 +300,38 @@ private:
         while(true) {
             RealType u;
             RealType v = uniform_01<RealType>()(urng);
-            if(v <= _u.btrd.u_rv_r) {
-                u = v/_u.btrd.v_r - 0.43;
+            if(v <= btrd.u_rv_r) {
+                u = v/btrd.v_r - 0.43;
                 return static_cast<IntType>(floor(
-                    (2*_u.btrd.a/(0.5 - abs(u)) + _u.btrd.b)*u + _u.btrd.c));
+                    (2*btrd.a/(0.5 - abs(u)) + btrd.b)*u + btrd.c));
             }
 
-            if(v >= _u.btrd.v_r) {
+            if(v >= btrd.v_r) {
                 u = uniform_01<RealType>()(urng) - 0.5;
             } else {
-                u = v/_u.btrd.v_r - 0.93;
+                u = v/btrd.v_r - 0.93;
                 u = ((u < 0)? -0.5 : 0.5) - u;
-                v = uniform_01<RealType>()(urng) * _u.btrd.v_r;
+                v = uniform_01<RealType>()(urng) * btrd.v_r;
             }
 
             RealType us = 0.5 - abs(u);
-            IntType k = static_cast<IntType>(floor((2*_u.btrd.a/us + _u.btrd.b)*u + _u.btrd.c));
+            IntType k = static_cast<IntType>(floor((2*btrd.a/us + btrd.b)*u + btrd.c));
             if(k < 0 || k > _t) continue;
-            v = v*_u.btrd.alpha/(_u.btrd.a/(us*us) + _u.btrd.b);
-            RealType km = abs(k - m);
+            v = v*btrd.alpha/(btrd.a/(us*us) + btrd.b);
+            RealType km = abs(static_cast<RealType>(k - m));
             if(km <= 15) {
                 RealType f = 1;
                 if(m < k) {
                     IntType i = m;
                     do {
                         ++i;
-                        f = f*(_u.btrd.nr/i - _u.btrd.r);
+                        f = f*(btrd.nr/i - btrd.r);
                     } while(i != k);
                 } else if(m > k) {
                     IntType i = k;
                     do {
                         ++i;
-                        v = v*(_u.btrd.nr/i - _u.btrd.r);
+                        v = v*(btrd.nr/i - btrd.r);
                     } while(i != m);
                 }
                 if(v <= f) return k;
@@ -343,18 +340,18 @@ private:
                 // final acceptance/rejection
                 v = log(v);
                 RealType rho =
-                    (km/_u.btrd.npq)*(((km/3. + 0.625)*km + 1./6)/_u.btrd.npq + 0.5);
-                RealType t = -km*km/(2*_u.btrd.npq);
+                    (km/btrd.npq)*(((km/3. + 0.625)*km + 1./6)/btrd.npq + 0.5);
+                RealType t = -km*km/(2*btrd.npq);
                 if(v < t - rho) return k;
                 if(v > t + rho) continue;
 
                 IntType nm = _t - m + 1;
-                RealType h = (m + 0.5)*log((m + 1)/(_u.btrd.r*nm))
+                RealType h = (m + 0.5)*log((m + 1)/(btrd.r*nm))
                            + fc(m) + fc(_t - m);
 
                 IntType nk = _t - k + 1;
                 if(v <= h + (_t+1)*log(static_cast<RealType>(nm)/nk)
-                          + (k + 0.5)*log(nk*_u.btrd.r/(k+1))
+                          + (k + 0.5)*log(nk*btrd.r/(k+1))
                           - fc(k)
                           - fc(_t - k))
                 {
@@ -372,7 +369,7 @@ private:
         RealType q = 1 - p;
         RealType s = p / q;
         RealType a = (t + 1) * s;
-        RealType r = _u.q_n;
+        RealType r = q_n;
         RealType u = uniform_01<RealType>()(urng);
         IntType x = 0;
         while(u > r) {
@@ -402,31 +399,30 @@ private:
     // common data
     IntType m;
 
-    union {
-        // for btrd
-        struct {
-            RealType r;
-            RealType nr;
-            RealType npq;
-            RealType b;
-            RealType a;
-            RealType c;
-            RealType alpha;
-            RealType v_r;
-            RealType u_rv_r;
-        } btrd;
-        // for inversion
-        RealType q_n;
-    } _u;
+    // for btrd
+    struct btrd_data {
+        RealType r;
+        RealType nr;
+        RealType npq;
+        RealType b;
+        RealType a;
+        RealType c;
+        RealType alpha;
+        RealType v_r;
+        RealType u_rv_r;
+    };
+
+    btrd_data btrd;
+
+    // for inversion
+    RealType q_n;
 
     /// @endcond
 };
-
 }
 
 // backwards compatibility
 using random::binomial_distribution;
-
 }
 
 #include <boost/random/detail/enable_warnings.hpp>
