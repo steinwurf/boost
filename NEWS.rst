@@ -8,6 +8,11 @@ Latest
 ------
 * tbd
 
+4.0.1
+-----
+* Patch: Added boost_asio_includes to allow automatic linking with pthreads
+  on Linux (this is required by boost::asio).
+
 4.0.0
 -----
 * Major: Removed the boost-python, boost-thread, boost-chrono and boost-timer
