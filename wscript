@@ -25,7 +25,8 @@ def _boost_shared_defines(conf):
     """
 
     defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD',
-               'BOOST_SYSTEM_NO_DEPRECATED', 'BOOST_NO_AUTO_PTR']
+               'BOOST_SYSTEM_NO_DEPRECATED', 'BOOST_NO_AUTO_PTR',
+               'BOOST_ASIO_HAS_PTHREADS=0']
 
     return defines
 
