@@ -1234,6 +1234,8 @@
 #   define BOOST_ASIO_HAS_THREADS 1
 #  elif defined(_POSIX_THREADS) && (_POSIX_THREADS + 0 >= 0)
 #   define BOOST_ASIO_HAS_THREADS 1
+#  elif defined(_PTHREADS)
+#   define BOOST_ASIO_HAS_THREADS 1
 #  endif // defined(BOOST_ASIO_HAS_BOOST_CONFIG) && defined(BOOST_HAS_THREADS)
 # endif // !defined(BOOST_ASIO_DISABLE_THREADS)
 #endif // !defined(BOOST_ASIO_HAS_THREADS)
