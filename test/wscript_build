@@ -5,6 +5,6 @@ bld.program(
     features='cxx test',
     source=['boost_tests.cpp'] + bld.path.ant_glob('src/*.cpp'),
     target='boost_tests',
-    use=['gtest', 'boost_includes', 'boost_iostreams',
+    use=['gtest', 'boost_includes', 'boost_asio_includes', 'boost_iostreams',
          'boost_program_options', 'boost_filesystem']
 )

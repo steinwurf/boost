@@ -5,6 +5,14 @@ APPNAME = 'boost'
 VERSION = '4.0.0'
 
 
+def configure(conf):
+
+    if conf.is_mkspec_platform('linux'):
+        if not conf.env['LIB_PTHREAD']:
+            # If we have not looked for pthread yet
+            conf.check_cxx(lib='pthread')
+
+
 def build(bld):
 
     bld.env.append_unique(
@@ -22,6 +30,12 @@ def build(bld):
         export_includes=include_dirs,
         name='boost_includes',
         use='BOOST_SHARED')
+
+    # boost_asio_includes is used to link with pthreads on Linux
+    bld(includes=include_dirs,
+        export_includes=include_dirs,
+        name='boost_asio_includes',
+        use=['BOOST_SHARED', 'PTHREAD'])
 
     # Build a static library if this is top-level, otherwise just .o files
     features = ['cxx']
