@@ -7,7 +7,9 @@ of every change, see the Git log.
 Latest
 ------
 * tbd
-* Minor: Upgrade to Boost release 1.70.0.
+* Major: Removed the boost-python, boost-thread, boost-chrono and boost-timer
+  libraries which should be replaced by C++14 built-in libraries.
+* Major: Upgrade to Boost release 1.70.0.
 
 3.1.8
 -----
