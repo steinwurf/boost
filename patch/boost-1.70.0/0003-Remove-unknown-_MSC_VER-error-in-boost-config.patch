@@ -1,0 +1,34 @@
+From c2f94c1598167b832cf98ddb5149778bb2952144 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 31 Jul 2019 23:47:28 +0200
+Subject: [PATCH 3/3] Remove unknown _MSC_VER error in boost config
+
+---
+ boost/config/compiler/visualc.hpp | 14 --------------
+ 1 file changed, 14 deletions(-)
+
+diff --git a/boost/config/compiler/visualc.hpp b/boost/config/compiler/visualc.hpp
+index 29642473..2ec77d17 100644
+--- a/boost/config/compiler/visualc.hpp
++++ b/boost/config/compiler/visualc.hpp
+@@ -343,17 +343,3 @@
+ #  define BOOST_COMPILER "Microsoft Visual C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)
+ #endif
+ 
+-#include <boost/config/pragma_message.hpp>
+-
+-//
+-// last known and checked version is 19.12.25830.2 (VC++ 2017.3):
+-#if (_MSC_VER > 1912)
+-#  if defined(BOOST_ASSERT_CONFIG)
+-#     error "Boost.Config is older than your current compiler version."
+-#  elif !defined(BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE)
+-      //
+-      // Disabled as of March 2018 - the pace of VS releases is hard to keep up with
+-      // and in any case, we have relatively few defect macros defined now.
+-      // BOOST_PRAGMA_MESSAGE("Info: Boost.Config is older than your compiler version - probably nothing bad will happen - but you may wish to look for an updated Boost version. Define BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE to suppress this message.")
+-#  endif
+-#endif
+-- 
+2.18.0.windows.1
+

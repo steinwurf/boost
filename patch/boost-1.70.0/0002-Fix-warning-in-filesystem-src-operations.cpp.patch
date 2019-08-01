@@ -1,0 +1,24 @@
+From 39a6091363ec57eb0facbe0b741e58c04d9f42b5 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Wed, 31 Jul 2019 23:42:25 +0200
+Subject: [PATCH 2/3] Fix warning in filesystem/src/operations.cpp
+
+---
+ libs/filesystem/src/operations.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/libs/filesystem/src/operations.cpp b/libs/filesystem/src/operations.cpp
+index 91fe4d5c..912d344a 100644
+--- a/libs/filesystem/src/operations.cpp
++++ b/libs/filesystem/src/operations.cpp
+@@ -1993,6 +1993,7 @@ namespace detail
+   path system_complete(const path& p, system::error_code* ec)
+   {
+ #   ifdef BOOST_POSIX_API
++    (void) ec;
+     return (p.empty() || p.is_absolute())
+       ? p : current_path()/ p;
+ 
+-- 
+2.18.0.windows.1
+

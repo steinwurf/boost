@@ -5,84 +5,31 @@ APPNAME = 'boost'
 VERSION = '3.1.8'
 
 
-def options(opt):
-
-    if opt.is_toplevel():
-        opt.load('python')
-
-
-def configure(conf):
-
-    # Configure Python extension flags if necessary
-    # (pybind11 might have already completed the Python configuration)
-    if 'BUILD_PYTHON' not in conf.env:
-        try:
-            conf.load('python')
-            conf.check_python_headers()
-            conf.env['BUILD_PYTHON'] = True
-        except:
-            conf.env['BUILD_PYTHON'] = False
-
-    if conf.is_mkspec_platform('linux'):
-
-        if not conf.env['LIB_PTHREAD']:
-            conf.check_cxx(lib='pthread')
-
-        if not conf.env['LIB_RT']:
-            conf.check_cxx(lib='rt')
-
-    # Set the shared defines
-    conf.env['DEFINES_BOOST_SHARED'] = _boost_shared_defines(conf)
-
-
-def _boost_shared_defines(conf):
-    """
-    returns shared defines for boost
-    """
-
-    defines = ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD',
-               'BOOST_SYSTEM_NO_DEPRECATED']
-
-    # Disable the noexcept keyword for all compilers
-    defines += ['BOOST_NO_CXX11_NOEXCEPT']
-
-    return defines
-
-
 def build(bld):
 
     bld.env.append_unique(
         'DEFINES_STEINWURF_VERSION',
         'STEINWURF_BOOST_VERSION="{}"'.format(VERSION))
 
+    bld.env['DEFINES_BOOST_SHARED'] = \
+        ['BOOST_ALL_NO_LIB=1', 'BOOST_DETAIL_NO_CONTAINER_FWD',
+         'BOOST_SYSTEM_NO_DEPRECATED', 'BOOST_NO_AUTO_PTR']
+
     include_dirs = ['.']
 
-    # Build boost thread
-    if bld.is_mkspec_platform('windows'):
-        bld.stlib(
-            features='cxx',
-            source=(bld.path.ant_glob('libs/thread/src/win32/*.cpp') +
-                    bld.path.ant_glob('libs/thread/src/*.cpp')),
-            target='boost_thread',
-            includes=include_dirs,
-            export_includes=include_dirs,
-            defines=['BOOST_THREAD_BUILD_LIB=1'],
-            use=['BOOST_SHARED', 'boost_system'])
-    else:
-        bld.stlib(
-            features='cxx',
-            source=(bld.path.ant_glob('libs/thread/src/pthread/*.cpp') +
-                    bld.path.ant_glob('libs/thread/src/*.cpp')),
-            target='boost_thread',
-            includes=include_dirs,
-            export_includes=include_dirs,
-            defines=['BOOST_THREAD_BUILD_LIB=1',
-                     'BOOST_THREAD_POSIX'],
-            use=['BOOST_SHARED', 'PTHREAD', 'boost_system'])
+    # Define boost_includes for apps/libs only using the boost headers
+    bld(includes=include_dirs,
+        export_includes=include_dirs,
+        name='boost_includes',
+        use='BOOST_SHARED')
+
+    # Build a static library if this is top-level, otherwise just .o files
+    features = ['cxx']
+    if bld.is_toplevel():
+        features += ['cxxstlib']
 
     # Build boost system
-    bld.stlib(
-        features='cxx',
+    bld(features=features,
         source=['libs/system/src/error_code.cpp'],
         target='boost_system',
         includes=include_dirs,
@@ -90,30 +37,8 @@ def build(bld):
         defines=['BOOST_SYSTEM_STATIC_LINK=1'],
         use='BOOST_SHARED')
 
-    # Build boost chrono
-    bld.stlib(
-        features='cxx',
-        source=bld.path.ant_glob('libs/chrono/src/*.cpp'),
-        target='boost_chrono',
-        includes=include_dirs,
-        export_includes=include_dirs,
-        defines=['BOOST_CHRONO_STATIC_LINK=1',
-                 'BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING'],
-        use=['BOOST_SHARED', 'RT', 'PTHREAD'])
-
-    # Build boost timer
-    bld.stlib(
-        features='cxx',
-        source=bld.path.ant_glob('libs/timer/src/*.cpp'),
-        target='boost_timer',
-        includes=include_dirs,
-        export_includes=include_dirs,
-        defines=['BOOST_TIMER_STATIC_LINK=1'],
-        use=['BOOST_SHARED', 'boost_chrono'])
-
     # Build boost program options
-    bld.stlib(
-        features='cxx',
+    bld(features=features,
         source=bld.path.ant_glob('libs/program_options/src/*.cpp'),
         target='boost_program_options',
         includes=include_dirs,
@@ -121,48 +46,21 @@ def build(bld):
         use='BOOST_SHARED')
 
     # Build boost iostreams (only the memory mapped files part)
-    bld.stlib(
-        features='cxx',
+    bld(features=features,
         source=bld.path.ant_glob('libs/iostreams/src/mapped_file.cpp'),
         target='boost_iostreams',
         includes=include_dirs,
         export_includes=include_dirs,
         use='BOOST_SHARED')
 
-    if bld.env['BUILD_PYTHON']:
-        # Build boost-python, but only if we managed to find the appropiate
-        # Python headers.
-
-        # Set the shared defines that should be used in Python extensions
-        bld.env['DEFINES_BOOST_PYTHON_SHARED'] = \
-            [
-                "BOOST_PYTHON_SOURCE", "BOOST_PYTHON_STATIC_LIB",
-                "BOOST_PYTHON_STATIC_MODULE"
-            ]
-
-        bld.stlib(
-            features='cxx',
-            source=bld.path.ant_glob('libs/python/src/**/*.cpp'),
-            target='boost_python',
-            includes=include_dirs + bld.env['INCLUDES_PYEXT'],
-            export_includes=include_dirs,
-            use=['BOOST_SHARED', 'BOOST_PYTHON_SHARED'])
-
     # Build boost filesystem
-    bld.stlib(
-        features='cxx',
+    bld(features=features,
         source=bld.path.ant_glob('libs/filesystem/src/*.cpp'),
         target='boost_filesystem',
         includes=include_dirs,
         export_includes=include_dirs,
         defines=['BOOST_FILESYSTEM_STATIC_LINK=1'],
         use=['BOOST_SHARED', 'boost_system'])
-
-    # Define boost_includes for apps/libs only using the boost headers
-    bld(includes=include_dirs,
-        export_includes=include_dirs,
-        name='boost_includes',
-        use='BOOST_SHARED')
 
     if bld.is_toplevel():
 

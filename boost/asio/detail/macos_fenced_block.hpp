@@ -2,7 +2,7 @@
 // detail/macos_fenced_block.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2016 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2019 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,9 +19,8 @@
 
 #if defined(__MACH__) && defined(__APPLE__)
 
-// Enable deprecated legacy interface for OSMemoryBarrier
-#define OSATOMIC_USE_INLINED 1
 #include <libkern/OSAtomic.h>
+#include <boost/asio/detail/noncopyable.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
 

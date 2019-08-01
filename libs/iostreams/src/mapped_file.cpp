@@ -11,12 +11,14 @@
 #define BOOST_IOSTREAMS_SOURCE
 
 #include <cassert>
+#include <stdexcept>
 #include <boost/iostreams/detail/config/rtl.hpp>
 #include <boost/iostreams/detail/config/windows_posix.hpp>
 #include <boost/iostreams/detail/file_handle.hpp>
 #include <boost/iostreams/detail/system_failure.hpp>
 #include <boost/iostreams/device/mapped_file.hpp>
 #include <boost/throw_exception.hpp>
+#include <boost/numeric/conversion/cast.hpp>
 
 #ifdef BOOST_IOSTREAMS_WINDOWS
 # define WIN32_LEAN_AND_MEAN  // Exclude rarely-used stuff from Windows headers
@@ -173,7 +175,7 @@ void mapped_file_impl::open_file(param_type p)
             GENERIC_READ :
             (GENERIC_READ | GENERIC_WRITE);
     DWORD dwCreationDisposition = (p.new_file_size != 0 && !readonly) ? 
-        OPEN_ALWAYS : 
+        CREATE_ALWAYS : 
         OPEN_EXISTING;
     DWORD dwFlagsandAttributes =
         readonly ?
@@ -256,11 +258,12 @@ void mapped_file_impl::open_file(param_type p)
     // Open file
     int flags = (readonly ? O_RDONLY : O_RDWR);
     if (p.new_file_size != 0 && !readonly)
-        flags |= O_CREAT;
+        flags |= (O_CREAT | O_TRUNC);
     #ifdef _LARGEFILE64_SOURCE
         flags |= O_LARGEFILE;
     #endif
     errno = 0;
+    if (p.path.is_wide()) { errno = EINVAL; cleanup_and_throw("wide path not supported here"); } // happens on CYGWIN
     handle_ = ::open(p.path.c_str(), flags, S_IRWXU);
     if (errno != 0)
         cleanup_and_throw("failed opening file");
@@ -321,7 +324,7 @@ void mapped_file_impl::try_map_file(param_type p)
             access,
             (DWORD) (p.offset >> 32),
             (DWORD) (p.offset & 0xffffffff),
-            (SIZE_T) (size_ != max_length ? size_ : 0), 
+            (SIZE_T) (numeric_cast<size_type>(size_) != max_length ? size_ : 0),
             (LPVOID) p.hint );
     if (!data)
         cleanup_and_throw("failed mapping view");
