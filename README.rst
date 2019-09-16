@@ -13,8 +13,8 @@ This repo includes the wscript files needed to build the Boost libraries.
 This is in no way a complete build system for Boost, we would be happy to
 accept improvements if somebody has time.
 
-.. image:: http://buildbot.steinwurf.dk/svgstatus?project=boost
-    :target: http://buildbot.steinwurf.dk/stats?projects=boost
+.. image:: https://travis-ci.org/steinwurf/boost.svg?branch=master
+    :target: https://travis-ci.org/steinwurf/boost
 
 If you have any questions or suggestions about this library, please contact
 us at our developer mailing list (hosted at Google Groups):
@@ -30,7 +30,7 @@ http://docs.steinwurf.com
 Quick Start
 -----------
 
-If you already installed a C++11 compiler, git and python on your system,
+If you already installed a C++14 compiler, git and python on your system,
 then you can clone this repository to a suitable folder::
 
     git clone git@github.com:steinwurf/boost.git
