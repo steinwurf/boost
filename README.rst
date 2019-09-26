@@ -1,6 +1,9 @@
 Introduction
 ============
 
+.. image:: https://travis-ci.org/steinwurf/boost.svg?branch=master
+    :target: https://travis-ci.org/steinwurf/boost
+
 This repo provides a Waf build script for a subset of the Boost C++ Libraries.
 
 We use Boost in several of our libraries. As some of our target platforms
@@ -12,9 +15,6 @@ This repo includes the wscript files needed to build the Boost libraries.
 
 This is in no way a complete build system for Boost, we would be happy to
 accept improvements if somebody has time.
-
-.. image:: https://travis-ci.org/steinwurf/boost.svg?branch=master
-    :target: https://travis-ci.org/steinwurf/boost
 
 If you have any questions or suggestions about this library, please contact
 us at our developer mailing list (hosted at Google Groups):
