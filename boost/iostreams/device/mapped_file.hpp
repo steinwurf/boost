@@ -142,6 +142,10 @@ struct basic_mapped_file_params
         : base_type(other), path(other.path)
         { }
 
+    // Copy assignment operator
+    basic_mapped_file_params& operator=(
+        const basic_mapped_file_params& other) = default;
+
     typedef Path  path_type;
     Path          path;
 };
@@ -185,6 +189,9 @@ public:
 
     // Copy Constructor
     mapped_file_source(const mapped_file_source& other);
+
+    // Copy assignment operator
+    mapped_file_source& operator=(const mapped_file_source& other) = default;
 
     //--------------Stream interface------------------------------------------//
 
@@ -268,6 +275,9 @@ public:
 
     // Copy Constructor
     mapped_file(const mapped_file& other);
+
+    // Copy assignment operator
+    mapped_file& operator=(const mapped_file& other) = default;
 
     //--------------Conversion to mapped_file_source (deprecated)-------------//
 
@@ -371,6 +381,9 @@ public:
 
     // Copy Constructor
     mapped_file_sink(const mapped_file_sink& other);
+
+    // Copy assignment operator
+    mapped_file_sink& operator=(const mapped_file_sink& other) = default;
 
     // open overload taking a parameters object
     template<typename Path>
