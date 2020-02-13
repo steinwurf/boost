@@ -1,0 +1,57 @@
+From 71ffbe378b8bab2c2525521593f094f6637045c2 Mon Sep 17 00:00:00 2001
+From: Peter Vingelmann <petya@master.com>
+Date: Thu, 13 Feb 2020 00:03:52 +0100
+Subject: [PATCH] Fix operator= warning in boost/iostreams
+
+---
+ boost/iostreams/device/mapped_file.hpp | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+diff --git a/boost/iostreams/device/mapped_file.hpp b/boost/iostreams/device/mapped_file.hpp
+index 1332beab..6d705d60 100644
+--- a/boost/iostreams/device/mapped_file.hpp
++++ b/boost/iostreams/device/mapped_file.hpp
+@@ -142,6 +142,10 @@ struct basic_mapped_file_params
+         : base_type(other), path(other.path)
+         { }
+ 
++    // Copy assignment operator
++    basic_mapped_file_params& operator=(
++        const basic_mapped_file_params& other) = default;
++
+     typedef Path  path_type;
+     Path          path;
+ };
+@@ -186,6 +190,9 @@ public:
+     // Copy Constructor
+     mapped_file_source(const mapped_file_source& other);
+ 
++    // Copy assignment operator
++    mapped_file_source& operator=(const mapped_file_source& other) = default;
++
+     //--------------Stream interface------------------------------------------//
+ 
+     template<typename Path>
+@@ -269,6 +276,9 @@ public:
+     // Copy Constructor
+     mapped_file(const mapped_file& other);
+ 
++    // Copy assignment operator
++    mapped_file& operator=(const mapped_file& other) = default;
++
+     //--------------Conversion to mapped_file_source (deprecated)-------------//
+ 
+     operator mapped_file_source&() { return delegate_; }
+@@ -372,6 +382,9 @@ public:
+     // Copy Constructor
+     mapped_file_sink(const mapped_file_sink& other);
+ 
++    // Copy assignment operator
++    mapped_file_sink& operator=(const mapped_file_sink& other) = default;
++
+     // open overload taking a parameters object
+     template<typename Path>
+     void open(const basic_mapped_file_params<Path>& p);
+-- 
+2.18.0.windows.1
+
