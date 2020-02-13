@@ -7,6 +7,7 @@ of every change, see the Git log.
 Latest
 ------
 * tbd
+* Patch: Fixed g++ 9 warnings in boost::iostreams.
 
 4.0.1
 -----
