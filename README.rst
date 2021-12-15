@@ -1,8 +1,25 @@
 Introduction
 ============
 
-.. image:: https://travis-ci.org/steinwurf/boost.svg?branch=master
-    :target: https://travis-ci.org/steinwurf/boost
+|Linux make-specs| |Windows make-specs| |MacOS make-specs| |Valgrind| |No Assertions| |Cppcheck|
+
+.. |Linux make-specs| image:: https://github.com/steinwurf/abacus/actions/workflows/linux_mkspecs.yml/badge.svg
+   :target: https://github.com/steinwurf/abacus/actions/workflows/linux_mkspecs.yml
+   
+.. |Windows make-specs| image:: https://github.com/steinwurf/abacus/actions/workflows/windows_mkspecs.yml/badge.svg
+   :target: https://github.com/steinwurf/abacus/actions/workflows/windows_mkspecs.yml
+
+.. |MacOS make-specs| image:: https://github.com/steinwurf/abacus/actions/workflows/macos_mkspecs.yml/badge.svg
+   :target: https://github.com/steinwurf/abacus/actions/workflows/macos_mkspecs.yml
+
+.. |No Assertions| image:: https://github.com/steinwurf/abacus/actions/workflows/nodebug.yml/badge.svg
+   :target: https://github.com/steinwurf/abacus/actions/workflows/nodebug.yml
+
+.. |Valgrind| image:: https://github.com/steinwurf/abacus/actions/workflows/valgrind.yml/badge.svg
+   :target: https://github.com/steinwurf/abacus/actions/workflows/valgrind.yml
+
+.. |Cppcheck| image:: https://github.com/steinwurf/abacus/actions/workflows/cppcheck.yml/badge.svg
+   :target: https://github.com/steinwurf/abacus/actions/workflows/cppcheck.yml
 
 This repo provides a Waf build script for a subset of the Boost C++ Libraries.
 
