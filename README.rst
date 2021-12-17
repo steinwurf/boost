@@ -1,16 +1,19 @@
 Introduction
 ============
 
-|Linux make-specs| |Windows make-specs| |MacOS make-specs| |Valgrind| |No Assertions| |Cppcheck|
+|Linux make-specs| |Windows make-specs| |MacOS make-specs| |Raspberry Pi| |Valgrind| |No Assertions| |Cppcheck|
 
 .. |Linux make-specs| image:: https://github.com/steinwurf/boost/actions/workflows/linux_mkspecs.yml/badge.svg
    :target: https://github.com/steinwurf/boost/actions/workflows/linux_mkspecs.yml
-   
+
 .. |Windows make-specs| image:: https://github.com/steinwurf/boost/actions/workflows/windows_mkspecs.yml/badge.svg
    :target: https://github.com/steinwurf/boost/actions/workflows/windows_mkspecs.yml
 
 .. |MacOS make-specs| image:: https://github.com/steinwurf/boost/actions/workflows/macos_mkspecs.yml/badge.svg
    :target: https://github.com/steinwurf/boost/actions/workflows/macos_mkspecs.yml
+
+.. |Raspberry Pi| image:: https://github.com/steinwurf/boost/actions/workflows/raspberry_pi.yml/badge.svg
+   :target: https://github.com/steinwurf/boost/actions/workflows/raspberry_pi.yml
 
 .. |No Assertions| image:: https://github.com/steinwurf/boost/actions/workflows/nodebug.yml/badge.svg
    :target: https://github.com/steinwurf/boost/actions/workflows/nodebug.yml
